@@ -75,7 +75,7 @@ function WorkflowStatusDirectiveController($scope, appConfig) {
    */
   function getCultuurKuurKUrl (cdbid) {
     if (appConfig.cultuurkuur.cultuurkuurUrl) {
-      return appConfig.cultuurkuur.cultuurkuurUrl + 'agenda/e//' + cdbid;
+      return appConfig.cultuurkuur.cultuurkuurUrl + 'agenda/e/x/' + cdbid;
     } else {
       return false;
     }
