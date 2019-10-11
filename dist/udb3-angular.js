@@ -23661,7 +23661,7 @@ angular
     {name: 'agefrom', field:'typicalAgeRange', type: 'number', group: 'other', editable: true},
     {name: 'price', field: 'price', type: 'number' , group: 'other', editable: true},
     {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
-    {name: 'category_facility_name', field:'location.terms.label', type: 'term', group: 'other', editable: true},
+    {name: 'category_facility_name', field:'terms.label', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
 
     // The following fields are supported but not named and do not show up in the builder
