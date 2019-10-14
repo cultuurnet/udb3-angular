@@ -29,7 +29,10 @@ module.exports = function (grunt) {
     var xmlBuffer = grunt.file.read('taxonomy-terms.xml');
     var terms = [];
     parser.parseString(xmlBuffer, function (err, result) {
-      terms = result.cdbxml.categorisation.term;
+      terms = result.cdbxml.categorisation.term.filter(
+        function (term) {
+          return term.enabled === 'true';
+        });
     });
 
     return terms;
