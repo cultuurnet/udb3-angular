@@ -13,8 +13,7 @@ describe('Controller: event form step 3', function (){
           {"code": "NL", "default": false},
           {"code": "ZZ", "default": false},
         ]
-      },
-      "asyncPlaceSuggestionsFeatureToggle": true
+      }
     };
 
     $provide.constant('appConfig', appConfig);

@@ -89,27 +89,15 @@
         <div class="col-xs-12">
           <label id="locatie-label" ng-show="!selectedLocation">
             <span translate-once="eventForm.step3.choose_location"></span>
-            <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingLocations && !asyncPlaceSuggestionsFeatureToggle"></i>
+            <i class="fa fa-circle-o-notch fa-spin" ng-show="loadingLocations"></i>
           </label>
           <div id="locatie-kiezer" ng-hide="selectedLocation">
             <span style="position: relative; display: block; direction: ltr;" class="twitter-typeahead">
-              <input ng-show="asyncPlaceSuggestionsFeatureToggle" type="text"
+              <input type="text"
                      translate-once-placeholder="eventForm.step3.placeholder_location"
                      class="form-control typeahead"
                      ng-model="asyncPlaceSuggestion"
                      uib-typeahead="location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50"
-                     typeahead-on-select="selectLocation($model, $label)"
-                     typeahead-min-length="3"
-                     typeahead-wait-ms="500"
-                     typeahead-loading="loadingLocations"
-                     typeahead-template-url="templates/place-suggestion.html"
-                     typeahead-popup-template-url="templates/place-suggestion-popup.html"
-                     udb-auto-scroll/>
-              <input ng-show="!asyncPlaceSuggestionsFeatureToggle" type="text"
-                     translate-once-placeholder="eventForm.step3.placeholder_location"
-                     class="form-control typeahead"
-                     ng-model="locationAutocompleteTextField"
-                     uib-typeahead="location.id as location.name for location in  filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderLocationsByLevenshtein($viewValue) | limitTo:50"
                      typeahead-on-select="selectLocation($model, $label)"
                      typeahead-min-length="3"
                      typeahead-wait-ms="500"
