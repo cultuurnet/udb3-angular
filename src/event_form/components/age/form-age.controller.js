@@ -148,4 +148,14 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   $scope.translateAgeRange = function (ageRange) {
     return $translate.instant('eventForm.step5.age.' + ageRange);
   };
+
+  $scope.getAgeRangeLabel = function (ageRange) {
+    if (typeof ageRange.min === 'undefined' && typeof ageRange.max === 'undefined') {
+      return '';
+    }
+    if (typeof ageRange.min === 'number' && typeof ageRange.max === 'number') {
+      return ageRange.min.toString() + '-' + ageRange.max.toString();
+    }
+    return ageRange.min.toString() + '+';
+  };
 }

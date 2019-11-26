@@ -10794,6 +10794,16 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   $scope.translateAgeRange = function (ageRange) {
     return $translate.instant('eventForm.step5.age.' + ageRange);
   };
+
+  $scope.getAgeRangeLabel = function (ageRange) {
+    if (typeof ageRange.min === 'undefined' && typeof ageRange.max === 'undefined') {
+      return '';
+    }
+    if (typeof ageRange.min === 'number' && typeof ageRange.max === 'number') {
+      return ageRange.min.toString() + '-' + ageRange.max.toString();
+    }
+    return ageRange.min.toString() + '+';
+  };
 }
 FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate"];
 })();
@@ -27216,10 +27226,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <a ng-bind=\"::translateAgeRange(ageRange.label)\"\n" +
-    "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
+    "                <button\n" +
+    "                   class=\"btn form-age-range-button\"\n" +
+    "                   ng-class=\"(fagec.activeAgeRange === type) ?  'font-bold' : 'btn-default'\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\">\n" +
+    "                  {{ translateAgeRange(ageRange.label) }} \n" +
+    "                  <span>{{ getAgeRangeLabel(ageRange) }}</span>\n" +
+    "                </button>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +

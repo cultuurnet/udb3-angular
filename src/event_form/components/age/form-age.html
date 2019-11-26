@@ -5,10 +5,14 @@
         </div>
         <div class="col-sm-9">
             <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
-                <a ng-bind="::translateAgeRange(ageRange.label)"
-                   ng-class="{'font-bold': fagec.activeAgeRange === type}"
+                <button
+                   class="btn form-age-range-button"
+                   ng-class="(fagec.activeAgeRange === type) ?  'font-bold' : 'btn-default'"
                    href="#"
-                   ng-mousedown="fagec.setAgeRangeByType(type)"></a><span ng-if="::!$last">, </span>
+                   ng-mousedown="fagec.setAgeRangeByType(type)">
+                  {{ translateAgeRange(ageRange.label) }} 
+                  <span>{{ getAgeRangeLabel(ageRange) }}</span>
+                </button>
             </span>
             <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
                <form name="ageForm">

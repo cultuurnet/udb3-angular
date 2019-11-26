@@ -3237,6 +3237,14 @@ form.booking-period table {
 .extra-beschrijving .description-info {
   font-size: small;
 }
+.form-age-range-button {
+  margin-bottom: 10px;
+}
+.form-age-range-button span {
+  font-size: small;
+  color: grey;
+  font-weight: 300;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
