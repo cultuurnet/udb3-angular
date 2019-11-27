@@ -8510,7 +8510,10 @@ function EventDuplicatorService(udbApi, offerLocator) {
    */
   this.duplicate = function(formData) {
     var calendarData = _.pick(formData, calendarDataProperties);
-    calendarData.calendar.openingHours = formData.openingHours;
+
+    if (formData.openingHours) {
+      calendarData.calendar.openingHours = formData.openingHours;
+    }
 
     return udbApi
       .duplicateEvent(formData.apiUrl, calendarData.calendar)
