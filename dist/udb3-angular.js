@@ -2334,7 +2334,6 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
   this.getPlacesByZipcode = function(zipcode, country, freeTextSearch) {
     var deferredPlaces = $q.defer();
     var url = appConfig.baseUrl + 'places/';
-    var asyncPlaceSuggestionsFeatureToggle = appConfig.asyncPlaceSuggestionsFeatureToggle;
     var config = {
       headers: {
         'X-Api-Key': _.get(appConfig, 'apiKey')
@@ -2346,7 +2345,7 @@ function CityAutocomplete($q, $http, appConfig, UdbPlace, jsonLDLangFilter) {
         'disableDefaultFilters': true,
         'isDuplicate': false,
         'embed': true,
-        'limit': (asyncPlaceSuggestionsFeatureToggle) ? 1000 : 3000,
+        'limit': 1000,
         'sort[created]': 'asc'
       }
     };
@@ -8465,6 +8464,7 @@ function EventDuplicationStepController(EventFormData) {
   var controller = this;
 
   controller.eventId = EventFormData.id;
+
   controller.readyToDuplicate = function () {
     return false;
   };
@@ -10794,6 +10794,16 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
 
   $scope.translateAgeRange = function (ageRange) {
     return $translate.instant('eventForm.step5.age.' + ageRange);
+  };
+
+  $scope.getAgeRangeLabel = function (ageRange) {
+    if (typeof ageRange.min === 'undefined' && typeof ageRange.max === 'undefined') {
+      return '';
+    }
+    if (typeof ageRange.min === 'number' && typeof ageRange.max === 'number') {
+      return ageRange.min.toString() + '-' + ageRange.max.toString();
+    }
+    return ageRange.min.toString() + '+';
   };
 }
 FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate"];
@@ -14744,9 +14754,6 @@ function EventFormStep3Controller(
 
   var language = $translate.use() || 'nl';
 
-  // Feature toggle
-  $scope.asyncPlaceSuggestionsFeatureToggle = appConfig.asyncPlaceSuggestionsFeatureToggle;
-
   // Scope vars.
   // main storage for event form.
   $scope.eventFormData = EventFormData;
@@ -14847,10 +14854,6 @@ function EventFormStep3Controller(
     $scope.selectedCity = $label;
     $scope.selectedCityObj = city;
     $scope.selectedLocation = undefined;
-
-    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
-      controller.getPlaces();
-    }
 
     setMajorInfoChanged();
   };
@@ -14969,14 +14972,12 @@ function EventFormStep3Controller(
   controller.getPlaces = function(filterValue) {
 
     // Do not look for place suggestions until the user has entered at least 3 characters
-    if ($scope.asyncPlaceSuggestionsFeatureToggle && filterValue.length < 3) {
+    if (filterValue.length < 3) {
       $scope.locationsSearched = false;
       return;
     }
 
-    if ($scope.asyncPlaceSuggestionsFeatureToggle) {
-      $scope.locationsSearched = true;
-    }
+    $scope.locationsSearched = true;
 
     function updateLocationsAndReturnList (locations) {
       // Loop over all locations to check if location is translated.
@@ -14988,11 +14989,8 @@ function EventFormStep3Controller(
         return !location.isDummyPlaceForEducationEvents;
       });
       var sortedLocations = null;
-      if ($scope.asyncPlaceSuggestionsFeatureToggle) {
-        sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
-      } else {
-        sortedLocations = locations;
-      }
+      sortedLocations = locationsWithoutDummy.sort(orderLocationsByLevenshtein(filterValue));
+
       $scope.locationsForCity = sortedLocations;
       return sortedLocations;
     }
@@ -15022,26 +15020,6 @@ function EventFormStep3Controller(
     return $scope.locationsForCity instanceof Array && $scope.locationsForCity.length > 0;
   };
 
-  controller.filterCityLocations = function (filterValue) {
-    if (!$scope.asyncPlaceSuggestionsFeatureToggle) {
-      $scope.locationsSearched = true;
-      return function (location) {
-        var words = filterValue.match(/\w+/g).filter(function (word) {
-          return word.length > 2;
-        });
-        var addressMatches = words.filter(function (word) {
-          return location.address.streetAddress.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        });
-        var nameMatches = words.filter(function (word) {
-          return location.name.toLowerCase().indexOf(word.toLowerCase()) !== -1;
-        });
-        return addressMatches.length + nameMatches.length >= words.length;
-      };
-    }
-  };
-
-  $scope.filterCityLocations = controller.filterCityLocations;
-
   /**
    * Order locations by Levenshtein distance
    *
@@ -15053,8 +15031,6 @@ function EventFormStep3Controller(
       return new Levenshtein(filterValue, location.name + '' + location.address.streetAddress);
     };
   }
-
-  $scope.orderLocationsByLevenshtein = orderLocationsByLevenshtein;
 
   /**
    * Open the place modal.
@@ -27252,10 +27228,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <a ng-bind=\"::translateAgeRange(ageRange.label)\"\n" +
-    "                   ng-class=\"{'font-bold': fagec.activeAgeRange === type}\"\n" +
+    "                <button\n" +
+    "                   class=\"btn form-age-range-button\"\n" +
+    "                   ng-class=\"(fagec.activeAgeRange === type) ?  'font-bold' : 'btn-default'\"\n" +
     "                   href=\"#\"\n" +
-    "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\"></a><span ng-if=\"::!$last\">, </span>\n" +
+    "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\">\n" +
+    "                  {{ translateAgeRange(ageRange.label) }} \n" +
+    "                  <span>{{ getAgeRangeLabel(ageRange) }}</span>\n" +
+    "                </button>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +
@@ -28738,27 +28718,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-xs-12\">\n" +
     "          <label id=\"locatie-label\" ng-show=\"!selectedLocation\">\n" +
     "            <span translate-once=\"eventForm.step3.choose_location\"></span>\n" +
-    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingLocations && !asyncPlaceSuggestionsFeatureToggle\"></i>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"loadingLocations\"></i>\n" +
     "          </label>\n" +
     "          <div id=\"locatie-kiezer\" ng-hide=\"selectedLocation\">\n" +
     "            <span style=\"position: relative; display: block; direction: ltr;\" class=\"twitter-typeahead\">\n" +
-    "              <input ng-show=\"asyncPlaceSuggestionsFeatureToggle\" type=\"text\"\n" +
+    "              <input type=\"text\"\n" +
     "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
     "                     class=\"form-control typeahead\"\n" +
     "                     ng-model=\"asyncPlaceSuggestion\"\n" +
     "                     uib-typeahead=\"location.id as location.name for location in filteredLocations = (getPlaces($viewValue)) | limitTo:50\"\n" +
-    "                     typeahead-on-select=\"selectLocation($model, $label)\"\n" +
-    "                     typeahead-min-length=\"3\"\n" +
-    "                     typeahead-wait-ms=\"500\"\n" +
-    "                     typeahead-loading=\"loadingLocations\"\n" +
-    "                     typeahead-template-url=\"templates/place-suggestion.html\"\n" +
-    "                     typeahead-popup-template-url=\"templates/place-suggestion-popup.html\"\n" +
-    "                     udb-auto-scroll/>\n" +
-    "              <input ng-show=\"!asyncPlaceSuggestionsFeatureToggle\" type=\"text\"\n" +
-    "                     translate-once-placeholder=\"eventForm.step3.placeholder_location\"\n" +
-    "                     class=\"form-control typeahead\"\n" +
-    "                     ng-model=\"locationAutocompleteTextField\"\n" +
-    "                     uib-typeahead=\"location.id as location.name for location in  filteredLocations = (locationsForCity | filter:filterCityLocations($viewValue)) | orderBy:orderLocationsByLevenshtein($viewValue) | limitTo:50\"\n" +
     "                     typeahead-on-select=\"selectLocation($model, $label)\"\n" +
     "                     typeahead-min-length=\"3\"\n" +
     "                     typeahead-wait-ms=\"500\"\n" +
