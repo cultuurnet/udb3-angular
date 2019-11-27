@@ -20,6 +20,7 @@ function EventDuplicationStepController(EventFormData) {
   var controller = this;
 
   controller.eventId = EventFormData.id;
+
   controller.readyToDuplicate = function () {
     return false;
   };
