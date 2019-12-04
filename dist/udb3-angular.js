@@ -26162,7 +26162,8 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
     withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + uitidAuth.getToken()
+      'Authorization': 'Bearer ' + uitidAuth.getToken(),
+      'X-Api-Key': _.get(appConfig, 'apiKey')
     },
     params: {}
   };
