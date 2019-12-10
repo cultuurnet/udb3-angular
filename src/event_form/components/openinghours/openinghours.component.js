@@ -50,6 +50,7 @@ function OpeningHourComponentController($uibModal) {
    * @param {OpeningHoursData[]} openingHoursList
    */
   function saveOpeningHours(openingHoursList) {
+    cm.formData.openingHours = openingHoursList;
     cm.formData.saveOpeningHours(openingHoursList);
     cm.openingHoursCollection.deserialize(openingHoursList);
   }
