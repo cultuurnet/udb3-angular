@@ -1556,7 +1556,6 @@ describe('Service: UDB3 Api', function () {
     var language = 'nl';
 
     var expectedConfig = {
-      withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer undefined',

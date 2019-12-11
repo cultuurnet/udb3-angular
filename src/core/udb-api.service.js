@@ -78,7 +78,6 @@ function UdbApi(
 ) {
   var apiUrl = appConfig.baseApiUrl;
   var defaultApiConfig = {
-    withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + uitidAuth.getToken(),
