@@ -3238,12 +3238,19 @@ form.booking-period table {
   font-size: small;
 }
 .form-age-range-button {
-  margin-bottom: 10px;
+  margin-bottom: 0.2em;
+  color: #333333;
 }
 .form-age-range-button span {
   font-size: small;
   color: grey;
   font-weight: 300;
+}
+.form-age-range-button.btn-primary span {
+  color: #ffffff;
+}
+#form-age .form-group {
+  margin-bottom: 0.5em;
 }
 .muted td {
   background-color: #EDEDED;

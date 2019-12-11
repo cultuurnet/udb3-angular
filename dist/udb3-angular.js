@@ -27232,14 +27232,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </div>\n" +
     "        <div class=\"col-sm-9\">\n" +
     "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <button\n" +
-    "                   class=\"btn form-age-range-button\"\n" +
-    "                   ng-class=\"(fagec.activeAgeRange === type) ?  'font-bold' : 'btn-default'\"\n" +
+    "                <a class=\"form-age-range-button\"\n" +
+    "                   ng-class=\"(fagec.activeAgeRange === type) ? 'btn' : 'btn btn-default'\"\n" +
     "                   href=\"#\"\n" +
     "                   ng-mousedown=\"fagec.setAgeRangeByType(type)\">\n" +
     "                  {{ translateAgeRange(ageRange.label) }} \n" +
     "                  <span>{{ getAgeRangeLabel(ageRange) }}</span>\n" +
-    "                </button>\n" +
+    "                </a>\n" +
     "            </span>\n" +
     "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
     "               <form name=\"ageForm\">\n" +
