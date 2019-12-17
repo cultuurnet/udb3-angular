@@ -24,7 +24,6 @@ function UdbUitpasApi($q, $http, appConfig, uitidAuth, $timeout, moment) {
   var uitpasApiUrl = _.get(appConfig, 'uitpasUrl');
   var uitpasMaxDelay = _.get(appConfig, 'uitpasMaxDelay', 8);
   var defaultApiConfig = {
-    withCredentials: true,
     headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + uitidAuth.getToken(),
