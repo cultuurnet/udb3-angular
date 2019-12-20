@@ -5128,7 +5128,24 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findToModerate = function (queryString, start, itemsPerPage) {
-    return find(appConfig.baseUrl + 'moderation', queryString, start, itemsPerPage);
+    var path = appConfig.baseUrl + 'offers/' + '?q=' + queryString +  '';
+    var currentDate = moment.utc().format();
+
+    var searchParams = {
+      start: start,
+      limit: itemsPerPage,
+      workflowStatus: 'READY_FOR_VALIDATION',
+      audienceType: 'everyone',
+      availableFrom: currentDate,
+      availableTo: '*'
+    };
+
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    return $http
+      .get(path, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
@@ -6417,33 +6434,6 @@ function UdbApi(
       .post(eventUrl + '/copies/', newCalendarData, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
   };
-
-  /**
-   * @param {string} path - The path to direct the HTTP request to.
-   * @param {string} queryString - The query used to find events.
-   * @param {number} [start] - From which event offset the result set should start.
-   * @param {number} [itemsPerPage] - How many items should be in the result set.
-   * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
-   *  search results or a failure.
-   */
-  function find(path, queryString, start, itemsPerPage) {
-    var offset = start || 0,
-      limit = itemsPerPage || 30,
-      searchParams = {
-        start: offset,
-        limit: limit
-      };
-    var requestOptions = _.cloneDeep(defaultApiConfig);
-    requestOptions.params = searchParams;
-
-    if (queryString.length) {
-      searchParams.query = queryString;
-    }
-
-    return $http
-      .get(path, requestOptions)
-      .then(returnUnwrappedData, returnApiProblem);
-  }
 
   /**
    * @param {Object} errorResponse
