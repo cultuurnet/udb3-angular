@@ -251,9 +251,10 @@ describe('Service: UDB3 Api', function () {
 
   // findToModerate
   it('should find offer to moderate when provided a query', function (done) {
+    var currentDate = moment.utc().format();
     var response = {};
     $httpBackend
-      .expectGET(baseUrl + 'moderation?query=searchquery&start=120&limit=60')
+      .expectGET(baseUrl + 'offers/?q=searchquery&audienceType=everyone&availableFrom=' + currentDate + '&availableTo=*&limit=60&start=120&workflowStatus=READY_FOR_VALIDATION')
       .respond(JSON.stringify(response));
     service
       .findToModerate('searchquery', 120, 60)
