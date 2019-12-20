@@ -197,7 +197,24 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findToModerate = function (queryString, start, itemsPerPage) {
-    return find(appConfig.baseUrl + 'moderation', queryString, start, itemsPerPage);
+    var path = appConfig.baseUrl + 'offers/' + '?q=' + queryString +  '';
+    var currentDate = moment.utc().format();
+
+    var searchParams = {
+      start: start,
+      limit: itemsPerPage,
+      workflowStatus: 'READY_FOR_VALIDATION',
+      audienceType: 'everyone',
+      availableFrom: currentDate,
+      availableTo: '*'
+    };
+
+    var requestOptions = _.cloneDeep(defaultApiConfig);
+    requestOptions.params = searchParams;
+
+    return $http
+      .get(path, requestOptions)
+      .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
