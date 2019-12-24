@@ -197,7 +197,7 @@ function UdbApi(
    *  search results or a failure.
    */
   this.findToModerate = function (queryString, start, itemsPerPage) {
-    var path = appConfig.baseUrl + 'offers/' + '?q=' + queryString +  '';
+    var path = appConfig.baseUrl + 'events/' + '?q=' + queryString +  '';
     var currentDate = moment.utc().format();
 
     var searchParams = {
