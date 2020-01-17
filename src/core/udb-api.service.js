@@ -442,7 +442,10 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick
+        nick: userData.nick,
+        uuid: userData.uuid,
+        username: userData.username,
+        email: userData.email
       };
 
       $cookies.putObject('user', user);
@@ -733,7 +736,7 @@ function UdbApi(
   this.createVariation = function (offerLocation, description, purpose) {
     var activeUser = uitidAuth.getUser(),
         requestData = {
-          'owner': activeUser.id,
+          'owner': activeUser.uuid,
           'purpose': purpose,
           'same_as': offerLocation.toString(),
           'description': description
@@ -982,23 +985,26 @@ function UdbApi(
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-    var tokenData = uitidAuth.getTokenData();
-    var userId = tokenData.uid;
-    var userEmail = tokenData.email;
+    return this.getMe()
+      .then(function(userData) {
+        var userId = userData.uuid;
+        var userEmail = userData.email;
 
-    if (createdByQueryMode === 'uuid') {
-      params.creator = userId;
-    } else if (createdByQueryMode === 'email') {
-      params.creator = userEmail;
-    } else if (createdByQueryMode === 'mixed') {
-      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-    }
+        if (createdByQueryMode === 'uuid') {
+          params.creator = userId;
+        } else if (createdByQueryMode === 'email') {
+          params.creator = userEmail;
+        } else if (createdByQueryMode === 'mixed') {
+          params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+        }
 
-    var requestConfig = _.cloneDeep(defaultApiConfig);
-    requestConfig.params = params;
-    return $http
-      .get(appConfig.baseUrl + 'offers/', requestConfig)
-      .then(returnUnwrappedData);
+        var requestConfig = _.cloneDeep(defaultApiConfig);
+        requestConfig.params = params;
+
+        return $http
+          .get(appConfig.baseUrl + 'offers/', requestConfig)
+          .then(returnUnwrappedData);
+      });
   };
 
   /**
@@ -1008,20 +1014,22 @@ function UdbApi(
   this.getDashboardOrganizers = function(page) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
 
-    var tokenData = uitidAuth.getTokenData();
-    var userId = tokenData.uid;
+    return this.getMe()
+      .then(function(userData) {
+        var userId = userData.uuid;
 
-    requestConfig.params = {
-      'creator': userId,
-      'sort[modified]': 'desc',
-      'limit': 50,
-      'start': (page - 1) * 50,
-      'embed': true
-    };
+        requestConfig.params = {
+          'creator': userId,
+          'sort[modified]': 'desc',
+          'limit': 50,
+          'start': (page - 1) * 50,
+          'embed': true
+        };
 
-    return $http
-        .get(appConfig.baseUrl + 'organizers/', requestConfig)
-        .then(returnUnwrappedData);
+        return $http
+          .get(appConfig.baseUrl + 'organizers/', requestConfig)
+          .then(returnUnwrappedData);
+      });
   };
 
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {

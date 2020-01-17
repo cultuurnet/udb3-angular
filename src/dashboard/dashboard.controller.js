@@ -94,7 +94,7 @@
       .then(greetUser);
 
     function greetUser(user) {
-      dash.username = user.nick;
+      dash.username = user.username;
     }
 
     function reformatJsonLDData(results) {

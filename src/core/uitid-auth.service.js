@@ -90,10 +90,6 @@ function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
     return currentToken;
   };
 
-  this.getTokenData = function () {
-    return jwtHelper.decodeToken(this.getToken());
-  };
-
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user

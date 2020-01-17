@@ -5373,7 +5373,10 @@ function UdbApi(
     function storeAndResolveUser (userData) {
       var user = {
         id: userData.id,
-        nick: userData.nick
+        nick: userData.nick,
+        uuid: userData.uuid,
+        username: userData.username,
+        email: userData.email
       };
 
       $cookies.putObject('user', user);
@@ -5664,7 +5667,7 @@ function UdbApi(
   this.createVariation = function (offerLocation, description, purpose) {
     var activeUser = uitidAuth.getUser(),
         requestData = {
-          'owner': activeUser.id,
+          'owner': activeUser.uuid,
           'purpose': purpose,
           'same_as': offerLocation.toString(),
           'description': description
@@ -5913,23 +5916,26 @@ function UdbApi(
 
     var createdByQueryMode = _.get(appConfig, 'created_by_query_mode', 'uuid');
 
-    var tokenData = uitidAuth.getTokenData();
-    var userId = tokenData.uid;
-    var userEmail = tokenData.email;
+    return this.getMe()
+      .then(function(userData) {
+        var userId = userData.uuid;
+        var userEmail = userData.email;
 
-    if (createdByQueryMode === 'uuid') {
-      params.creator = userId;
-    } else if (createdByQueryMode === 'email') {
-      params.creator = userEmail;
-    } else if (createdByQueryMode === 'mixed') {
-      params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
-    }
+        if (createdByQueryMode === 'uuid') {
+          params.creator = userId;
+        } else if (createdByQueryMode === 'email') {
+          params.creator = userEmail;
+        } else if (createdByQueryMode === 'mixed') {
+          params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+        }
 
-    var requestConfig = _.cloneDeep(defaultApiConfig);
-    requestConfig.params = params;
-    return $http
-      .get(appConfig.baseUrl + 'offers/', requestConfig)
-      .then(returnUnwrappedData);
+        var requestConfig = _.cloneDeep(defaultApiConfig);
+        requestConfig.params = params;
+
+        return $http
+          .get(appConfig.baseUrl + 'offers/', requestConfig)
+          .then(returnUnwrappedData);
+      });
   };
 
   /**
@@ -5939,20 +5945,22 @@ function UdbApi(
   this.getDashboardOrganizers = function(page) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
 
-    var tokenData = uitidAuth.getTokenData();
-    var userId = tokenData.uid;
+    return this.getMe()
+      .then(function(userData) {
+        var userId = userData.uuid;
 
-    requestConfig.params = {
-      'creator': userId,
-      'sort[modified]': 'desc',
-      'limit': 50,
-      'start': (page - 1) * 50,
-      'embed': true
-    };
+        requestConfig.params = {
+          'creator': userId,
+          'sort[modified]': 'desc',
+          'limit': 50,
+          'start': (page - 1) * 50,
+          'embed': true
+        };
 
-    return $http
-        .get(appConfig.baseUrl + 'organizers/', requestConfig)
-        .then(returnUnwrappedData);
+        return $http
+          .get(appConfig.baseUrl + 'organizers/', requestConfig)
+          .then(returnUnwrappedData);
+      });
   };
 
   this.uploadMedia = function (imageFile, description, copyrightHolder, language) {
@@ -7568,10 +7576,6 @@ function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
     return currentToken;
   };
 
-  this.getTokenData = function () {
-    return jwtHelper.decodeToken(this.getToken());
-  };
-
   // TODO: Have this method return a promise, an event can be broadcast to keep other components updated.
   /**
    * Returns the currently logged in user
@@ -8141,7 +8145,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       .then(greetUser);
 
     function greetUser(user) {
-      dash.username = user.nick;
+      dash.username = user.username;
     }
 
     function reformatJsonLDData(results) {
@@ -24946,7 +24950,7 @@ function VariationRepository(udbApi, $cacheFactory, $q, UdbEvent, $rootScope, Ud
       userPromise
         .then(function(user) {
           requestChain = requestChain.then(
-            requestVariation(user.id, 'personal', offer['@id'], deferredVariation)
+            requestVariation(user.uuid, 'personal', offer['@id'], deferredVariation)
           );
         });
     }
