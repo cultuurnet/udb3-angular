@@ -47,15 +47,6 @@ function UserManager(udbApi, $q) {
   /**
    * @param {string} userId
    *
-   * @returns {Promise.<User>}
-   */
-  service.get = function(userId) {
-    return udbApi.getUser(userId);
-  };
-
-  /**
-   * @param {string} userId
-   *
    * @return {Promise.<Role[]>}
    */
   service.getRoles = function (userId) {
