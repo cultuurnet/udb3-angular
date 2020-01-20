@@ -14,7 +14,7 @@ describe('Service: UDB3 Api', function () {
       baseSearchUrl: baseUrl
     };
 
-    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken', 'getTokenData']);
+    uitidAuth = jasmine.createSpyObj('uitidAuth', ['getUser', 'getToken']);
 
     $provide.constant('appConfig', appConfig);
 
@@ -66,12 +66,19 @@ describe('Service: UDB3 Api', function () {
   it('should only return the essential data when getting the currently logged in user', function (done) {
     var jsonUserResponse = {
       'id': 2,
-      'nick': 'foo'
+      'nick': 'foo',
+      'uuid': 2,
+      'username': 'foo',
+      'email': 'foo@foo.com',
+      'extraParam': true
     };
     var userUrl = baseUrl + 'user';
     var expectedUser = {
       id: 2,
-      nick: 'foo'
+      nick: 'foo',
+      'uuid': 2,
+      'username': 'foo',
+      'email': 'foo@foo.com'
     };
 
     function assertUser (user) {
@@ -1134,14 +1141,13 @@ describe('Service: UDB3 Api', function () {
   // createVariation
   it('should create a variation for an offerLocation', function(done){
     var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
-    var activeUser;
     var description = '<p>William Kentridge keert [...] wie zich door haar laat bekoren.</p>';
     var purpose = 'homepage-tips';
     var activeUser = {
-      id: '6f072ba8-c510-40ac-b387-51f582650e27'
+      uuid: '6f072ba8-c510-40ac-b387-51f582650e27'
     };
     var expectedBody = {
-      owner: activeUser.id,
+      owner: activeUser.uuid,
       purpose: purpose,
       same_as: offerLocation,
       description: description
@@ -1528,11 +1534,12 @@ describe('Service: UDB3 Api', function () {
       ]
     };
 
-    uitidAuth.getTokenData.and.returnValue({uid: 1, email: 'test@test.com'});
+    uitidAuth.getUser.and.returnValue({uuid: 1, email: 'test@test.com'});
 
     $httpBackend
       .expectGET(baseUrl + 'offers/?creator=1&disableDefaultFilters=true&embed=true&limit=50&sort%5Bmodified%5D=desc&start=0&workflowStatus=DRAFT,READY_FOR_VALIDATION,APPROVED,REJECTED')
       .respond(JSON.stringify(response));
+
     service
       .getDashboardItems(1)
       .then();
