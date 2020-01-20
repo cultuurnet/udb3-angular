@@ -24,18 +24,19 @@ angular
 /* @ngInject */
 function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
   var editor = this;
-  var userId = $stateParams.id;
+  var userEmail = $stateParams.email;
 
-  loadUser(userId);
+  loadUser(userEmail);
 
-  function loadUser(userId) {
+  function loadUser(userEmail) {
     UserManager
-      .get(userId)
-      .then(showUser);
-
-    UserManager
-      .getRoles(userId)
-      .then(showUserRoles);
+      .findUserWithEmail(userEmail)
+      .then(function (user) {
+        showUser(user);
+        UserManager
+          .getRoles(user.uuid)
+          .then(showUserRoles);
+      });
   }
 
   /**
@@ -155,7 +156,7 @@ function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
 
     $q.all(actionPromises)
       .then(function () {
-        loadUser(userId);
+        loadUser(userEmail);
         editor.saving = false;
         editor.actions = [];
       });

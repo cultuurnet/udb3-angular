@@ -19273,18 +19273,19 @@ angular
 /* @ngInject */
 function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
   var editor = this;
-  var userId = $stateParams.id;
+  var userEmail = $stateParams.email;
 
-  loadUser(userId);
+  loadUser(userEmail);
 
-  function loadUser(userId) {
+  function loadUser(userEmail) {
     UserManager
-      .get(userId)
-      .then(showUser);
-
-    UserManager
-      .getRoles(userId)
-      .then(showUserRoles);
+      .findUserWithEmail(userEmail)
+      .then(function (user) {
+        showUser(user);
+        UserManager
+          .getRoles(user.uuid)
+          .then(showUserRoles);
+      });
   }
 
   /**
@@ -19404,7 +19405,7 @@ function UserEditorController(UserManager, RoleManager, $stateParams, $q) {
 
     $q.all(actionPromises)
       .then(function () {
-        loadUser(userId);
+        loadUser(userEmail);
         editor.saving = false;
         editor.actions = [];
       });
@@ -30442,7 +30443,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <td ng-bind=\"::user.email\"></td>\n" +
     "                        <td ng-bind=\"::user.username\"></td>\n" +
     "                        <td>\n" +
-    "                            <button type=\"button\" ui-sref=\"management.users.edit({id: user.uuid})\" class=\"btn btn-default\">Bewerken</button>\n" +
+    "                            <button type=\"button\" ui-sref=\"management.users.edit({email: user.email})\" class=\"btn btn-default\">Bewerken</button>\n" +
     "                        </td>\n" +
     "                    </tr>\n" +
     "                    </tbody>\n" +
