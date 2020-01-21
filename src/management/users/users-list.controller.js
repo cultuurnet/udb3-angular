@@ -25,7 +25,7 @@ function UsersListController(UserManager, $location) {
     ulc.problem = problem;
   }
 
-  function clearProblem()
+  function resetStatus()
   {
     ulc.status = 'idle';
     ulc.problem = false;
@@ -33,7 +33,7 @@ function UsersListController(UserManager, $location) {
 
   ulc.handleChange = function () {
     if (ulc.status === 'problem') {
-      clearProblem();
+      resetStatus();
     }
   };
 
@@ -46,7 +46,11 @@ function UsersListController(UserManager, $location) {
           $location.path('/manage/users/' + user.email);
         },
         function (error) {
-          showProblem(error.title);
+          if (error.status === 404) {
+            ulc.status = 'notFound';
+          } else {
+            showProblem(error.title);
+          }
         }
       );
   };
