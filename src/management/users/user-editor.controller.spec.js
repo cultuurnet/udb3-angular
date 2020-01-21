@@ -16,7 +16,7 @@ describe('Controller: User Editor', function () {
     $q = _$q_;
     $rootScope = _$rootScope_;
     $scope = $rootScope.$new();
-    UserManager = jasmine.createSpyObj('UserManager', ['get', 'getRoles']);
+    UserManager = jasmine.createSpyObj('UserManager', ['findUserWithEmail', 'getRoles']);
     RoleManager = jasmine.createSpyObj('RoleManager', ['removeUserFromRole', 'find', 'addUserToRole']);
   }));
 
@@ -37,10 +37,10 @@ describe('Controller: User Editor', function () {
         {uuid: '9424ebda-6a0c-4fa8-9666-1101152419a5'}
       ];
 
-    UserManager.get.and.returnValue($q.resolve(user));
+    UserManager.findUserWithEmail.and.returnValue($q.resolve(user));
     UserManager.getRoles.and.returnValue($q.resolve(userRoles));
 
-    var editor = getEditor({'id': 'b1da395f-c1ab-4b97-9dcc-8565b9434d39'});
+    var editor = getEditor({'email': 'test@test.com'});
     $scope.$digest();
 
     return editor;
@@ -53,17 +53,19 @@ describe('Controller: User Editor', function () {
           {uuid: '9424ebda-6a0c-4fa8-9666-1101152419a5'}
         ];
 
-    UserManager.get.and.returnValue($q.resolve(user));
+    UserManager.findUserWithEmail.and.returnValue($q.resolve(user));
     UserManager.getRoles.and.returnValue($q.resolve(userRoles));
 
-    var editor = getEditor({'id': 'b1da395f-c1ab-4b97-9dcc-8565b9434d39'});
+    var editor = getEditor({'email': 'test@test.com'});
 
     // Make sure the user manager is called with the right parameter.
-    expect(UserManager.get).toHaveBeenCalledWith('b1da395f-c1ab-4b97-9dcc-8565b9434d39');
+    expect(UserManager.findUserWithEmail).toHaveBeenCalledWith('test@test.com');
+    $scope.$digest();
+
     expect(UserManager.getRoles).toHaveBeenCalledWith('b1da395f-c1ab-4b97-9dcc-8565b9434d39');
+    $scope.$digest();
 
     // Check if the editor has the right user and roles to show after all promises resolve.
-    $scope.$digest();
     expect(editor.user).toEqual(user);
     expect(editor.roles).toEqual(userRoles);
   });
