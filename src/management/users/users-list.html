@@ -2,61 +2,36 @@
 
 <div class="row">
     <div class="col-md-11">
-        <udb-query-search-bar search-label="Zoeken op email"
-                              on-change="ulc.queryChanged(query)"
-        ></udb-query-search-bar>
+        <form class="form-inline" role="search" ng-submit="ulc.handleSubmit()">
+            <div class="form-group">
+                <label for="user-search-input">Zoeken op email</label>
+                <input type="text"
+                       id="user-search-input"
+                       class="form-control"
+                       ng-model="ulc.query"
+                       autocomplete="off"
+                       ng-change="ulc.handleChange()">
+            </div>
+        </form>
     </div>
     <div class="col-md-1 text-right">
-        <i ng-show="ulc.loading" class="fa fa-circle-o-notch fa-spin"></i>
+        <i ng-show="ulc.status === 'loading'" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
 </div>
 
 <div class="row search-result-block" ng-cloak>
     <div class="col-md-12">
-        <div class="alert alert-info" ng-show="ulc.query.length < ulc.minQueryLength" role="alert">
-            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>
-            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>
-            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>
+        <div class="alert alert-info" ng-show="ulc.status === 'idle'" role="alert">
+            <p>Schrijf een geldig email-adres in het veld hierboven en druk op enter om gebruikers te zoeken.</p>
         </div>
-        <div ng-show="ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0"
+        <div ng-show="ulc.status === 'notFound'"
              class="alert alert-warning" role="alert">
-            <p>Geen gebruikers gevonden.</p>
+            <p>Geen gebruiker gevonden voor het opgegeven e-mail adres.</p>
         </div>
-        <div ng-show="ulc.problem" class="alert alert-warning" role="alert">
+        <div ng-show="ulc.status === 'problem'" class="alert alert-warning" role="alert">
             <span>Er ging iets mis tijdens het zoeken:</span>
             <br>
-            <strong ng-bind="ulc.problem.title"></strong>
-        </div>
-        <div class="query-search-result users-results"
-             ng-class="{'loading-search-result': ulc.loading}"
-             ng-show="ulc.searchResult.totalItems > 0">
-                <table class="table table-hover table-striped">
-                    <thead>
-                    <tr>
-                        <th>E-mail</th>
-                        <th>Nick</th>
-                        <th>Opties</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="user in ulc.searchResult.member">
-                        <td ng-bind="::user.email"></td>
-                        <td ng-bind="::user.username"></td>
-                        <td>
-                            <button type="button" ui-sref="management.users.edit({email: user.email})" class="btn btn-default">Bewerken</button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            <div class="panel-footer">
-                <uib-pagination
-                        total-items="ulc.searchResult.totalItems"
-                        ng-model="ulc.page"
-                        items-per-page="ulc.searchResult.itemsPerPage"
-                        max-size="10"
-                        ng-change="ulc.pageChanged(ulc.page)">
-                </uib-pagination>
-            </div>
+            <strong ng-bind="ulc.problem"></strong>
         </div>
     </div>
 </div>
