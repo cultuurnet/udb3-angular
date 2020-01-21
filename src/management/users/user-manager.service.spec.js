@@ -13,7 +13,6 @@ describe('Service: User Manager', function () {
     $provide.constant('appConfig', appConfig);
 
     udbApi = jasmine.createSpyObj('udbApi', [
-      'findUsersByEmail',
       'findUserWithEmail'
     ]);
 
@@ -30,32 +29,6 @@ describe('Service: User Manager', function () {
     $scope = $rootScope.$new();
     $q = _$q_;
   }));
-
-  it('should return a list of users for a given query', function (done) {
-    var expectedUsers = {
-      "itemsPerPage": 30,
-      "totalItems": 3562,
-      "member": [
-        {
-          "uuid": "6f072ba8-c510-40ac-b387-51f582650e27",
-          "email": "alberto@email.es",
-          "username": "El Pistolero"
-        }
-      ]
-    };
-    udbApi.findUsersByEmail.and.returnValue($q.resolve(expectedUsers));
-
-    function assertUsers (users) {
-      expect(users).toEqual(expectedUsers);
-      done();
-    }
-
-    service
-      .find('bert', 30, 0)
-      .then(assertUsers);
-
-    $scope.$apply();
-  });
 
   it('should return a user for a given e-mail address', function(done) {
     var expectedUser = {

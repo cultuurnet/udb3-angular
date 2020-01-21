@@ -19463,20 +19463,8 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi, $q) {
+function UserManager(udbApi) {
   var service = this;
-
-  /**
-   * @param {string} email
-   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
-   * @param {int} limit
-   * @param {int} start
-   *
-   * @return {Promise.<PagedCollection>}
-   */
-  service.find = function (email, limit, start) {
-    return udbApi.findUsersByEmail(email, limit, start);
-  };
 
   /**
    * @param {string} email
@@ -19497,7 +19485,7 @@ function UserManager(udbApi, $q) {
     return udbApi.getUserRoles(userId);
   };
 }
-UserManager.$inject = ["udbApi", "$q"];
+UserManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/users/users-list.controller.js
