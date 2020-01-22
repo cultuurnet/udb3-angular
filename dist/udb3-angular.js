@@ -19463,20 +19463,8 @@ angular
   .service('UserManager', UserManager);
 
 /* @ngInject */
-function UserManager(udbApi, $q) {
+function UserManager(udbApi) {
   var service = this;
-
-  /**
-   * @param {string} email
-   *  A valid email address with a specific domain. The wildcard '*' can be used in the local part.
-   * @param {int} limit
-   * @param {int} start
-   *
-   * @return {Promise.<PagedCollection>}
-   */
-  service.find = function (email, limit, start) {
-    return udbApi.findUsersByEmail(email, limit, start);
-  };
 
   /**
    * @param {string} email
@@ -19497,7 +19485,7 @@ function UserManager(udbApi, $q) {
     return udbApi.getUserRoles(userId);
   };
 }
-UserManager.$inject = ["udbApi", "$q"];
+UserManager.$inject = ["udbApi"];
 })();
 
 // Source: src/management/users/users-list.controller.js
@@ -19515,103 +19503,51 @@ angular
   .controller('UsersListController', UsersListController);
 
 /* @ngInject */
-function UsersListController(SearchResultGenerator, rx, $scope, UserManager, $uibModal, $state, $document) {
+function UsersListController(UserManager, $location) {
   var ulc = this;
-
-  var itemsPerPage = 20;
-  var minQueryLength = 3;
-
+  ulc.status = 'idle';
   ulc.query = '';
-  ulc.problem = false;
-  ulc.loading = true;
-  ulc.query = '';
-  ulc.page = 0;
-  ulc.minQueryLength = minQueryLength;
-
-  var query$ = rx.createObservableFunction(ulc, 'queryChanged');
-  var filteredQuery$ = query$.filter(ignoreShortQueries);
-  var page$ = rx.createObservableFunction(ulc, 'pageChanged');
-  var searchResultGenerator = new SearchResultGenerator(UserManager, filteredQuery$, page$, itemsPerPage);
-  var searchResult$ = searchResultGenerator.getSearchResult$();
-
-  /**
-   * @param {string} query
-   * @return {boolean}
-   */
-  function ignoreShortQueries(query) {
-    if (ulc.query === '') {
-      return true;
-    }
-    else {
-      return query.length >= minQueryLength;
-    }
-  }
+  ulc.problem = '';
 
   /**
    * @param {ApiProblem} problem
    */
   function showProblem(problem) {
+    ulc.status = 'problem';
     ulc.problem = problem;
   }
 
-  function clearProblem()
+  function resetStatus()
   {
+    ulc.status = 'idle';
     ulc.problem = false;
   }
 
-  /**
-   * @param {(PagedCollection|ApiProblem)} searchResult
-   */
-  function showSearchResult(searchResult) {
-    var problem = searchResult.error;
-
-    if (problem) {
-      showProblem(problem);
-      ulc.searchResult = {};
-    } else {
-      clearProblem();
-      ulc.searchResult = searchResult;
+  ulc.handleChange = function () {
+    if (ulc.status === 'problem') {
+      resetStatus();
     }
+  };
 
-    ulc.loading = false;
-  }
-
-  function openDeleteConfirmModal(user) {
-    var modalInstance = $uibModal.open({
-        templateUrl: 'templates/user-delete-confirm-modal.html',
-        controller: 'UserDeleteConfirmModalCtrl',
-        resolve: {
-          item: function () {
-            return user;
+  ulc.handleSubmit = function () {
+    ulc.status = 'loading';
+    UserManager.findUserWithEmail(ulc.query)
+      .then(
+        function (user) {
+          ulc.status = 'idle';
+          $location.path('/manage/users/' + user.email);
+        },
+        function (error) {
+          if (error.status === 404) {
+            ulc.status = 'notFound';
+          } else {
+            showProblem(error.title);
           }
         }
-      });
-    modalInstance.result.then($state.reload);
-  }
-  ulc.openDeleteConfirmModal = openDeleteConfirmModal;
-
-  query$
-    .safeApply($scope, function (query) {
-      ulc.query = query;
-    })
-    .subscribe();
-
-  searchResult$
-    .safeApply($scope, showSearchResult)
-    .subscribe();
-
-  filteredQuery$
-    .merge(page$)
-    .safeApply($scope, function () {
-      ulc.loading = true;
-    })
-    .subscribe();
-
-  page$.subscribe(function () {
-    $document.scrollTop(0);
-  });
+      );
+  };
 }
-UsersListController.$inject = ["SearchResultGenerator", "rx", "$scope", "UserManager", "$uibModal", "$state", "$document"];
+UsersListController.$inject = ["UserManager", "$location"];
 })();
 
 // Source: src/media/media-manager.service.js
@@ -30393,61 +30329,36 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"row\">\n" +
     "    <div class=\"col-md-11\">\n" +
-    "        <udb-query-search-bar search-label=\"Zoeken op email\"\n" +
-    "                              on-change=\"ulc.queryChanged(query)\"\n" +
-    "        ></udb-query-search-bar>\n" +
+    "        <form class=\"form-inline\" role=\"search\" ng-submit=\"ulc.handleSubmit()\">\n" +
+    "            <div class=\"form-group\">\n" +
+    "                <label for=\"user-search-input\">Zoeken op email</label>\n" +
+    "                <input type=\"text\"\n" +
+    "                       id=\"user-search-input\"\n" +
+    "                       class=\"form-control\"\n" +
+    "                       ng-model=\"ulc.query\"\n" +
+    "                       autocomplete=\"off\"\n" +
+    "                       ng-change=\"ulc.handleChange()\">\n" +
+    "            </div>\n" +
+    "        </form>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-1 text-right\">\n" +
-    "        <i ng-show=\"ulc.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "        <i ng-show=\"ulc.status === 'loading'\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
-    "        <div class=\"alert alert-info\" ng-show=\"ulc.query.length < ulc.minQueryLength\" role=\"alert\">\n" +
-    "            <p>Schrijf een geldig email-adres in het veld hierboven om gebruikers te zoeken.</p>\n" +
-    "            <p>Gebruik de wildcard <strong>*</strong> om naar meerdere gebruikers van hetzelfde domein te zoeken, e.g. <strong>dirk*@cultuurnet.be</strong></p>\n" +
-    "            <p>Laat het veld leeg om alle gebruikers op te vragen in de volgorde dat ze zijn aangemaakt.</p>\n" +
+    "        <div class=\"alert alert-info\" ng-show=\"ulc.status === 'idle'\" role=\"alert\">\n" +
+    "            <p>Schrijf een geldig email-adres in het veld hierboven en druk op enter om gebruikers te zoeken.</p>\n" +
     "        </div>\n" +
-    "        <div ng-show=\"ulc.query.length >= ulc.minQueryLength && ulc.searchResult.totalItems === 0\"\n" +
+    "        <div ng-show=\"ulc.status === 'notFound'\"\n" +
     "             class=\"alert alert-warning\" role=\"alert\">\n" +
-    "            <p>Geen gebruikers gevonden.</p>\n" +
+    "            <p>Geen gebruiker gevonden voor het opgegeven e-mail adres.</p>\n" +
     "        </div>\n" +
-    "        <div ng-show=\"ulc.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "        <div ng-show=\"ulc.status === 'problem'\" class=\"alert alert-warning\" role=\"alert\">\n" +
     "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
     "            <br>\n" +
-    "            <strong ng-bind=\"ulc.problem.title\"></strong>\n" +
-    "        </div>\n" +
-    "        <div class=\"query-search-result users-results\"\n" +
-    "             ng-class=\"{'loading-search-result': ulc.loading}\"\n" +
-    "             ng-show=\"ulc.searchResult.totalItems > 0\">\n" +
-    "                <table class=\"table table-hover table-striped\">\n" +
-    "                    <thead>\n" +
-    "                    <tr>\n" +
-    "                        <th>E-mail</th>\n" +
-    "                        <th>Nick</th>\n" +
-    "                        <th>Opties</th>\n" +
-    "                    </tr>\n" +
-    "                    </thead>\n" +
-    "                    <tbody>\n" +
-    "                    <tr ng-repeat=\"user in ulc.searchResult.member\">\n" +
-    "                        <td ng-bind=\"::user.email\"></td>\n" +
-    "                        <td ng-bind=\"::user.username\"></td>\n" +
-    "                        <td>\n" +
-    "                            <button type=\"button\" ui-sref=\"management.users.edit({email: user.email})\" class=\"btn btn-default\">Bewerken</button>\n" +
-    "                        </td>\n" +
-    "                    </tr>\n" +
-    "                    </tbody>\n" +
-    "                </table>\n" +
-    "            <div class=\"panel-footer\">\n" +
-    "                <uib-pagination\n" +
-    "                        total-items=\"ulc.searchResult.totalItems\"\n" +
-    "                        ng-model=\"ulc.page\"\n" +
-    "                        items-per-page=\"ulc.searchResult.itemsPerPage\"\n" +
-    "                        max-size=\"10\"\n" +
-    "                        ng-change=\"ulc.pageChanged(ulc.page)\">\n" +
-    "                </uib-pagination>\n" +
-    "            </div>\n" +
+    "            <strong ng-bind=\"ulc.problem\"></strong>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>\n"
