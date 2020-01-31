@@ -26,7 +26,9 @@ function PlaceDetail(
   $window,
   offerLabeller,
   appConfig,
-  $translate
+  $translate,
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -47,12 +49,38 @@ function PlaceDetail(
     permission.catch(denyAllPermissions);
   });
 
-  function grantPermissions() {
-    $scope.permissions = {editing: true};
-  }
-
   function denyAllPermissions() {
-    $scope.permissions = {editing: false};
+    $scope.permissions = {editing: false, duplication: false};
+  }
+  /**
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
+   */
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+          setTabs();
+        });
   }
 
   $scope.placeIdIsInvalid = false;
@@ -63,16 +91,32 @@ function PlaceDetail(
   $scope.labelResponse = '';
   $scope.labelsError = '';
   $scope.finishedLoading = false;
-
-  $scope.placeHistory = [];
-  $scope.tabs = [
-    {
-      id: 'data'
-    },
-    {
-      id: 'publication'
+  $scope.placeHistory = undefined;
+  function setTabs() {
+    if ($scope.mayAlwaysDelete) {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'history'
+        },
+        {
+          id: 'publication'
+        }
+      ];
+    } else {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'publication'
+        }
+      ];
     }
-  ];
+  }
+
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
   };
@@ -131,6 +175,11 @@ function PlaceDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.placeHistory) {
+      var placeId =  $scope.placeId.split('/').pop();
+      udbApi.getHistory(placeId, 'place').then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -191,6 +240,10 @@ function PlaceDetail(
       .then(function(events) {
         displayModal(item, events);
       });
+  }
+
+  function showHistory(placeHistory) {
+    $scope.placeHistory = placeHistory;
   }
 
   /**

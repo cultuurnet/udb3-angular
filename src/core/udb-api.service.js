@@ -422,12 +422,14 @@ function UdbApi(
   };
 
   /**
-   * @param {URL} eventId
+   * @param {URL} id
+   * @param {string} type
    * @return {*}
    */
-  this.getHistory = function (eventId) {
+  this.getHistory = function (id, type) {
+    const url = (type === 'place') ? appConfig.baseUrl + 'places/' + id : id;
     return $http
-      .get(eventId + '/history', defaultApiConfig)
+      .get(url + '/history', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
