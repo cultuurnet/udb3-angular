@@ -427,7 +427,7 @@ function UdbApi(
    * @return {*}
    */
   this.getHistory = function (id, type) {
-    const url = (type === 'place') ? appConfig.baseUrl + 'places/' + id : id;
+    var url = (type === 'place') ? appConfig.baseUrl + 'places/' + id : id;
     return $http
       .get(url + '/history', defaultApiConfig)
       .then(returnUnwrappedData);
