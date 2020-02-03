@@ -546,7 +546,7 @@ describe('Controller: Event Detail', function() {
     $scope.$digest();
 
     expect(udbApi.getHistory).toHaveBeenCalledWith(
-      'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
+      '1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
     expect($scope.eventHistory).toEqual(expectedHistory);
   });
