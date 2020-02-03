@@ -5353,14 +5353,14 @@ function UdbApi(
   };
 
   /**
-   * @param {URL} id
+   * @param {string} id
    * @param {string} type
    * @return {*}
    */
   this.getHistory = function (id, type) {
-    const url = (type === 'place') ? appConfig.baseUrl + 'places/' + id : id;
+    var endpoint = (type === 'place') ? 'places/' : 'event/';
     return $http
-      .get(url + '/history', defaultApiConfig)
+      .get(appConfig.baseUrl + endpoint + id + '/history', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -10442,7 +10442,8 @@ function EventDetail(
     activeTabId = tabId;
 
     if (tabId === 'history' && !$scope.eventHistory) {
-      udbApi.getHistory($scope.eventId).then(showHistory);
+      var eventId =  $scope.eventId.toString().split('/').pop();
+      udbApi.getHistory(eventId).then(showHistory);
     }
   };
 
