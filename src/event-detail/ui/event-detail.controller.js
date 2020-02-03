@@ -275,7 +275,8 @@ function EventDetail(
     activeTabId = tabId;
 
     if (tabId === 'history' && !$scope.eventHistory) {
-      udbApi.getHistory($scope.eventId).then(showHistory);
+      var eventId =  $scope.eventId.toString().split('/').pop();
+      udbApi.getHistory(eventId).then(showHistory);
     }
   };
 
