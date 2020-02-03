@@ -27,6 +27,6 @@
 
 <ul class="list-inline">
   <li ng-repeat="label in select.labels">
-    <span class="badge">{{label.name}} <a ng-click="select.onRemove(label)" class="badge-remove">&times;</a></span>
+    <span class="badge">{{ select.stripCultuurkuurPrefix(label.name) }} <a ng-click="select.onRemove(label)" class="badge-remove">&times;</a></span>
   </li>
 </ul>

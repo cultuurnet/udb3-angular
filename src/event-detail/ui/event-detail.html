@@ -61,12 +61,12 @@
                 <td><span class="row-label" translate-once="preview.type"></span></td>
                 <td>{{::translateType(event.type.label)}}</td>
               </tr>
-              <tr ng-if="::event.audience.audienceType !== 'everyone'">
+              <tr>
                 <td><span class="row-label">Toegang</span></td>
                 <td>
                   <p ng-bind="::translateAudience(event.audience.audienceType)"></p>
                   <udb-event-cultuurkuur-component
-                          ng-if="::cultuurkuurEnabled"
+                          ng-if="::cultuurkuurEnabled && isCultuurkuurEvent"
                           event="event"
                           permission="::permissions.editing" >
                   </udb-event-cultuurkuur-component>

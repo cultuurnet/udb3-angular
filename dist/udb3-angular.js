@@ -10355,6 +10355,8 @@ function EventDetail(
         .then(showVariation);
     }
 
+    $scope.isCultuurkuurEvent = isCultuurkuurEvent(event);
+
     hasContactPoint();
     hasBookingInfo();
 
@@ -10409,6 +10411,26 @@ function EventDetail(
 
     return eventLocation.join(', ');
   };
+
+  function isCultuurkuurEvent (event) {
+    if(event.audience.audienceType !== 'everyone'){
+      return true;
+    }
+
+    if(hasCultuurkuurLabel(event.labels)) {
+      return true;
+    }
+
+    return;
+  }
+
+  function hasCultuurkuurLabel (labels) {
+    for(var i = 0; i < labels.length; i++) {
+      if(labels[i].startsWith('cultuurkuur_')){
+        return true;
+      }
+    }
+  }
 
   $scope.eventIds = function (event) {
     return _.union([event.id], event.sameAs);
@@ -21847,6 +21869,8 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   select.$onChanges = updateLabels;
 
+  console.log('select.labels', select.labels);
+
   /**
    * @param {Object} bindingChanges
    * @see https://code.angularjs.org/1.5.9/docs/guide/component
@@ -21875,9 +21899,13 @@ function LabelSelectComponent(offerLabeller, $q) {
    */
   function objectifyLabels(labels) {
     return _.map(select.labels, function (label) {
-      return _.isString(label) ? {name:label} : label;
+      return _.isString(label) ? {name: label} : label;
     });
   }
+
+  select.stripCultuurkuurPrefix = function(label) {
+    return label.replace('cultuurkuur_', '');
+  };
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -27001,12 +27029,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "                <td>{{::translateType(event.type.label)}}</td>\n" +
     "              </tr>\n" +
-    "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
+    "              <tr>\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
     "                <td>\n" +
     "                  <p ng-bind=\"::translateAudience(event.audience.audienceType)\"></p>\n" +
     "                  <udb-event-cultuurkuur-component\n" +
-    "                          ng-if=\"::cultuurkuurEnabled\"\n" +
+    "                          ng-if=\"::cultuurkuurEnabled && isCultuurkuurEvent\"\n" +
     "                          event=\"event\"\n" +
     "                          permission=\"::permissions.editing\" >\n" +
     "                  </udb-event-cultuurkuur-component>\n" +
@@ -31293,7 +31321,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"list-inline\">\n" +
     "  <li ng-repeat=\"label in select.labels\">\n" +
-    "    <span class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "    <span class=\"badge\">{{ select.stripCultuurkuurPrefix(label.name) }} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
     "  </li>\n" +
     "</ul>\n"
   );

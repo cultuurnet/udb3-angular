@@ -32,6 +32,8 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   select.$onChanges = updateLabels;
 
+  console.log('select.labels', select.labels);
+
   /**
    * @param {Object} bindingChanges
    * @see https://code.angularjs.org/1.5.9/docs/guide/component
@@ -60,9 +62,13 @@ function LabelSelectComponent(offerLabeller, $q) {
    */
   function objectifyLabels(labels) {
     return _.map(select.labels, function (label) {
-      return _.isString(label) ? {name:label} : label;
+      return _.isString(label) ? {name: label} : label;
     });
   }
+
+  select.stripCultuurkuurPrefix = function(label) {
+    return label.replace('cultuurkuur_', '');
+  };
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
