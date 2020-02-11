@@ -31209,13 +31209,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
-    "            <dt ng-bind=\"placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"placeAction.author\">{{placeAction.author}}</span><br ng-if=\"placeAction.author\"/>\n" +
-    "              <span class=\"description\">{{placeAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!placeHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::placeHistory\">\n" +
+    "            <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::placeAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"placeAction.author\" ng-bind=\"::placeAction.author\"></span>\n" +
+    "                <br ng-if=\"::placeAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::placeAction.description\"></span>\n" +
+    "                <div ng-if=\"::placeAction.api\">\n" +
+    "                  API: <span class=\"api\" ng-bind=\"::placeAction.api\"></span>\n" +
+    "                </div>\n" +
+    "                <div ng-if=\"::placeAction.apiKey\">\n" +
+    "                  API key: <span class=\"api\" ng-bind=\"::placeAction.apiKey\"></span>\n" +
+    "                  <span ng-if=\"::placeAction.consumerName\">(<span class=\"consumerName\" ng-bind=\"::placeAction.consumerName\"></span>)</span>\n" +
+    "                </div>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
