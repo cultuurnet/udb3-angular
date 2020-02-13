@@ -60,7 +60,7 @@ function LabelSelectComponent(offerLabeller, $q) {
    */
   function objectifyLabels(labels) {
     return _.map(select.labels, function (label) {
-      return _.isString(label) ? {name: label} : label;
+      return _.isString(label) ? {name:label} : label;
     });
   }
 

@@ -5353,12 +5353,14 @@ function UdbApi(
   };
 
   /**
-   * @param {URL} eventId
+   * @param {string} id
+   * @param {string} type
    * @return {*}
    */
-  this.getHistory = function (eventId) {
+  this.getHistory = function (id, type) {
+    var endpoint = (type === 'place') ? 'places/' : 'event/';
     return $http
-      .get(eventId + '/history', defaultApiConfig)
+      .get(appConfig.baseUrl + endpoint + id + '/history', defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -10465,7 +10467,8 @@ function EventDetail(
     activeTabId = tabId;
 
     if (tabId === 'history' && !$scope.eventHistory) {
-      udbApi.getHistory($scope.eventId).then(showHistory);
+      var eventId =  $scope.eventId.toString().split('/').pop();
+      udbApi.getHistory(eventId).then(showHistory);
     }
   };
 
@@ -21225,7 +21228,9 @@ function PlaceDetail(
   $window,
   offerLabeller,
   appConfig,
-  $translate
+  $translate,
+  RolePermission,
+  authorizationService
 ) {
   var activeTabId = 'data';
   var controller = this;
@@ -21246,12 +21251,38 @@ function PlaceDetail(
     permission.catch(denyAllPermissions);
   });
 
-  function grantPermissions() {
-    $scope.permissions = {editing: true};
-  }
-
   function denyAllPermissions() {
-    $scope.permissions = {editing: false};
+    $scope.permissions = {editing: false, duplication: false};
+  }
+  /**
+   * Grant permissions based on permission-data.
+   * @param {Array} permissionsData
+   *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
+   *  The second value holds the offer itself.
+   */
+  function grantPermissions(permissionsData) {
+    var event = permissionsData[1];
+
+    authorizationService
+        .getPermissions()
+        .then(function(userPermissions) {
+          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          });
+
+          if (mayAlwaysDelete.length) {
+            $scope.mayAlwaysDelete = true;
+          }
+        })
+        .finally(function() {
+          if ($scope.mayAlwaysDelete) {
+            $scope.permissions = {editing: true, duplication: true};
+          }
+          else {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+          setTabs();
+        });
   }
 
   $scope.placeIdIsInvalid = false;
@@ -21262,16 +21293,32 @@ function PlaceDetail(
   $scope.labelResponse = '';
   $scope.labelsError = '';
   $scope.finishedLoading = false;
-
-  $scope.placeHistory = [];
-  $scope.tabs = [
-    {
-      id: 'data'
-    },
-    {
-      id: 'publication'
+  $scope.placeHistory = undefined;
+  function setTabs() {
+    if ($scope.mayAlwaysDelete) {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'history'
+        },
+        {
+          id: 'publication'
+        }
+      ];
+    } else {
+      $scope.tabs = [
+        {
+          id: 'data'
+        },
+        {
+          id: 'publication'
+        }
+      ];
     }
-  ];
+  }
+
   $scope.deletePlace = function () {
     openPlaceDeleteConfirmModal($scope.place);
   };
@@ -21330,6 +21377,11 @@ function PlaceDetail(
 
   $scope.makeTabActive = function (tabId) {
     activeTabId = tabId;
+
+    if (tabId === 'history' && !$scope.placeHistory) {
+      var placeId =  $scope.placeId.split('/').pop();
+      udbApi.getHistory(placeId, 'place').then(showHistory);
+    }
   };
 
   $scope.openEditPage = function() {
@@ -21390,6 +21442,10 @@ function PlaceDetail(
       .then(function(events) {
         displayModal(item, events);
       });
+  }
+
+  function showHistory(placeHistory) {
+    $scope.placeHistory = placeHistory;
   }
 
   /**
@@ -21454,7 +21510,7 @@ function PlaceDetail(
     }
   };
 }
-PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate"];
+PlaceDetail.$inject = ["$scope", "placeId", "udbApi", "$state", "jsonLDLangFilter", "variationRepository", "offerEditor", "eventCrud", "$uibModal", "$q", "$window", "offerLabeller", "appConfig", "$translate", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/router/offer-locator.service.js
@@ -21900,7 +21956,7 @@ function LabelSelectComponent(offerLabeller, $q) {
    */
   function objectifyLabels(labels) {
     return _.map(select.labels, function (label) {
-      return _.isString(label) ? {name: label} : label;
+      return _.isString(label) ? {name:label} : label;
     });
   }
 
@@ -31178,13 +31234,26 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "      <div role=\"tabpanel\" class=\"tab-pane\" ng-show=\"isTabActive('history')\">\n" +
     "        <div class=\"timeline\">\n" +
-    "          <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
-    "            <dt ng-bind=\"placeAction.date | date:'dd / MM / yyyy H:mm'\"></dt>\n" +
-    "            <dd>\n" +
-    "              <span class=\"author\" ng-if=\"placeAction.author\">{{placeAction.author}}</span><br ng-if=\"placeAction.author\"/>\n" +
-    "              <span class=\"description\">{{placeAction.description}}</span>\n" +
-    "            </dd>\n" +
-    "          </dl>\n" +
+    "          <p ng-show=\"!placeHistory\" class=\"text-center\">\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin fa-fw\"></i><span class=\"sr-only\" translate-once=\"preview.loading\"></span>\n" +
+    "          </p>\n" +
+    "          <div ng-if=\"::placeHistory\">\n" +
+    "            <dl ng-repeat=\"placeAction in ::placeHistory track by $index\">\n" +
+    "              <dt ng-bind=\"::placeAction.date | date:'dd/MM/yyyy H:mm'\"></dt>\n" +
+    "              <dd>\n" +
+    "                <span class=\"author\" ng-if=\"placeAction.author\" ng-bind=\"::placeAction.author\"></span>\n" +
+    "                <br ng-if=\"::placeAction.author\"/>\n" +
+    "                <span class=\"description\" ng-bind=\"::placeAction.description\"></span>\n" +
+    "                <div ng-if=\"::placeAction.api\">\n" +
+    "                  API: <span class=\"api\" ng-bind=\"::placeAction.api\"></span>\n" +
+    "                </div>\n" +
+    "                <div ng-if=\"::placeAction.apiKey\">\n" +
+    "                  API key: <span class=\"api\" ng-bind=\"::placeAction.apiKey\"></span>\n" +
+    "                  <span ng-if=\"::placeAction.consumerName\">(<span class=\"consumerName\" ng-bind=\"::placeAction.consumerName\"></span>)</span>\n" +
+    "                </div>\n" +
+    "              </dd>\n" +
+    "            </dl>\n" +
+    "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
     "\n" +
@@ -31318,7 +31387,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"list-inline\">\n" +
     "  <li ng-repeat=\"label in select.labels\">\n" +
-    "    <span class=\"badge\">{{ label.name }} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "    <span class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
     "  </li>\n" +
     "</ul>\n"
   );

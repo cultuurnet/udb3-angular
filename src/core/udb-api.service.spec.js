@@ -773,7 +773,7 @@ describe('Service: UDB3 Api', function () {
     // eventid is an url
     var response = {};
     $httpBackend
-      .expectGET('eventid/history')
+      .expectGET(baseUrl + 'event/' + 'eventid/history')
       .respond(JSON.stringify(response));
     service
       .getHistory('eventid')
