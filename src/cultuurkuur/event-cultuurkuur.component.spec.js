@@ -168,7 +168,19 @@ describe('Event Cultuurkuur Component', function () {
   function getComponentController(event,permission) {
     var locals = {
       appConfig: appConfig,
-      uitidAuth: uitidAuth
+      uitidAuth: uitidAuth,
+      cultuurkuurLabels: {
+        targetAudience: [
+          "cultuurkuur_leerkrachten",
+          "cultuurkuur_Leerlingen"
+        ],
+        educationFields: [
+          "cultuurkuur_Actief Burgerschap"
+        ],
+        educationLevels: [
+          "cultuurkuur_Gewoon-kleuteronderwijs"
+        ]
+      }
     };
 
     var bindings = {
@@ -249,5 +261,52 @@ describe('Event Cultuurkuur Component', function () {
     expect(controller.cultuurKuurInfo.levels).toContain("CVO/CDO/Basiseducatie");
     expect(controller.cultuurKuurInfo.fields).toContain("Kunst en cultuur");
     expect(controller.cultuurKuurInfo.targetAudience).toContain("Leerlingen");
+  })
+
+  it('should have a cultuurKuurInfo object containing educationlevels/fields/targetaudiences based on the labels of the event', function (){
+    var event = new UdbEvent(exampleEventJson);
+    event.labels.push(
+        "cultuurkuur_leerkrachten",
+        "cultuurkuur_Actief Burgerschap",
+        "cultuurkuur_Gewoon-kleuteronderwijs"
+    );
+    event.educationLevels.push({
+        label: "CVO/CDO/Basiseducatie",
+        domain: "educationlevel",
+        id: "lukeimyourfather"
+    });
+    event.educationFields.push({
+        label:"Kunst en cultuur",
+        domain: "educationfield",
+        id:"bricksandstuds"
+    });
+    event.educationTargetAudience.push({
+      label: "Leerlingen",
+      domain:"targetaudience",
+      id: "2.1.14.0.0"
+    });
+    var permission = true;
+    var controller = getComponentController(event,permission);
+
+    expect(controller.cultuurKuurInfo.levels).toContain("Gewoon-kleuteronderwijs");
+    expect(controller.cultuurKuurInfo.fields).toContain("Actief Burgerschap");
+    expect(controller.cultuurKuurInfo.targetAudience).toContain("leerkrachten");
+  })
+
+  it('should have a cultuurKuurInfo object containing educationlevels/fields/targetaudiences based on the hidden labels of the event', function (){
+    var event = new UdbEvent(exampleEventJson);
+    event.hiddenLabels = [];
+    event.hiddenLabels.push(
+        "cultuurkuur_leerkrachten",
+        "cultuurkuur_Actief Burgerschap",
+        "cultuurkuur_Gewoon-kleuteronderwijs"
+    );
+
+    var permission = true;
+    var controller = getComponentController(event,permission);
+
+    expect(controller.cultuurKuurInfo.levels).toContain("Gewoon-kleuteronderwijs");
+    expect(controller.cultuurKuurInfo.fields).toContain("Actief Burgerschap");
+    expect(controller.cultuurKuurInfo.targetAudience).toContain("leerkrachten");
   })
 });

@@ -7608,23 +7608,35 @@ angular
  * @ngInject
  */
 
-function EventCultuurKuurComponentController(appConfig, uitidAuth) {
+function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels) {
   var cm = this;
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
-
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
     cm.previewLink = cultuurkuurUrl + 'agenda/e/x/' + cm.event.id + getUTMParameters('preview1.0');
     cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
     cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
-    cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
+    cm.educationFieldsViaLabels = getCultuurkuurLabels('educationFields');
+    cm.educationLevelsViaLabels = getCultuurkuurLabels('educationLevels');
+    cm.targetAudienceViaLabels = getCultuurkuurLabels('targetAudience');
 
     cm.cultuurKuurInfo = {
-      levels : _.pluck(cm.event.educationLevels, 'label'),
-      fields : _.pluck(cm.event.educationFields, 'label'),
-      targetAudience : _.pluck(cm.event.educationTargetAudience, 'label')
+      levels:
+        cm.educationLevelsViaLabels.length > 0 ?
+        cm.educationLevelsViaLabels :
+        _.pluck(cm.event.educationLevels, 'label'),
+      fields:
+        cm.educationFieldsViaLabels.length > 0 ?
+        cm.educationFieldsViaLabels :
+        _.pluck(cm.event.educationFields, 'label'),
+      targetAudience:
+        cm.targetAudienceViaLabels.length > 0 ?
+        cm.targetAudienceViaLabels :
+        _.pluck(cm.event.educationTargetAudience, 'label')
     };
+
+    cm.isIncomplete =  (cm.cultuurKuurInfo.levels.length === 0 && cm.cultuurKuurInfo.fields.length === 0);
 
     cm.forSchools = cm.event.audience.audienceType === 'education';
   }
@@ -7639,8 +7651,21 @@ function EventCultuurKuurComponentController(appConfig, uitidAuth) {
     '&utm_content=' + type +
     '&uid=' + cm.user.id;
   }
+
+  function getCultuurkuurLabels(type) {
+    var mergedLabels = cm.event.labels.concat(cm.event.hiddenLabels);
+    var fieldLabels = mergedLabels
+      .filter(function(label) {
+        return (cultuurkuurLabels[type].indexOf(label) > -1);
+      })
+      .map(function(label) {
+        return label.replace('cultuurkuur_', '');
+      });
+
+    return fieldLabels;
+  }
 }
-EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth"];
+EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth", "cultuurkuurLabels"];
 })();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
