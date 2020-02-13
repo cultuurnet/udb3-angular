@@ -190,8 +190,6 @@ function EventDetail(
         .then(showVariation);
     }
 
-    $scope.isCultuurkuurEvent = isCultuurkuurEvent(event);
-
     hasContactPoint();
     hasBookingInfo();
 
@@ -246,26 +244,6 @@ function EventDetail(
 
     return eventLocation.join(', ');
   };
-
-  function isCultuurkuurEvent (event) {
-    if(event.audience.audienceType !== 'everyone'){
-      return true;
-    }
-
-    if(hasCultuurkuurLabel(event.labels)) {
-      return true;
-    }
-
-    return;
-  }
-
-  function hasCultuurkuurLabel (labels) {
-    for(var i = 0; i < labels.length; i++) {
-      if(labels[i].startsWith('cultuurkuur_')){
-        return true;
-      }
-    }
-  }
 
   $scope.eventIds = function (event) {
     return _.union([event.id], event.sameAs);

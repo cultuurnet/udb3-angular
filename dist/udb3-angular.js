@@ -7606,23 +7606,35 @@ angular
  * @ngInject
  */
 
-function EventCultuurKuurComponentController(appConfig, uitidAuth) {
+function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels) {
   var cm = this;
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
-
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
     cm.previewLink = cultuurkuurUrl + 'agenda/e/x/' + cm.event.id + getUTMParameters('preview1.0');
     cm.editLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('edit1.0');
     cm.continueLink = cultuurkuurUrl + 'event/' + cm.event.id + '/edit' + getUTMParameters('continue1.0');
-    cm.isIncomplete = (cm.event.educationFields.length === 0 && cm.event.educationLevels.length === 0);
+    cm.educationFieldsViaLabels = getCultuurkuurLabels('educationFields');
+    cm.educationLevelsViaLabels = getCultuurkuurLabels('educationLevels');
+    cm.targetAudienceViaLabels = getCultuurkuurLabels('targetAudience');
 
     cm.cultuurKuurInfo = {
-      levels : _.pluck(cm.event.educationLevels, 'label'),
-      fields : _.pluck(cm.event.educationFields, 'label'),
-      targetAudience : _.pluck(cm.event.educationTargetAudience, 'label')
+      levels:
+        cm.educationLevelsViaLabels.length > 0 ?
+        cm.educationLevelsViaLabels :
+        _.pluck(cm.event.educationLevels, 'label'),
+      fields:
+        cm.educationFieldsViaLabels.length > 0 ?
+        cm.educationFieldsViaLabels :
+        _.pluck(cm.event.educationFields, 'label'),
+      targetAudience:
+        cm.targetAudienceViaLabels.length > 0 ?
+        cm.targetAudienceViaLabels :
+        _.pluck(cm.event.educationTargetAudience, 'label')
     };
+
+    cm.isIncomplete =  (cm.cultuurKuurInfo.levels.length === 0 && cm.cultuurKuurInfo.fields.length === 0);
 
     cm.forSchools = cm.event.audience.audienceType === 'education';
   }
@@ -7637,8 +7649,21 @@ function EventCultuurKuurComponentController(appConfig, uitidAuth) {
     '&utm_content=' + type +
     '&uid=' + cm.user.id;
   }
+
+  function getCultuurkuurLabels(type) {
+    var mergedLabels = cm.event.labels.concat(cm.event.hiddenLabels);
+    var fieldLabels = mergedLabels
+      .filter(function(label) {
+        return (cultuurkuurLabels[type].indexOf(label) > -1);
+      })
+      .map(function(label) {
+        return label.replace('cultuurkuur_', '');
+      });
+
+    return fieldLabels;
+  }
 }
-EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth"];
+EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth", "cultuurkuurLabels"];
 })();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
@@ -10355,8 +10380,6 @@ function EventDetail(
         .then(showVariation);
     }
 
-    $scope.isCultuurkuurEvent = isCultuurkuurEvent(event);
-
     hasContactPoint();
     hasBookingInfo();
 
@@ -10411,26 +10434,6 @@ function EventDetail(
 
     return eventLocation.join(', ');
   };
-
-  function isCultuurkuurEvent (event) {
-    if(event.audience.audienceType !== 'everyone'){
-      return true;
-    }
-
-    if(hasCultuurkuurLabel(event.labels)) {
-      return true;
-    }
-
-    return;
-  }
-
-  function hasCultuurkuurLabel (labels) {
-    for(var i = 0; i < labels.length; i++) {
-      if(labels[i].startsWith('cultuurkuur_')){
-        return true;
-      }
-    }
-  }
 
   $scope.eventIds = function (event) {
     return _.union([event.id], event.sameAs);
@@ -21869,8 +21872,6 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   select.$onChanges = updateLabels;
 
-  console.log('select.labels', select.labels);
-
   /**
    * @param {Object} bindingChanges
    * @see https://code.angularjs.org/1.5.9/docs/guide/component
@@ -21902,10 +21903,6 @@ function LabelSelectComponent(offerLabeller, $q) {
       return _.isString(label) ? {name: label} : label;
     });
   }
-
-  select.stripCultuurkuurPrefix = function(label) {
-    return label.replace('cultuurkuur_', '');
-  };
 
   function areLengthCriteriaMet(length) {
     return (length >= select.minimumInputLength && length <= select.maxInputLength);
@@ -27029,12 +27026,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\" translate-once=\"preview.type\"></span></td>\n" +
     "                <td>{{::translateType(event.type.label)}}</td>\n" +
     "              </tr>\n" +
-    "              <tr>\n" +
+    "              <tr ng-if=\"::event.audience.audienceType !== 'everyone'\">\n" +
     "                <td><span class=\"row-label\">Toegang</span></td>\n" +
     "                <td>\n" +
     "                  <p ng-bind=\"::translateAudience(event.audience.audienceType)\"></p>\n" +
     "                  <udb-event-cultuurkuur-component\n" +
-    "                          ng-if=\"::cultuurkuurEnabled && isCultuurkuurEvent\"\n" +
+    "                          ng-if=\"::cultuurkuurEnabled\"\n" +
     "                          event=\"event\"\n" +
     "                          permission=\"::permissions.editing\" >\n" +
     "                  </udb-event-cultuurkuur-component>\n" +
@@ -31321,7 +31318,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"list-inline\">\n" +
     "  <li ng-repeat=\"label in select.labels\">\n" +
-    "    <span class=\"badge\">{{ select.stripCultuurkuurPrefix(label.name) }} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "    <span class=\"badge\">{{ label.name }} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
     "  </li>\n" +
     "</ul>\n"
   );
