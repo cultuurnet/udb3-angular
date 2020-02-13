@@ -5,7 +5,6 @@ describe('Event Cultuurkuur Component', function () {
   var UdbEvent;
   var uitidAuth;
   var appConfig;
-  var cultuurkuurLabels;
   var exampleEventJson = {
         "@id": "http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc",
         "@context": "/api/1.0/event.jsonld",
