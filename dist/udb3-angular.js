@@ -12763,7 +12763,6 @@ function ReservationPeriodController($scope, EventFormData, $rootScope) {
   // Options for the datepicker
   $scope.dateOptions = {
     formatYear: 'yyyy',
-    maxDate: new Date(2020, 5, 22),
     minDate: new Date(),
     startingDay: 1
   };
