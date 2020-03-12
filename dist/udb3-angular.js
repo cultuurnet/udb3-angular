@@ -8115,7 +8115,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.toggleInfoMessage = (appConfig.toggleInfoMessage);
     dash.username = '';
     dash.hideOnlineDate = false;
-    if (appConfig.infoMessage[language] !== 'undefined') {
+    if (appConfig.infoMessage && appConfig.infoMessage[language]) {
       dash.infoMessage = appConfig.infoMessage[language];
     }
 
