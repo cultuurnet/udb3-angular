@@ -22,19 +22,24 @@
       SearchResultViewer,
       appConfig,
       moment,
-      $state
+      $state,
+      $translate
   ) {
 
     var dash = this;
-
+    var language = $translate.use();
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
     dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer;
+    dash.toggleInfoMessage = (appConfig.toggleInfoMessage);
     dash.username = '';
     dash.hideOnlineDate = false;
+    if (appConfig.infoMessage[language] !== 'undefined') {
+      dash.infoMessage = appConfig.infoMessage[language];
+    }
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
