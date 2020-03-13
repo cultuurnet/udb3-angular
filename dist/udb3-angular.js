@@ -8100,19 +8100,24 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       SearchResultViewer,
       appConfig,
       moment,
-      $state
+      $state,
+      $translate
   ) {
 
     var dash = this;
-
+    var language = $translate.use();
     dash.pagedItemViewer = new SearchResultViewer(50, 1);
     dash.pagedItemViewerOrganizers = new SearchResultViewer(50, 1);
     dash.openDeleteConfirmModal = openDeleteConfirmModal;
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer;
+    dash.toggleInfoMessage = (appConfig.toggleInfoMessage);
     dash.username = '';
     dash.hideOnlineDate = false;
+    if (appConfig.infoMessage && appConfig.infoMessage[language]) {
+      dash.infoMessage = appConfig.infoMessage[language];
+    }
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
@@ -8302,7 +8307,7 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
       });
     }
   }
-  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$state"];
+  DashboardController.$inject = ["$document", "$uibModal", "udbApi", "eventCrud", "offerLocator", "SearchResultViewer", "appConfig", "moment", "$state", "$translate"];
 
 })();
 })();
@@ -26687,6 +26692,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"row udb-dashboard\">\n" +
     "    <div class=\"col-xs-12\">\n" +
+    "\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"dash.toggleInfoMessage && dash.infoMessage\">\n" +
+    "        <span ng-bind-html=\"::dash.infoMessage\"></span>\n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferExpirationMessage\">\n" +
     "        <span ng-bind-html=\"::dash.addOfferExpirationMessage\"></span>\n" +
