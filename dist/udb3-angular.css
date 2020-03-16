@@ -3246,6 +3246,13 @@ form.booking-period table {
   color: grey;
   font-weight: 300;
 }
+.form-age-range-button.active {
+  background-color: transparent;
+  box-shadow: none;
+}
+.form-age-range-button.active:focus {
+  outline: 0;
+}
 #form-age .form-group {
   margin-bottom: 0.5em;
 }
