@@ -411,6 +411,17 @@ function UdbApi(
 
   /**
    * @param {string} organizerId
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.removeOrganizerAddress = function(organizerId) {
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/address', defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
    * @param {Array} contact
    * @returns {Promise.<CommandInfo|ApiProblem>}
    */
