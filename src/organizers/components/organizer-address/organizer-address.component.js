@@ -20,8 +20,9 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $q) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $stateParams, OrganizerManager) {
   var controller = this;
+  var organizerId = $stateParams.id;
 
   function init () {
     controller.availableCountries = appConfig.offerEditor.countries;
@@ -43,6 +44,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     controller.requiredAddress = false;
 
     if (controller.address.addressLocality) {
+      controller.hasAddress = true;
       controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
       controller.requiredAddress = true;
     }
@@ -60,6 +62,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
   controller.changeCountrySelection = changeCountrySelection;
+  controller.clearAddressInfo = clearAddressInfo;
   controller.$onInit = init;
 
   $scope.$on('organizerAddressSubmit', function () {
@@ -74,6 +77,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     controller.zipValidateError = false;
     controller.zipHasErrors = false;
     controller.addressHasErrors = false;
+    controller.addressRemovedError = false;
+    controller.addressRemovedSuccess = false;
   }
 
   function validateAddress() {
@@ -183,7 +188,6 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   function changeCitySelection() {
     controller.address.postalCode = '';
     controller.address.addressLocality = '';
-
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateAddress();
@@ -201,6 +205,22 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     }
     controller.address.addressCountry = controller.selectedCountry.code;
     changeCitySelection();
+  }
+
+  /**
+   * Clear address info
+   */
+  function clearAddressInfo() {
+    controller.address.streetAddress = '';
+    changeCitySelection();
+    OrganizerManager.removeOrganizerAddress(organizerId)
+      .then(function(res) {
+        controller.hasAddress = false;
+        controller.addressRemovedSuccess = true;
+      })
+      .catch(function(err) {
+        controller.addressRemovedError = true;
+      });
   }
 
   function sendUpdate() {
