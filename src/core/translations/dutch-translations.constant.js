@@ -841,7 +841,10 @@ angular.module('udb.core')
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen',
-        'zip': 'Postcode'
+        'zip': 'Postcode',
+        'delete': 'Leegmaken',
+        'delete_success': 'Adres succesvol verwijderd',
+        'delete_error': 'Er liep iets fout tijdens het verwijderen van jouw address'
       },
       contact: {
         'title': 'Contact',
