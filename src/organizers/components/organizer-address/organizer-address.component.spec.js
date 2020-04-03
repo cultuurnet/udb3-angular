@@ -10,7 +10,6 @@ describe('Component: Organizer Address', function() {
     streetAddress: 'Sluisstraat 79'
   };
 
-
   var organizerAddressForm = {
     $submitted: false
   };
@@ -45,7 +44,6 @@ describe('Component: Organizer Address', function() {
     citiesBE = $injector.get('citiesBE');
     citiesNL = $injector.get('citiesNL');
     Levenshtein = $injector.get('Levenshtein');
-
   }));
 
   function sendUpdateMock(address, error) {
