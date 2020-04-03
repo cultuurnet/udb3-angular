@@ -844,7 +844,7 @@ angular.module('udb.core')
         'zip': 'Postcode',
         'delete': 'Leegmaken',
         'delete_success': 'Adres succesvol verwijderd',
-        'delete_error': 'Er liep iets fout tijdens het verwijderen van jouw address'
+        'delete_error': 'Er liep iets fout tijdens het verwijderen van jouw adres'
       },
       contact: {
         'title': 'Contact',
