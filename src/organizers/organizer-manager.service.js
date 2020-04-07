@@ -113,6 +113,17 @@ function OrganizerManager(udbApi) {
   };
 
   /**
+   * Remove the address of a specific organizer.
+   * @param {string} organizerId
+   *
+   * @returns {Promise}
+   */
+  service.removeOrganizerAddress = function(organizerId) {
+    return udbApi
+        .removeOrganizerAddress(organizerId);
+  };
+
+  /**
    * Update contact info of a specific organizer.
    * @param {string} organizerId
    * @param {Array} contact

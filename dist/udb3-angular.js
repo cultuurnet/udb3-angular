@@ -3615,7 +3615,10 @@ angular.module('udb.core')
         'help_city': 'Er was een probleem tijdens het ophalen van de steden.',
         'error_city': 'Gelieve een gemeente in te geven.',
         'change': 'Wijzigen',
-        'zip': 'Postcode'
+        'zip': 'Postcode',
+        'delete': 'Leegmaken',
+        'delete_success': 'Adres succesvol verwijderd',
+        'delete_error': 'Er liep iets fout tijdens het verwijderen van jouw address'
       },
       contact: {
         'title': 'Contact',
@@ -5337,6 +5340,17 @@ function UdbApi(
 
     return $http
         .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.removeOrganizerAddress = function(organizerId) {
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/address', defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -20284,8 +20298,9 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $q) {
+function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $stateParams, OrganizerManager) {
   var controller = this;
+  var organizerId = $stateParams.id;
 
   function init () {
     controller.availableCountries = appConfig.offerEditor.countries;
@@ -20307,6 +20322,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     controller.requiredAddress = false;
 
     if (controller.address.addressLocality) {
+      controller.hasAddress = true;
       controller.selectedCity = controller.address.postalCode + ' ' + controller.address.addressLocality;
       controller.requiredAddress = true;
     }
@@ -20324,6 +20340,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   controller.selectCity = selectCity;
   controller.changeCitySelection = changeCitySelection;
   controller.changeCountrySelection = changeCountrySelection;
+  controller.clearAddressInfo = clearAddressInfo;
   controller.$onInit = init;
 
   $scope.$on('organizerAddressSubmit', function () {
@@ -20338,6 +20355,8 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     controller.zipValidateError = false;
     controller.zipHasErrors = false;
     controller.addressHasErrors = false;
+    controller.addressRemovedError = false;
+    controller.addressRemovedSuccess = false;
   }
 
   function validateAddress() {
@@ -20447,7 +20466,6 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
   function changeCitySelection() {
     controller.address.postalCode = '';
     controller.address.addressLocality = '';
-
     controller.selectedCity = '';
     controller.cityAutocompleteTextField = '';
     validateAddress();
@@ -20467,13 +20485,29 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
     changeCitySelection();
   }
 
+  /**
+   * Clear address info
+   */
+  function clearAddressInfo() {
+    controller.address.streetAddress = '';
+    changeCitySelection();
+    OrganizerManager.removeOrganizerAddress(organizerId)
+      .then(function(res) {
+        controller.hasAddress = false;
+        controller.addressRemovedSuccess = true;
+      })
+      .catch(function(err) {
+        controller.addressRemovedError = true;
+      });
+  }
+
   function sendUpdate() {
     controller.addressHasErrors = controller.streetHasErrors || controller.cityHasErrors ||
         controller.zipHasErrors || controller.zipValidateError;
     controller.onUpdate({error: controller.addressHasErrors});
   }
 }
-OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL", "appConfig", "$q"];
+OrganizerAddressComponent.$inject = ["$scope", "Levenshtein", "citiesBE", "citiesNL", "appConfig", "$stateParams", "OrganizerManager"];
 })();
 
 // Source: src/organizers/components/organizer-contact/organizer-contact.component.js
@@ -21160,6 +21194,17 @@ function OrganizerManager(udbApi) {
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
         .updateOrganizerAddress(organizerId, address, language);
+  };
+
+  /**
+   * Remove the address of a specific organizer.
+   * @param {string} organizerId
+   *
+   * @returns {Promise}
+   */
+  service.removeOrganizerAddress = function(organizerId) {
+    return udbApi
+        .removeOrganizerAddress(organizerId);
   };
 
   /**
@@ -30838,6 +30883,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </span>\n" +
     "            </div>\n" +
     "        </div>\n" +
+    "    </div>\n" +
+    "    <div class=\"row\">\n" +
+    "      <div class=\"col-xs-6\">\n" +
+    "        <a href=\"#\" ng-show=\"oac.hasAddress\" class=\"btn btn-default\" ng-click=\"oac.clearAddressInfo()\" translate-once=\"organizer.address.delete\">Leegmaken</a>\n" +
+    "        <p ng-show=\"oac.addressRemovedSuccess\" class=\"alert alert-success\" translate-once=\"organizer.address.delete_success\"></span>\n" +
+    "        <p ng-show=\"oac.addressRemovedError\" class=\"alert alert-danger\" translate-once=\"organizer.address.delete_error\"></span>\n" +
+    "      </div>\n" +
     "    </div>\n" +
     "</form>\n"
   );
