@@ -324,21 +324,20 @@ function UdbApi(
    * @param {number} start
    * @param {number} limit
    * @param {string|null} website
-   * @param {string|null} name
+   * @param {string|null} advancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, name) {
+  this.findOrganisations = function(start, limit, website, advancedQuery) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
     if (website) { params.website = website; }
-    if (name) { params.name = name; }
+    if (advancedQuery) { params.q = advancedQuery; }
 
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
-
     return $http
       .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
