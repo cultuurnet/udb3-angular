@@ -7,5 +7,6 @@
            ng-model="qsb.queryString"
            autocomplete="off"
            ng-change="qsb.find()">
+    <a ng-if="qsb.helpLink" ng-href="{{::qsb.helpLink}}" target="_blank" class="advanced-search" ng-bind="::qsb.helpLabel"></a>
   </div>
 </form>
