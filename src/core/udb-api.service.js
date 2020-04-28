@@ -324,18 +324,23 @@ function UdbApi(
    * @param {number} start
    * @param {number} limit
    * @param {string|null} website
-   * @param {string|null} advancedQuery
+   * @param {string|null} query
+   * @param {boolean} useAdvancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, advancedQuery) {
+  this.findOrganisations = function(start, limit, website, query, useAdvancedQuery) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
     if (website) { params.website = website; }
-    if (advancedQuery) { params.q = advancedQuery; }
+    if (useAdvancedQuery && query) {
+      params.q = query;
+    } else if (query) {
+      params.name = query;
+    }
 
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
     return $http
