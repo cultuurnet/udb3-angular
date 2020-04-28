@@ -10468,6 +10468,14 @@ button.close {
 .roles-results .table thead tr th:last-child {
   width: 20%;
 }
+.query-search-bar .form-group {
+  width: 100%;
+  display: flex;
+}
+.query-search-bar #user-search-input {
+  width: 50%;
+  margin: 0 10px;
+}
 [udb-form-group] .help-block {
   display: none;
 }

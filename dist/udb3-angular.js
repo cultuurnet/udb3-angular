@@ -5261,18 +5261,23 @@ function UdbApi(
    * @param {number} start
    * @param {number} limit
    * @param {string|null} website
-   * @param {string|null} advancedQuery
+   * @param {string|null} query
+   * @param {boolean} useAdvancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, advancedQuery) {
+  this.findOrganisations = function(start, limit, website, query, useAdvancedQuery) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
     if (website) { params.website = website; }
-    if (advancedQuery) { params.q = advancedQuery; }
+    if (useAdvancedQuery && query) {
+      params.q = query;
+    } else if (query) {
+      params.name = query;
+    }
 
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
     return $http
@@ -21120,7 +21125,7 @@ function OrganizerManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findOrganisations(start, limit, null, query);
+    return udbApi.findOrganisations(start, limit, null, query, true);
   };
 
   /**
@@ -29529,7 +29534,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/query-search-bar.html',
-    "<form class=\"form-inline\" role=\"search\">\n" +
+    "<form class=\"form-inline query-search-bar\" role=\"search\">\n" +
     "  <div class=\"form-group\">\n" +
     "    <label for=\"user-search-input\" ng-bind=\"::qsb.searchLabel\"></label>\n" +
     "    <input type=\"text\"\n" +
@@ -29958,13 +29963,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<h1 class=\"title\">Organisaties</h1>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-8\">\n" +
-    "        <udb-query-search-bar search-label=\"Zoeken op organisatie naam\"\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <udb-query-search-bar search-label=\"Zoeken op organisatie\"\n" +
     "                              help-link=\"https://documentatie.uitdatabank.be/content/search_api_3/latest/searching-organizers.html\"\n" +
     "                              help-label=\"via geavanceerde zoekopdracht\"\n" +
     "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-1\">\n" +
+    "    <div class=\"col-md-2\">\n" +
     "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
     "    <div class=\"col-md-12 text-right\">\n" +
