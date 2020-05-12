@@ -19,13 +19,9 @@ function OfferController(
   offerTranslator,
   offerLabeller,
   $window,
-  offerEditor,
-  variationRepository,
   $q,
   appConfig,
   UdbEvent,
-  UdbPlace,
-  UdbOrganizer,
   $translate,
   authorizationService
 ) {
@@ -89,10 +85,7 @@ function OfferController(
 
   // initialize controller and take optional event actions
   $q.when(controller.init())
-    // translate location before fetching the maybe non-existant variation
-    // a variation does not change the location
     .then(translateLocation)
-    .then(fetchPersonalVariation)
     .then(ifOfferIsEvent)
     .finally(function () {
       controller.editable = true;
@@ -240,26 +233,6 @@ function OfferController(
   }
 
   /**
-   * @param {(UdbPlace|UdbEvent)}offer
-   * @return {Promise}
-   */
-  function fetchPersonalVariation(offer) {
-    var disableVariations = _.get(appConfig, 'disableVariations');
-    if (!disableVariations) {
-      return variationRepository
-        .getPersonalVariation(offer)
-        .then(function (personalVariation) {
-          $scope.event.description = personalVariation.description[defaultLanguage];
-          return personalVariation;
-        }, function () {
-          return $q.reject();
-        });
-    } else {
-      return $q.reject();
-    }
-  }
-
-  /**
    * @param {UdbEvent} event
    * @return {Promise}
    */
@@ -270,18 +243,4 @@ function OfferController(
     return $q.resolve(event);
   }
 
-  // Editing
-  controller.updateDescription = function (description) {
-    if ($scope.event.description !== description) {
-      var updatePromise = offerEditor.editDescription(cachedOffer, description);
-
-      updatePromise.finally(function () {
-        if (!description) {
-          $scope.event.description = cachedOffer.description[defaultLanguage];
-        }
-      });
-
-      return updatePromise;
-    }
-  };
 }
