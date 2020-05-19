@@ -26070,10 +26070,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <span ng-bind=\"cm.event.id\"></span>\n" +
     "            </li>\n" +
     "            <li ng-if=\"cm.getPublicUrl(cm.event.id) && cm.showPublicUrl() \">\n" +
-    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" translate-values=\"{ publicationBrand: '{{::cm.publicationBrand}}' }\"></a>\n" +
+    "                <a ng-href=\"{{cm.getPublicUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" target=\"_blank\" translate-values=\"{ publicationBrand: '{{::cm.publicationBrand}}' }\"></a>\n" +
     "            </li>\n" +
     "            <li ng-if=\"cm.getCultuurkuurKUrl(cm.event.id) && cm.showCultuurkuurUrl()\">\n" +
-    "              <a ng-href=\"{{cm.getCultuurkuurKUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" translate-values=\"{ publicationBrand: 'cultuurkuur' }\"></a>\n" +
+    "              <a ng-href=\"{{cm.getCultuurkuurKUrl(cm.event.id)}}\" translate-once=\"preview.publiq_url\" target=\"_blank\" translate-values=\"{ publicationBrand: 'cultuurkuur' }\"></a>\n" +
     "            </li>\n" +
     "            <li ng-repeat=\"sameAs in cm.sameAsRelations(cm.event)\"><span ng-bind=\"sameAs\"></span></li>\n" +
     "        </ul>\n" +

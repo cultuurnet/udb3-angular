@@ -18,10 +18,10 @@
                 <span ng-bind="cm.event.id"></span>
             </li>
             <li ng-if="cm.getPublicUrl(cm.event.id) && cm.showPublicUrl() ">
-                <a ng-href="{{cm.getPublicUrl(cm.event.id)}}" translate-once="preview.publiq_url" translate-values="{ publicationBrand: '{{::cm.publicationBrand}}' }"></a>
+                <a ng-href="{{cm.getPublicUrl(cm.event.id)}}" translate-once="preview.publiq_url" target="_blank" translate-values="{ publicationBrand: '{{::cm.publicationBrand}}' }"></a>
             </li>
             <li ng-if="cm.getCultuurkuurKUrl(cm.event.id) && cm.showCultuurkuurUrl()">
-              <a ng-href="{{cm.getCultuurkuurKUrl(cm.event.id)}}" translate-once="preview.publiq_url" translate-values="{ publicationBrand: 'cultuurkuur' }"></a>
+              <a ng-href="{{cm.getCultuurkuurKUrl(cm.event.id)}}" translate-once="preview.publiq_url" target="_blank" translate-values="{ publicationBrand: 'cultuurkuur' }"></a>
             </li>
             <li ng-repeat="sameAs in cm.sameAsRelations(cm.event)"><span ng-bind="sameAs"></span></li>
         </ul>
