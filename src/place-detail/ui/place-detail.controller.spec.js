@@ -7,8 +7,6 @@ describe('Controller: Place Detail', function() {
       udbApi,
       $state,
       jsonLDLangFilter,
-      variationRepository,
-      offerEditor,
       UdbPlace,
       $q,
       $uibModal,
@@ -58,7 +56,7 @@ describe('Controller: Place Detail', function() {
         "labels": ['some label']
       };
 
-  var deferredEvent, deferredVariation, deferredPermission, deferredUpdate;
+  var deferredEvent, deferredPermission, deferredUpdate;
 
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
@@ -69,8 +67,6 @@ describe('Controller: Place Detail', function() {
     udbApi = $injector.get('udbApi');
     $state = jasmine.createSpyObj('$state', ['go']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
-    variationRepository = $injector.get('variationRepository');
-    offerEditor = $injector.get('offerEditor');
     UdbPlace = $injector.get('UdbPlace');
     offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label', 'unlabel']);
     $q = _$q_;
@@ -78,7 +74,7 @@ describe('Controller: Place Detail', function() {
     eventCrud = jasmine.createSpyObj('eventCrud', ['findEventsAtPlace']);
     $window = $injector.get('$window');
 
-    deferredEvent = $q.defer(); deferredVariation = $q.defer();
+    deferredEvent = $q.defer();
     deferredPermission = $q.defer();
 
     spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
@@ -86,10 +82,7 @@ describe('Controller: Place Detail', function() {
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
     deferredEvent.resolve(new UdbPlace(examplePlaceJson));
 
-    spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
-
     deferredUpdate = $q.defer();
-    spyOn(offerEditor, 'editDescription').and.returnValue(deferredUpdate.promise);
 
     placeController = $controller(
       'PlaceDetailController', {
@@ -98,8 +91,6 @@ describe('Controller: Place Detail', function() {
         udbApi: udbApi,
         $state: $state,
         jsonLDLangFilter: jsonLDLangFilter,
-        variationRepository: variationRepository,
-        offerEditor: offerEditor,
         $uibModal: $uibModal,
         eventCrud: eventCrud,
         $window: $window,
@@ -109,7 +100,6 @@ describe('Controller: Place Detail', function() {
   }));
 
   it('should fetch the place information', function () {
-    deferredVariation.reject('there is no personal variation for offer');
     $scope.$digest();
 
     expect($scope.placeId).toEqual(placeId);
@@ -119,48 +109,6 @@ describe('Controller: Place Detail', function() {
     expect(udbApi.getOffer).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
-  });
-
-  it('should loads the place description from the variation', function () {
-    var variation = new UdbPlace(examplePlaceJson);
-    variation.description['nl'] = 'haak is een zeekoe';
-    deferredVariation.resolve(variation);
-    $scope.$digest();
-
-    expect($scope.place.description).toEqual('haak is een zeekoe');
-  });
-
-  it('should update the description', function () {
-    deferredVariation.reject('there is no personal variation for offer');
-
-    $scope.$digest();
-
-    $scope.updateDescription('updated description');
-    deferredUpdate.resolve();
-
-    expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceJson),
-      'updated description'
-    );
-  });
-
-  it('should replace the description with the cached one when the variation is deleted', function () {
-    var variation = new UdbPlace(examplePlaceJson);
-    variation.description['nl'] = 'haak is een zeekoe';
-    deferredVariation.resolve(variation);
-    $scope.$digest();
-
-    expect($scope.place.description).toEqual('haak is een zeekoe');
-
-    $scope.updateDescription('');
-    deferredUpdate.resolve(false);
-    $scope.$digest();
-
-    expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbPlace(examplePlaceJson),
-      ''
-    );
-    expect($scope.place.description).toEqual('Toto is geen zeekoe');
   });
 
   it('should open a confirmation modal showing all the events that are located at the place before deleting it', function () {

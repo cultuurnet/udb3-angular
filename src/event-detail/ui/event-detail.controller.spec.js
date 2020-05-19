@@ -7,8 +7,6 @@ describe('Controller: Event Detail', function() {
       udbApi,
       $state,
       jsonLDLangFilter,
-      variationRepository,
-      offerEditor,
       UdbEvent,
       $q,
       offerLabeller,
@@ -187,8 +185,7 @@ describe('Controller: Event Detail', function() {
         "workflowStatus": "DRAFT"
       };
 
-  var deferredEvent, deferredVariation, deferredPermission, deferredUpdate,
-      deferredHistory;
+  var deferredEvent, deferredPermission, deferredUpdate;
 
   var appConfig = {
     'roleConstraintsMode': 'v2'
@@ -206,8 +203,6 @@ describe('Controller: Event Detail', function() {
     udbApi = $injector.get('udbApi');
     $state = jasmine.createSpyObj('$state', ['go']);
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
-    variationRepository = $injector.get('variationRepository');
-    offerEditor = $injector.get('offerEditor');
     UdbEvent = $injector.get('UdbEvent');
     $q = _$q_;
     $uibModal = jasmine.createSpyObj('$uibModal', ['open']);
@@ -216,16 +211,13 @@ describe('Controller: Event Detail', function() {
     ModerationService = jasmine.createSpyObj('ModerationService', ['getMyRoles', 'find']);
     ModerationService.getMyRoles.and.returnValue($q.resolve(roles));
     ModerationService.find.and.returnValue($q.resolve(events));
-    deferredEvent = $q.defer(); deferredVariation = $q.defer();
+    deferredEvent = $q.defer(); 
     deferredPermission = $q.defer();
 
     spyOn(udbApi, 'hasPermission').and.returnValue(deferredPermission.promise);
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
 
-    spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
-
     deferredUpdate = $q.defer();
-    spyOn(offerEditor, 'editDescription').and.returnValue(deferredUpdate.promise);
 
     spyOn(udbApi, 'getCalendarSummary').and.returnValue($q.reject());
 
@@ -236,8 +228,6 @@ describe('Controller: Event Detail', function() {
         udbApi: udbApi,
         $state: $state,
         jsonLDLangFilter: jsonLDLangFilter,
-        variationRepository: variationRepository,
-        offerEditor: offerEditor,
         $uibModal: $uibModal,
         $window: $window,
         offerLabeller: offerLabeller,
@@ -248,7 +238,6 @@ describe('Controller: Event Detail', function() {
 
   it('should fetch the event information', function () {
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    deferredVariation.reject('there is no personal variation for offer');
     $scope.$digest();
 
     expect(udbApi.getOffer).toHaveBeenCalledWith(
@@ -287,51 +276,6 @@ describe('Controller: Event Detail', function() {
     $scope.$digest();
 
     expect($scope.calendarSummary).toEqual('Morregen, zeker voor de noen!');
-  });
-
-  it('should loads the event description from the variation', function () {
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    var variation = new UdbEvent(exampleEventJson);
-    variation.description['nl'] = 'haak is een zeekoe';
-    deferredVariation.resolve(variation);
-    $scope.$digest();
-
-    expect($scope.event.description).toEqual('haak is een zeekoe');
-  });
-
-  it('should update the description', function () {
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    deferredVariation.reject('there is no personal variation for offer');
-
-    $scope.$digest();
-
-    $scope.updateDescription('updated description');
-    deferredUpdate.resolve();
-
-    expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbEvent(exampleEventJson),
-      'updated description'
-    );
-  });
-
-  it('should replace the description with the cached one when the variation is deleted', function () {
-    var variation = new UdbEvent(exampleEventJson);
-    variation.description['nl'] = 'haak is een zeekoe';
-    deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    deferredVariation.resolve(variation);
-    $scope.$digest();
-
-    expect($scope.event.description).toEqual('haak is een zeekoe');
-
-    $scope.updateDescription('');
-    deferredUpdate.resolve(false);
-    $scope.$digest();
-
-    expect(offerEditor.editDescription).toHaveBeenCalledWith(
-      new UdbEvent(exampleEventJson),
-      ''
-    );
-    expect($scope.event.description).toEqual('Toto is geen zeekoe');
   });
 
   it('should open a confirmation modal before deleting an event', function () {
@@ -529,7 +473,6 @@ describe('Controller: Event Detail', function() {
 
   it('should fetch the history when activating the tab', function () {
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    deferredVariation.reject('there is no personal variation for offer');
     var expectedHistory = [
       {
         "date":"2017-06-13T08:48:25+00:00",

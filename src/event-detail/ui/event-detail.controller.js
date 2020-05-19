@@ -17,8 +17,6 @@ function EventDetail(
   eventId,
   udbApi,
   jsonLDLangFilter,
-  variationRepository,
-  offerEditor,
   $state,
   $uibModal,
   $q,
@@ -32,7 +30,6 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-  var disableVariations = _.get(appConfig, 'disableVariations');
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
   $scope.apiVersion = appConfig.roleConstraintsMode;
 
@@ -184,12 +181,6 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
-    if (!disableVariations) {
-      variationRepository
-        .getPersonalVariation(event)
-        .then(showVariation);
-    }
-
     hasContactPoint();
     hasBookingInfo();
 
@@ -213,10 +204,6 @@ function EventDetail(
           });
         }
       });
-  }
-
-  function showVariation(variation) {
-    $scope.event.description = variation.description[language];
   }
 
   function failedToLoad() {
@@ -255,20 +242,6 @@ function EventDetail(
 
   $scope.isTabActive = function (tabId) {
     return tabId === activeTabId;
-  };
-
-  $scope.updateDescription = function(description) {
-    if ($scope.event.description !== description) {
-      var updatePromise = offerEditor.editDescription(cachedEvent, description);
-
-      updatePromise.finally(function () {
-        if (!description) {
-          $scope.event.description = cachedEvent.description[language];
-        }
-      });
-
-      return updatePromise;
-    }
   };
 
   $scope.makeTabActive = function (tabId) {

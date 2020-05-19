@@ -19,11 +19,7 @@ function OrganizerController(
     offerTranslator,
     offerLabeller,
     $window,
-    offerEditor,
-    variationRepository,
     $q,
-    appConfig,
-    $uibModal,
     $translate
 ) {
   var controller = this;
@@ -66,8 +62,6 @@ function OrganizerController(
 
   // initialize controller and take optional event actions
   $q.when(controller.init())
-  // translate location before fetching the maybe non-existant variation
-  // a variation does not change the location
       .finally(function () {
         controller.editable = true;
       });

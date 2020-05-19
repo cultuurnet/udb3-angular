@@ -1187,56 +1187,6 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  // createVariation
-  it('should create a variation for an offerLocation', function(done){
-    var offerLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
-    var description = '<p>William Kentridge keert [...] wie zich door haar laat bekoren.</p>';
-    var purpose = 'homepage-tips';
-    var activeUser = {
-      uuid: '6f072ba8-c510-40ac-b387-51f582650e27'
-    };
-    var expectedBody = {
-      owner: activeUser.uuid,
-      purpose: purpose,
-      same_as: offerLocation,
-      description: description
-    };
-    var response = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
-    uitidAuth.getUser.and.returnValue(activeUser);
-
-    $httpBackend
-      .expectPOST(baseUrl + 'variations/', expectedBody)
-      .respond(JSON.stringify(response));
-    service
-      .createVariation(offerLocation, description, purpose)
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
-  // editDescription
-  it('should edit the description for a variation', function(done){
-    var variationId = 'f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
-    var description = '<p>William Kentridge keert [...] wie zich door haar laat bekoren.</p>';
-    var expectedBody = {
-      description: description
-    };
-    var response = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
-
-    $httpBackend
-      .expectPATCH(baseUrl + 'variations/' + variationId, expectedBody)
-      .respond(JSON.stringify(response));
-    service
-      .editDescription(variationId, description)
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
   // findEventsAtPlace
   it('should find events at a place', function(done){
     // TODO: not sure about this one
@@ -1351,23 +1301,6 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
-  // deleteVariation
-  it('should delete an organizer for an offer', function(done){
-    var variationId = '38597ef0-9364-0ab5-a3cc-2e344e599fc1';
-    var response = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
-
-    $httpBackend
-      .expectDELETE(baseUrl + 'variations/' + variationId)
-      .respond(JSON.stringify(response));
-    service
-      .deleteVariation(variationId)
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
   // addImage
   it('should add images to an event or place', function(done){
     var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
@@ -1447,124 +1380,6 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify(response));
     service
       .selectMainImage(itemLocation, imageId)
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
-  // getOfferVariations
-  it('should get variations for an offer based on parameters', function(done){
-    var itemLocation = 'http://culudb-silex.dev/event/f8597ef0-9364-4ab5-a3cc-1e344e599fc1';
-    var purpose = 'homepage-tips';
-    var response = {
-      commandId: '8cdc13e62efaecb9d8c21d59a29b9de4'
-    };
-
-    $httpBackend
-      .expectGET(baseUrl + 'variations/?purpose=' + purpose)
-      .respond(JSON.stringify(response));
-    service
-      .getOfferVariations(null, purpose)
-      .then(done);
-
-    $httpBackend.flush();
-  });
-
-  // getVariation
-  it('should get a variation', function(done){
-    var variationId = '04C47992-B01E-4EE4-96ED-289F22638324';
-    var response = {
-      '@id': 'http://culudb-silex.dev:8080/variations/04C47992-B01E-4EE4-96ED-289F22638324',
-      'name': {
-        'nl': 'Nederlands',
-        'de': 'Deutch',
-        'en': 'English',
-        'fr': 'Français'
-      },
-      'description': {
-        'nl': 'Alternatieve beschrijving in het Nederlands',
-        'de': 'Deutch',
-        'en': 'English',
-        'fr': 'Français'
-      },
-      'available': '2015-05-07T12:02:53+00:00',
-      'image': 'http://media.uitdatabank.be/20150416/153cfa0f-0d22-451e-bfd1-490b7c4ef109.jpg',
-      'labels': [
-        'tagged'
-      ],
-      'calendarSummary': 'Every first day of the month',
-      'location': {
-        'description': 'Or not to be.',
-        'name': 'This is the place to be',
-        'address': {
-          'addressCountry': 'BE',
-          'addressLocality': 'Leuven',
-          'postalCode': 3000,
-          'streetAddress': 'Sluisstraat 79'
-        },
-        'bookingInfo': {
-          'priceCurrency': 'EUR',
-          'description': 'No need to pay anything',
-          'name': 'Free',
-          'price': 0
-        },
-        'terms': [
-          {
-            'label': 'Cycling',
-            'domain': 'activities',
-            'id': '10.0.0.1'
-          }
-        ]
-      },
-      'organizer': {
-        'name': 'STUK',
-        'address': {
-          'addressCountry': 'BE',
-          'addressLocality': 'Leuven',
-          'postalCode': 3000,
-          'streetAddress': 'Sluisstraat 79'
-        },
-        'email': 'info@stuk.be',
-        'phone': [
-          '016 320 300'
-        ]
-      },
-      'bookingInfo': {
-        'priceCurrency': 'EUR',
-        'description': 'No need to pay anything',
-        'name': 'Free',
-        'price': 0
-      },
-      'terms': [
-        {
-          'label': 'Cycling',
-          'domain': 'activities',
-          'id': '10.0.0.1'
-        }
-      ],
-      'creator': 'evenementen@stad.diksmuide.be',
-      'created': '2015-05-07T12:02:53+00:00',
-      'modified': '2015-05-07T12:02:53+00:00',
-      'publisher': 'Invoerders Algemeen ',
-      'endDate': '2015-05-07T12:02:53+00:00',
-      'startDate': '2015-05-07T12:02:53+00:00',
-      'calendarType': 'permanent',
-      'typicalAgeRange': '+18',
-      'performer': [
-        {
-          'name': 'Sindicato Sonico'
-        }
-      ],
-      'sameAs': [
-        'http://culudb-silex.dev:8080/event/0823f57e-a6bd-450a-b4f5-8459b4b11043'
-      ]
-    };
-
-    $httpBackend
-      .expectGET(baseUrl + 'variations/' + variationId)
-      .respond(JSON.stringify(response));
-    service
-      .getVariation(variationId)
       .then(done);
 
     $httpBackend.flush();
