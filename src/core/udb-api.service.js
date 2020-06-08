@@ -935,7 +935,8 @@ function UdbApi(
         } else if (createdByQueryMode === 'email') {
           params.creator = userEmail;
         } else if (createdByQueryMode === 'mixed') {
-          params.q = 'creator:(' + userId + ' OR ' + userEmail + ')';
+          var uitidv1 = userId.replace('auth0|', '');
+          params.q = 'creator:(' + userId + ' OR ' + uitidv1 + ' OR ' + userEmail + ')';
         }
 
         var requestConfig = _.cloneDeep(defaultApiConfig);
@@ -957,9 +958,9 @@ function UdbApi(
     return this.getMe()
       .then(function(userData) {
         var userId = userData.uuid;
-
+        var uitidv1 = userId.replace('auth0|', '');
         requestConfig.params = {
-          'creator': userId,
+          'q': 'creator:(' + userId + ' OR ' + uitidv1 + ')',
           'sort[modified]': 'desc',
           'limit': 50,
           'start': (page - 1) * 50,
