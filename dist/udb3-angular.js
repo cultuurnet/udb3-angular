@@ -26766,7 +26766,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.organizer\"></span></td>\n" +
-    "                <td ng-if=\"::event.organizer\">{{::event.organizer.name}}</td>\n" +
+    "                <td ng-if=\"::event.organizer\"><a ng-href=\"/organizer/{{event.organizer.id}}/preview\" >{{::event.organizer.name}}</a></td>\n" +
     "                <td ng-if=\"::(!event.organizer)\" translate-once=\"preview.no_organizer\"></td>\n" +
     "              </tr>\n" +
     "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
