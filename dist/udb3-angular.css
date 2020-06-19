@@ -3303,6 +3303,9 @@ h2.block-header {
   z-index: 99;
   content: "";
 }
+.event-detail .list-unstyled {
+  word-break: break-word;
+}
 .event-detail-description {
   color: black;
   white-space: pre-line;
