@@ -30626,8 +30626,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <span class=\"row-label\" translate-once=\"organizer.manage.website\"></span>\n" +
     "        </div>\n" +
     "        <td>\n" +
-    "          <!-- TODO: fix this -->\n" +
-    "          <span ng-bind=\"odc.organizer.website\">test</span>\n" +
+    "          <span ng-bind=\"odc.organizer.website\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
