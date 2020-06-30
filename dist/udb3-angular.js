@@ -3666,6 +3666,7 @@ angular.module('udb.core')
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
         'edit': 'Bewerken',
+        'confirm_event': 'Bevestig dat het aanbod doorgaat',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
         'expired_event': 'Afgelopen evenement'
@@ -4743,6 +4744,7 @@ angular.module('udb.core')
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
         'edit': 'Modifier',
+        'confirm_event': 'Confirmez que l\'offre continue',
         'example': 'Exemple',
         'delete': 'Supprimer',
         'expired_event': 'Événement terminé'
@@ -24790,6 +24792,8 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    $scope.preCovidDate = new Date('04/15/2020');
+
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -24952,6 +24956,21 @@ function OfferController(
           $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
+  };
+
+  // Confirming event
+  controller.confirmEvent = function () {
+    var labelConfirmed = {name: 'confirmed2020'};
+    controller.labelAdded(labelConfirmed);
+  };
+
+  // Confirming event
+  controller.containsConfirmedTag = function () {
+    var labelConfirmed = {name: 'confirmed2020'};
+    var found = _.find(cachedOffer.labels, function (label) {
+      return labelConfirmed.name.toUpperCase() === label.toUpperCase();
+    });
+    return !!found;
   };
 
   function clearLabelsError() {
@@ -26180,6 +26199,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <!-- TODO: add -> && (event.created.getTime() < preCovidDate.getTime()) -->\n" +
+    "      <a class=\"btn btn-default btn-confirmed2020\" ng-if=\"(offerType === 'event') && !offerCtrl.containsConfirmedTag()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +

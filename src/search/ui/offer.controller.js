@@ -43,6 +43,8 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    $scope.preCovidDate = new Date('04/15/2020');
+
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -205,6 +207,21 @@ function OfferController(
           $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
+  };
+
+  // Confirming event
+  controller.confirmEvent = function () {
+    var labelConfirmed = {name: 'confirmed2020'};
+    controller.labelAdded(labelConfirmed);
+  };
+
+  // Confirming event
+  controller.containsConfirmedTag = function () {
+    var labelConfirmed = {name: 'confirmed2020'};
+    var found = _.find(cachedOffer.labels, function (label) {
+      return labelConfirmed.name.toUpperCase() === label.toUpperCase();
+    });
+    return !!found;
   };
 
   function clearLabelsError() {
