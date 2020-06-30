@@ -18,8 +18,7 @@
 <td ng-if="!offerCtrl.fetching" ng-class="{past: offerCtrl.offerExpired}">
   <span ng-if="::!offerCtrl.offerExpired">
     <div class="pull-right btn-group" uib-dropdown>
-      <!-- TODO: add -> && (event.created.getTime() < preCovidDate.getTime()) -->
-      <a class="btn btn-default btn-confirmed2020" ng-if="(offerType === 'event') && !offerCtrl.containsConfirmedTag()" ng-click="offerCtrl.confirmEvent()" translate-once="dashboard.directive.confirm_event"></a>
+      <a class="btn btn-default btn-confirmed2020" ng-if="(offerType === 'event') && (event.created.getTime() < preCovidDate.getTime()) && !offerCtrl.containsConfirmedTag()" ng-click="offerCtrl.confirmEvent()" translate-once="dashboard.directive.confirm_event"></a>
       <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}" translate-once="dashboard.directive.edit"></a>
       <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
       <ul uib-dropdown-menu role="menu">

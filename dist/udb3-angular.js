@@ -26199,8 +26199,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <!-- TODO: add -> && (event.created.getTime() < preCovidDate.getTime()) -->\n" +
-    "      <a class=\"btn btn-default btn-confirmed2020\" ng-if=\"(offerType === 'event') && !offerCtrl.containsConfirmedTag()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
+    "      <a class=\"btn btn-default btn-confirmed2020\" ng-if=\"(offerType === 'event') && (event.created.getTime() < preCovidDate.getTime()) && !offerCtrl.containsConfirmedTag()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +
