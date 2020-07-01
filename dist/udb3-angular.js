@@ -3666,6 +3666,7 @@ angular.module('udb.core')
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
         'edit': 'Bewerken',
+        'confirm_event': 'Bevestig dat het aanbod doorgaat',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
         'expired_event': 'Afgelopen evenement'
@@ -4743,6 +4744,7 @@ angular.module('udb.core')
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
         'edit': 'Modifier',
+        'confirm_event': 'Confirmez que l\'offre continue',
         'example': 'Exemple',
         'delete': 'Supprimer',
         'expired_event': 'Événement terminé'
@@ -24790,6 +24792,12 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    $scope.preCovidDate = new Date(
+      _.get(appConfig, 'confirmEventDate').toString()
+    );
+    var currentYear = new Date().getFullYear();
+    $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
+
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -24941,7 +24949,7 @@ function OfferController(
     } else {
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
-          if (response.success) {
+          if (response && response.success) {
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -24952,6 +24960,25 @@ function OfferController(
           $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
+  };
+
+  controller.confirmEvent = function () {
+    controller.labelAdded($scope.labelConfirmed);
+  };
+
+  controller.containsConfirmedTag = function () {
+    var found = _.find(cachedOffer.labels, function (label) {
+      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
+    });
+    return !!found;
+  };
+
+  controller.showButtonConfirmed = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      !controller.containsConfirmedTag()
+    );
   };
 
   function clearLabelsError() {
@@ -26180,6 +26207,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "      <a class=\"btn btn-default btn-confirmed\" ng-if=\"offerCtrl.showButtonConfirmed()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +

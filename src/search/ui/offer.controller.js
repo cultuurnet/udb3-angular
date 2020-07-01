@@ -43,6 +43,12 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    $scope.preCovidDate = new Date(
+      _.get(appConfig, 'confirmEventDate').toString()
+    );
+    var currentYear = new Date().getFullYear();
+    $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
+
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -194,7 +200,7 @@ function OfferController(
     } else {
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
-          if (response.success) {
+          if (response && response.success) {
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -205,6 +211,25 @@ function OfferController(
           $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
+  };
+
+  controller.confirmEvent = function () {
+    controller.labelAdded($scope.labelConfirmed);
+  };
+
+  controller.containsConfirmedTag = function () {
+    var found = _.find(cachedOffer.labels, function (label) {
+      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
+    });
+    return !!found;
+  };
+
+  controller.showButtonConfirmed = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      !controller.containsConfirmedTag()
+    );
   };
 
   function clearLabelsError() {

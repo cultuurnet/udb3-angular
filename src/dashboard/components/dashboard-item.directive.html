@@ -18,6 +18,7 @@
 <td ng-if="!offerCtrl.fetching" ng-class="{past: offerCtrl.offerExpired}">
   <span ng-if="::!offerCtrl.offerExpired">
     <div class="pull-right btn-group" uib-dropdown>
+      <a class="btn btn-default btn-confirmed" ng-if="offerCtrl.showButtonConfirmed()" ng-click="offerCtrl.confirmEvent()" translate-once="dashboard.directive.confirm_event"></a>
       <a class="btn btn-default" ng-href="{{ event.url + '/edit' }}" translate-once="dashboard.directive.edit"></a>
       <button type="button" class="btn btn-default" uib-dropdown-toggle><span class="caret"></span></button>
       <ul uib-dropdown-menu role="menu">
