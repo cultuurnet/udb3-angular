@@ -134,14 +134,20 @@ describe('Controller: Offer', function() {
 
   var deferredEvent;
 
-  beforeEach(module('udb.search'));
+  // beforeEach(module('udb.search'));
+  beforeEach(module('udb.search', function ($provide) {
+    var appConfig = {
+      confirmEventDate: '04/15/2020'
+    };
+    $provide.constant('appConfig', appConfig);
+  }));
   beforeEach(module('udb.templates'));
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
     $scope = $rootScope.$new();
     udbApi = $injector.get('udbApi');
     UdbEvent = $injector.get('UdbEvent');
-    UdbPlace = $injector.get('UdbPlace');
+    UdbPlace = $injector.get('UdbPlace');  
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     EventTranslationState = $injector.get('EventTranslationState');
     offerTranslator = $injector.get('offerTranslator');
@@ -167,7 +173,7 @@ describe('Controller: Offer', function() {
         $q: $q
       }
     );
-  }));
+  })); 
 
   it('should fetch the place information if not present', function () {
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
