@@ -147,7 +147,7 @@ describe('Controller: Offer', function() {
     $scope = $rootScope.$new();
     udbApi = $injector.get('udbApi');
     UdbEvent = $injector.get('UdbEvent');
-    UdbPlace = $injector.get('UdbPlace');  
+    UdbPlace = $injector.get('UdbPlace');
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     EventTranslationState = $injector.get('EventTranslationState');
     offerTranslator = $injector.get('offerTranslator');
@@ -173,7 +173,7 @@ describe('Controller: Offer', function() {
         $q: $q
       }
     );
-  })); 
+  }));
 
   it('should fetch the place information if not present', function () {
     deferredEvent.resolve(new UdbEvent(exampleEventJson));
