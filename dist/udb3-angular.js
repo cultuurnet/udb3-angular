@@ -24792,7 +24792,9 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
-    $scope.preCovidDate = new Date('04/15/2020');
+    $scope.preCovidDate = new Date(
+      _.get(appConfig, 'confirmEventDate').toString()
+    );
 
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -24945,7 +24947,7 @@ function OfferController(
     } else {
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
-          if (response.success) {
+          if (response && response.success) {
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -24971,6 +24973,14 @@ function OfferController(
       return labelConfirmed.name.toUpperCase() === label.toUpperCase();
     });
     return !!found;
+  };
+
+  controller.showButtonConfirmed = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      !controller.containsConfirmedTag()
+    );
   };
 
   function clearLabelsError() {
@@ -26199,7 +26209,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <a class=\"btn btn-default btn-confirmed2020\" ng-if=\"(offerType === 'event') && (event.created.getTime() < preCovidDate.getTime()) && !offerCtrl.containsConfirmedTag()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
+    "      <a class=\"btn btn-default btn-confirmed\" ng-if=\"offerCtrl.showButtonConfirmed()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +

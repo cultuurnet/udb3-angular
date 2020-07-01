@@ -43,7 +43,9 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
-    $scope.preCovidDate = new Date('04/15/2020');
+    $scope.preCovidDate = new Date(
+      _.get(appConfig, 'confirmEventDate').toString()
+    );
 
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -196,7 +198,7 @@ function OfferController(
     } else {
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
-          if (response.success) {
+          if (response && response.success) {
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -222,6 +224,14 @@ function OfferController(
       return labelConfirmed.name.toUpperCase() === label.toUpperCase();
     });
     return !!found;
+  };
+
+  controller.showButtonConfirmed = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      !controller.containsConfirmedTag()
+    );
   };
 
   function clearLabelsError() {
