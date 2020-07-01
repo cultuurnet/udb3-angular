@@ -46,6 +46,8 @@ function OfferController(
     $scope.preCovidDate = new Date(
       _.get(appConfig, 'confirmEventDate').toString()
     );
+    var currentYear = new Date().getFullYear();
+    $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
 
     if (!$scope.event.title) {
       controller.fetching = true;
@@ -211,17 +213,13 @@ function OfferController(
     }
   };
 
-  // Confirming event
   controller.confirmEvent = function () {
-    var labelConfirmed = {name: 'confirmed2020'};
-    controller.labelAdded(labelConfirmed);
+    controller.labelAdded($scope.labelConfirmed);
   };
 
-  // Confirming event
   controller.containsConfirmedTag = function () {
-    var labelConfirmed = {name: 'confirmed2020'};
     var found = _.find(cachedOffer.labels, function (label) {
-      return labelConfirmed.name.toUpperCase() === label.toUpperCase();
+      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
     });
     return !!found;
   };
