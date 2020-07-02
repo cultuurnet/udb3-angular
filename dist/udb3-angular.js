@@ -24792,8 +24792,9 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    var confirmEventDate = _.get(appConfig, 'confirmEventDate');
     $scope.preCovidDate = new Date(
-      _.get(appConfig, 'confirmEventDate').toString()
+      confirmEventDate ? confirmEventDate.toString() : '04/15/2020'
     );
     var currentYear = new Date().getFullYear();
     $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
