@@ -233,6 +233,14 @@ function OfferController(
     );
   };
 
+  controller.showConfirmedTag = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      controller.containsConfirmedTag()
+    );
+  };
+
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
