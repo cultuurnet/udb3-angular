@@ -87,6 +87,12 @@ function SearchController(
 
     $location.search(queryStringData);
 
+    window.parent.postMessage({
+      source: 'UDB',
+      type: 'QUERY_STRING_CHANGE',
+      queryString: new URLSearchParams(queryStringData).toString()
+    }, '*');
+
     $scope.resultViewer.loading = true;
 
     udbApi
