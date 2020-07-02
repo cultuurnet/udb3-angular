@@ -24,9 +24,13 @@ textarea.resize-vertical {
 .dashboard-item .btn-confirmed {
   margin-right: 2rem;
 }
+.dashboard-item .btn-group {
+  display: flex;
+}
 .dashboard-item .tag-confirmed {
+  display: inline-block;
+  white-space: nowrap;
   position: relative;
-  float: left;
   border: none;
   margin-right: 2rem;
   height: 3.5rem;
