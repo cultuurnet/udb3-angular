@@ -24794,7 +24794,7 @@ function OfferController(
   controller.init = function () {
     var confirmEventDate = _.get(appConfig, 'confirmEventDate');
     $scope.preCovidDate = new Date(
-      confirmEventDate ? confirmEventDate.toString() : '04/15/2020'
+      confirmEventDate ? confirmEventDate.toString() : '07/15/2020'
     );
     var currentYear = new Date().getFullYear();
     $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
@@ -26218,6 +26218,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default btn-confirmed\" ng-if=\"offerCtrl.showButtonConfirmed()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <div class=\"tag-confirmed\" ng-if=\"offerCtrl.showConfirmedTag()\">\n" +
+    "        <i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i>\n" +
     "        <span>Gaat door</span>\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
