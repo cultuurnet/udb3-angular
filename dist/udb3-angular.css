@@ -31,6 +31,15 @@ textarea.resize-vertical {
   margin-right: 2rem;
   height: 3.5rem;
   line-height: 3.5rem;
+  font-style: italic;
+}
+.dashboard-item .tag-confirmed:before {
+  content: "\f058 ";
+  font-family: FontAwesome;
+  color: #5cb85c;
+  margin-right: 6px;
+  font-style: normal;
+  font-size: 17px;
 }
 .title {
   margin: 0;
