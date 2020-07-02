@@ -76,10 +76,16 @@ function SearchController(
     var queryString = typeof query === 'string' ? query : query.queryString;
     var pageSearchParameter = $scope.resultViewer.currentPage > 1 ? String($scope.resultViewer.currentPage) : null;
 
-    $location.search({
-      'query': getSearchQuery().queryString || null,
-      'page': pageSearchParameter
-    });
+    var queryStringData = {};
+
+    if (getSearchQuery().queryString) {
+      queryStringData.query = getSearchQuery().queryString;
+    }
+    if (pageSearchParameter) {
+      queryStringData.page = pageSearchParameter;
+    }
+
+    $location.search(queryStringData);
 
     $scope.resultViewer.loading = true;
 
