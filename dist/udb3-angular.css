@@ -31,11 +31,14 @@ textarea.resize-vertical {
   display: inline-block;
   white-space: nowrap;
   position: relative;
-  border: none;
   margin-right: 2rem;
   height: 3.5rem;
   line-height: 3.5rem;
   font-style: italic;
+}
+.dashboard-item .tag-confirmed .fa-check-circle {
+  color: #5cb85c;
+  margin-right: 6px;
 }
 .title {
   margin: 0;
