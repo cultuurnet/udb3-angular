@@ -24,6 +24,7 @@
     "udb": true,
     "io": false,
     "accounting": false,
-    "moment": false
+    "moment": false,
+    "URLSearchParams": true
   }
 }
