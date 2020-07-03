@@ -26218,7 +26218,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
     "      <a class=\"btn btn-default btn-confirmed\" ng-if=\"offerCtrl.showButtonConfirmed()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <div class=\"tag-confirmed\" ng-if=\"offerCtrl.showConfirmedTag()\">\n" +
-    "        <i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i>\n" +
+    "        <i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i>\n" +
     "        <span>Gaat door</span>\n" +
     "      </div>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
