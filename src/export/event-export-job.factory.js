@@ -29,6 +29,12 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
     this.format = format;
     this.extension = _.find(ExportFormats, {type: format}).extension;
     this.details = details;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getEventExportDescription(this, JobStates.CREATED, JobStates);
+    this.messages[JobStates.STARTED] = getEventExportDescription(this, JobStates.STARTED, JobStates);
+    this.messages[JobStates.FINISHED] = getEventExportDescription(this, JobStates.FINISHED, JobStates);
+    this.messages[JobStates.FAILED] = getEventExportDescription(this, JobStates.FAILED, JobStates);
   };
 
   EventExportJob.prototype = Object.create(BaseJob.prototype);
@@ -52,15 +58,7 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
   };
 
   EventExportJob.prototype.getDescription = function () {
-    var description = '';
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Exporteren van evenementen mislukt';
-    } else {
-      description = 'Document .' + this.extension + ' met ' + this.eventCount + ' evenementen';
-    }
-
-    return description;
+    return getEventExportDescription(this, this.state, JobStates);
   };
 
   EventExportJob.prototype.info = function (jobData) {
@@ -74,4 +72,16 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
   };
 
   return (EventExportJob);
+}
+
+function getEventExportDescription (job, state, JobStates) {
+  var description = '';
+
+  if (state === JobStates.FAILED) {
+    description = 'Exporteren van evenementen mislukt';
+  } else {
+    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' evenementen';
+  }
+
+  return description;
 }

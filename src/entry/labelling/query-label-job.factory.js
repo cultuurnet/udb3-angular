@@ -12,7 +12,7 @@ angular
   .factory('QueryLabelJob', QueryLabelJobFactory);
 
 /* @ngInject */
-function QueryLabelJobFactory(BaseJob) {
+function QueryLabelJobFactory(BaseJob, JobStates) {
 
   /**
    * @class QueryLabelJob
@@ -25,6 +25,12 @@ function QueryLabelJobFactory(BaseJob) {
     BaseJob.call(this, commandId);
     this.eventCount = eventCount;
     this.label = label;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.STARTED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.FINISHED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.FAILED] = getQueryLabelJobDescription(this);
   };
 
   QueryLabelJob.prototype = Object.create(BaseJob.prototype);
@@ -35,9 +41,12 @@ function QueryLabelJobFactory(BaseJob) {
   };
 
   QueryLabelJob.prototype.getDescription = function() {
-    var job = this;
-    return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
+    return getQueryLabelJobDescription(this);
   };
 
   return (QueryLabelJob);
+}
+
+function getQueryLabelJobDescription (job) {
+  return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
 }
