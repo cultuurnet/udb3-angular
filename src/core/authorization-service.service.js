@@ -16,7 +16,8 @@ angular
     'manageOrganisations': 'ORGANISATIES_BEHEREN',
     'manageUsers': 'GEBRUIKERS_BEHEREN',
     'manageLabels': 'LABELS_BEHEREN',
-    'editFacilities': 'VOORZIENINGEN_BEWERKEN'
+    'editFacilities': 'VOORZIENINGEN_BEWERKEN',
+    'createProductions': 'PRODUCTIES_AANMAKEN'
   })
   .service('authorizationService', AuthorizationService);
 
