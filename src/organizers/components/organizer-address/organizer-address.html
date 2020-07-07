@@ -86,4 +86,11 @@
             </div>
         </div>
     </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <a href="#" ng-show="oac.hasAddress" class="btn btn-default" ng-click="oac.clearAddressInfo()" translate-once="organizer.address.delete">Leegmaken</a>
+        <p ng-show="oac.addressRemovedSuccess" class="alert alert-success" translate-once="organizer.address.delete_success"></span>
+        <p ng-show="oac.addressRemovedError" class="alert alert-danger" translate-once="organizer.address.delete_error"></span>
+      </div>
+    </div>
 </form>

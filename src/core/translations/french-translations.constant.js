@@ -835,7 +835,10 @@ angular.module('udb.core')
         'placeholder_city': 'Commune of code postal',
         'help_city': 'Il y a eu un problème dans la collection des villes.',
         'error_city': 'Veuillez introduire une commune.',
-        'change': 'Modifier'
+        'change': 'Modifier',
+        'delete': 'Vider',
+        'delete_success': 'Adresse supprimée avec succès',
+        'delete_error': 'Une erreur s\'est produite lors de la suppression de votre adresse'
       },
       contact: {
         'title': 'Contact',
@@ -883,6 +886,7 @@ angular.module('udb.core')
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
         'edit': 'Modifier',
+        'confirm_event': 'Confirmez que l\'offre continue',
         'example': 'Exemple',
         'delete': 'Supprimer',
         'expired_event': 'Événement terminé'

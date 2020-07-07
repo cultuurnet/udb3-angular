@@ -24,7 +24,16 @@ describe('Component: Organizer Address', function() {
       }
     };
 
-    $provide.constant('appConfig', appConfig);
+    var $stateParams = {
+      id: '0823f57e-a6bd-450a-b4f5-8459b4b11043'
+    }
+
+    $provide.constant(
+      {
+        appConfig: appConfig,
+        $stateParams: $stateParams,
+      }
+    );
   }));
 
   beforeEach(module('udb.organizers'));
@@ -34,7 +43,7 @@ describe('Component: Organizer Address', function() {
     $componentController = _$componentController_;
     citiesBE = $injector.get('citiesBE');
     citiesNL = $injector.get('citiesNL');
-    Levenshtein = $injector.get('Levenshtein')
+    Levenshtein = $injector.get('Levenshtein');
   }));
 
   function sendUpdateMock(address, error) {

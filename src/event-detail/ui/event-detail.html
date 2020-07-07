@@ -124,7 +124,7 @@
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">
                 <td><span class="row-label" translate-once="preview.organizer"></span></td>
-                <td ng-if="::event.organizer">{{::event.organizer.name}}</td>
+                <td ng-if="::event.organizer"><a ng-href="/organizer/{{event.organizer.id}}/preview" >{{::event.organizer.name}}</a></td>
                 <td ng-if="::(!event.organizer)" translate-once="preview.no_organizer"></td>
               </tr>
               <tr class="rv-event-info-price" ng-class="::{muted: !event.priceInfo.length}">

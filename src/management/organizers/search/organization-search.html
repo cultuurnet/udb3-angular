@@ -1,14 +1,16 @@
 <h1 class="title">Organisaties</h1>
 
 <div class="row">
-    <div class="col-md-6">
-        <udb-query-search-bar search-label="Zoeken op organisatie naam"
+    <div class="col-md-12">
+        <udb-query-search-bar search-label="Zoeken op organisatie"
+                              help-link="https://documentatie.uitdatabank.be/content/search_api_3/latest/searching-organizers.html"
+                              help-label="via geavanceerde zoekopdracht"
                               on-change="$ctrl.queryChanged(query)"></udb-query-search-bar>
     </div>
-    <div class="col-md-1">
+    <div class="col-md-2">
         <i ng-show="$ctrl.loading" class="fa fa-circle-o-notch fa-spin"></i>
     </div>
-    <div class="col-md-5 text-right">
+    <div class="col-md-12 text-right">
         <a class="btn btn-primary" ui-sref="split.organizer">
             <i class="fa fa-plus-circle"></i> Organisatie toevoegen
         </a>

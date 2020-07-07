@@ -18,8 +18,6 @@ function PlaceDetail(
   udbApi,
   $state,
   jsonLDLangFilter,
-  variationRepository,
-  offerEditor,
   eventCrud,
   $uibModal,
   $q,
@@ -32,7 +30,6 @@ function PlaceDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
-  var disableVariations = _.get(appConfig, 'disableVariations');
   var language = $translate.use() || 'nl';
 
   $q.when(placeId, function (offerLocation) {
@@ -137,12 +134,6 @@ function PlaceDetail(
       }
     }
 
-    if (!disableVariations) {
-      variationRepository
-        .getPersonalVariation(place)
-        .then(showVariation);
-    }
-
     $scope.finishedLoading = true;
     if (place.typicalAgeRange.indexOf('-') === place.typicalAgeRange.length - 1) {
       $scope.ageRange = place.typicalAgeRange.slice(0, -1) + '+';
@@ -150,10 +141,6 @@ function PlaceDetail(
     else {
       $scope.ageRange = place.typicalAgeRange;
     }
-  }
-
-  function showVariation(variation) {
-    $scope.place.description = variation.description[language];
   }
 
   function failedToLoad(reason) {
@@ -194,20 +181,6 @@ function PlaceDetail(
     var id = placeLocation.split('/').pop();
 
     $state.go('split.placeTranslate', {id: id});
-  };
-
-  $scope.updateDescription = function(description) {
-    if ($scope.place.description !== description) {
-      var updatePromise = offerEditor.editDescription(cachedPlace, description);
-
-      updatePromise.finally(function () {
-        if (!description) {
-          $scope.place.description = cachedPlace.description[language];
-        }
-      });
-
-      return updatePromise;
-    }
   };
 
   controller.goToDashboard = function() {

@@ -1,4 +1,4 @@
-<form class="form-inline" role="search">
+<form class="form-inline query-search-bar" role="search">
   <div class="form-group">
     <label for="user-search-input" ng-bind="::qsb.searchLabel"></label>
     <input type="text"
@@ -7,5 +7,6 @@
            ng-model="qsb.queryString"
            autocomplete="off"
            ng-change="qsb.find()">
+    <a ng-if="qsb.helpLink" ng-href="{{::qsb.helpLink}}" target="_blank" class="advanced-search" ng-bind="::qsb.helpLabel"></a>
   </div>
 </form>

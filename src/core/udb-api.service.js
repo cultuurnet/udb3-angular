@@ -324,21 +324,25 @@ function UdbApi(
    * @param {number} start
    * @param {number} limit
    * @param {string|null} website
-   * @param {string|null} name
+   * @param {string|null} query
+   * @param {boolean} useAdvancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, name) {
+  this.findOrganisations = function(start, limit, website, query, useAdvancedQuery) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
     if (website) { params.website = website; }
-    if (name) { params.name = name; }
+    if (useAdvancedQuery && query) {
+      params.q = query;
+    } else if (query) {
+      params.name = query;
+    }
 
     var configWithQueryParams = _.set(withoutAuthorization(defaultApiConfig), 'params', params);
-
     return $http
       .get(appConfig.baseUrl + 'organizers/', configWithQueryParams)
       .then(returnUnwrappedData);
@@ -406,6 +410,17 @@ function UdbApi(
 
     return $http
         .put(appConfig.baseUrl + 'organizers/' + organizerId + '/address/' + language, address, defaultApiConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
+   * @param {string} organizerId
+   * @returns {Promise.<CommandInfo|ApiProblem>}
+   */
+  this.removeOrganizerAddress = function(organizerId) {
+
+    return $http
+        .delete(appConfig.baseUrl + 'organizers/' + organizerId + '/address', defaultApiConfig)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -731,39 +746,6 @@ function UdbApi(
   };
 
   /**
-   * @param {URL} offerLocation
-   * @param {string} description
-   * @param {string} purpose
-   */
-  this.createVariation = function (offerLocation, description, purpose) {
-    var activeUser = uitidAuth.getUser(),
-        requestData = {
-          'owner': activeUser.uuid,
-          'purpose': purpose,
-          'same_as': offerLocation.toString(),
-          'description': description
-        };
-
-    return $http.post(
-      appConfig.baseUrl + 'variations/',
-      requestData,
-      defaultApiConfig
-    );
-  };
-
-  /**
-   * @param {string} variationId
-   * @param {string} description
-   */
-  this.editDescription = function (variationId, description) {
-    return $http.patch(
-      appConfig.baseUrl + 'variations/' + variationId,
-      {'description': description},
-      defaultApiConfig
-    );
-  };
-
-  /**
    * @param {URL} placeLocation
    * @returns {OfferIdentifier[]}
    */
@@ -828,16 +810,6 @@ function UdbApi(
 
     return $http.delete(
       offerLocation + '/organizer/' + organizerId,
-      defaultApiConfig
-    );
-  };
-
-  /**
-   * @param {string} variationId
-   */
-  this.deleteVariation = function (variationId) {
-    return $http.delete(
-      appConfig.baseUrl + 'variations/' + variationId,
       defaultApiConfig
     );
   };
@@ -931,40 +903,6 @@ function UdbApi(
     return $http
       .put(itemLocation.toString() + '/audience', {'audienceType': audienceType}, defaultApiConfig)
       .then(returnUnwrappedData, returnApiProblem);
-  };
-
-  this.getOfferVariations = function (ownerId, purpose, offerUrl) {
-    var parameters = {
-      'owner': ownerId,
-      'purpose': purpose,
-      'same_as': offerUrl
-    };
-
-    var config = _.cloneDeep(defaultApiConfig);
-    config.params = _.pick(parameters, _.isString);
-
-    return $http.get(
-      appConfig.baseUrl + 'variations/',
-      config
-    );
-  };
-
-  this.getVariation = function (variationId) {
-    var deferredVariation = $q.defer();
-
-    var variationRequest = $http.get(
-      appConfig.baseUrl + 'variations/' + variationId, defaultApiConfig);
-
-    variationRequest.success(function (jsonEvent) {
-      var event = new UdbEvent(jsonEvent);
-      deferredVariation.resolve(event);
-    });
-
-    variationRequest.error(function () {
-      deferredVariation.reject();
-    });
-
-    return deferredVariation.promise;
   };
 
   function returnUnwrappedData(response) {

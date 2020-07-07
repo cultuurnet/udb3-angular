@@ -19,13 +19,9 @@ function OfferController(
   offerTranslator,
   offerLabeller,
   $window,
-  offerEditor,
-  variationRepository,
   $q,
   appConfig,
   UdbEvent,
-  UdbPlace,
-  UdbOrganizer,
   $translate,
   authorizationService
 ) {
@@ -47,6 +43,13 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
+    var confirmEventDate = _.get(appConfig, 'confirmEventDate');
+    $scope.preCovidDate = new Date(
+      confirmEventDate ? confirmEventDate.toString() : '04/15/2020'
+    );
+    var currentYear = new Date().getFullYear();
+    $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
+
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -89,10 +92,7 @@ function OfferController(
 
   // initialize controller and take optional event actions
   $q.when(controller.init())
-    // translate location before fetching the maybe non-existant variation
-    // a variation does not change the location
     .then(translateLocation)
-    .then(fetchPersonalVariation)
     .then(ifOfferIsEvent)
     .finally(function () {
       controller.editable = true;
@@ -201,7 +201,7 @@ function OfferController(
     } else {
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function(response) {
-          if (response.success) {
+          if (response && response.success) {
             controller.labelResponse = 'success';
             controller.addedLabel = response.name;
           }
@@ -212,6 +212,33 @@ function OfferController(
           $scope.event.labels = angular.copy(cachedOffer.labels);
         });
     }
+  };
+
+  controller.confirmEvent = function () {
+    controller.labelAdded($scope.labelConfirmed);
+  };
+
+  controller.containsConfirmedTag = function () {
+    var found = _.find(cachedOffer.labels, function (label) {
+      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
+    });
+    return !!found;
+  };
+
+  controller.showButtonConfirmed = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      !controller.containsConfirmedTag()
+    );
+  };
+
+  controller.showConfirmedTag = function () {
+    return (
+      $scope.offerType === 'event' &&
+      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
+      controller.containsConfirmedTag()
+    );
   };
 
   function clearLabelsError() {
@@ -240,26 +267,6 @@ function OfferController(
   }
 
   /**
-   * @param {(UdbPlace|UdbEvent)}offer
-   * @return {Promise}
-   */
-  function fetchPersonalVariation(offer) {
-    var disableVariations = _.get(appConfig, 'disableVariations');
-    if (!disableVariations) {
-      return variationRepository
-        .getPersonalVariation(offer)
-        .then(function (personalVariation) {
-          $scope.event.description = personalVariation.description[defaultLanguage];
-          return personalVariation;
-        }, function () {
-          return $q.reject();
-        });
-    } else {
-      return $q.reject();
-    }
-  }
-
-  /**
    * @param {UdbEvent} event
    * @return {Promise}
    */
@@ -270,18 +277,4 @@ function OfferController(
     return $q.resolve(event);
   }
 
-  // Editing
-  controller.updateDescription = function (description) {
-    if ($scope.event.description !== description) {
-      var updatePromise = offerEditor.editDescription(cachedOffer, description);
-
-      updatePromise.finally(function () {
-        if (!description) {
-          $scope.event.description = cachedOffer.description[defaultLanguage];
-        }
-      });
-
-      return updatePromise;
-    }
-  };
 }

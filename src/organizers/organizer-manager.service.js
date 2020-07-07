@@ -32,7 +32,7 @@ function OrganizerManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findOrganisations(start, limit, null, query);
+    return udbApi.findOrganisations(start, limit, null, query, true);
   };
 
   /**
@@ -110,6 +110,17 @@ function OrganizerManager(udbApi) {
   service.updateOrganizerAddress = function(organizerId, address, language) {
     return udbApi
         .updateOrganizerAddress(organizerId, address, language);
+  };
+
+  /**
+   * Remove the address of a specific organizer.
+   * @param {string} organizerId
+   *
+   * @returns {Promise}
+   */
+  service.removeOrganizerAddress = function(organizerId) {
+    return udbApi
+        .removeOrganizerAddress(organizerId);
   };
 
   /**

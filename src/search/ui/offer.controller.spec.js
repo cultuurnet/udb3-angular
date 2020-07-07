@@ -10,8 +10,6 @@ describe('Controller: Offer', function() {
       EventTranslationState,
       offerTranslator,
       offerLabeller,
-      offerEditor,
-      variationRepository,
       $window,
       $q,
       exampleEventJson = {
@@ -134,9 +132,14 @@ describe('Controller: Offer', function() {
         "seeAlso": ["http://www.facebook.com/events/1590439757875265"]
       };
 
-  var deferredEvent, deferredVariation;
-
-  beforeEach(module('udb.search'));
+  var deferredEvent;
+  
+  beforeEach(module('udb.search', function ($provide) {
+    var appConfig = {
+      confirmEventDate: '04/15/2020'
+    };
+    $provide.constant('appConfig', appConfig);
+  }));
   beforeEach(module('udb.templates'));
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
@@ -147,15 +150,12 @@ describe('Controller: Offer', function() {
     jsonLDLangFilter = $injector.get('jsonLDLangFilter');
     EventTranslationState = $injector.get('EventTranslationState');
     offerTranslator = $injector.get('offerTranslator');
-    offerEditor = $injector.get('offerEditor');
     offerLabeller = jasmine.createSpyObj('offerLabeller', ['recentLabels', 'label', 'unlabel']);
-    variationRepository = $injector.get('variationRepository');
     $window = $injector.get('$window');
     $q = _$q_;
 
-    deferredEvent = $q.defer(); deferredVariation = $q.defer();
+    deferredEvent = $q.defer();
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
-    spyOn(variationRepository, 'getPersonalVariation').and.returnValue(deferredVariation.promise);
 
     $scope.event = {};
     $scope.event['@id'] = exampleEventJson['@id'];
@@ -169,8 +169,6 @@ describe('Controller: Offer', function() {
         offerTranslator: offerTranslator,
         offerLabeller: offerLabeller,
         $window: $window,
-        offerEditor: offerEditor,
-        variationRepository: variationRepository,
         $q: $q
       }
     );
@@ -275,43 +273,6 @@ describe('Controller: Offer', function() {
     deferredEvent.resolve(new UdbEvent(eventJson));
     $scope.$digest();
     expect(offerController.hasFutureAvailableFrom).toBeFalsy();
-  });
-
-  describe('variations: ', function () {
-    beforeEach(function () {
-      deferredEvent.resolve(new UdbEvent(exampleEventJson));
-    });
-
-    it('displays the original event description when no personal variation is found', function () {
-      deferredVariation.reject();
-      $scope.$digest();
-      expect($scope.event.description).toEqual('Een korte beschrijving voor dit evenement');
-      expect($scope.event.location.name).toEqual('Cultuurcentrum Scharpoord - Knokke-Heist');
-    });
-
-    it('displays a custom description when a personal variation of an event is available', function () {
-      var variation = new UdbEvent(exampleEventJson);
-      variation.description.nl = 'Een variatie van de originele beschrijving';
-      deferredVariation.resolve(variation);
-      $scope.$digest();
-      expect($scope.event.description).toEqual('Een variatie van de originele beschrijving');
-      expect($scope.event.location.name).toEqual('Cultuurcentrum Scharpoord - Knokke-Heist');
-    });
-
-    it('reverts back to the original event description when deleting the personal description', function() {
-      var variation = new UdbEvent(exampleEventJson);
-      variation.description.nl = 'Een variatie van de originele beschrijving';
-      deferredVariation.resolve(variation);
-      $scope.$digest();
-      var deferredDeletion = $q.defer();
-      spyOn(offerEditor, 'deleteVariation').and.returnValue(deferredDeletion.promise);
-      offerController.updateDescription('');
-
-      deferredDeletion.resolve();
-      $scope.$digest();
-      expect($scope.event.description).toEqual('Een korte beschrijving voor dit evenement');
-      expect($scope.event.location.name).toEqual('Cultuurcentrum Scharpoord - Knokke-Heist');
-    });
   });
 
   it('should display an error message when removing a label fails', function () {

@@ -21,6 +21,25 @@ textarea.resize-vertical {
 .dashboard-item .dropdown {
   min-width: 120px;
 }
+.dashboard-item .btn-confirmed {
+  margin-right: 2rem;
+}
+.dashboard-item .btn-group {
+  display: flex;
+}
+.dashboard-item .tag-confirmed {
+  display: inline-block;
+  white-space: nowrap;
+  position: relative;
+  margin-right: 2rem;
+  height: 3.5rem;
+  line-height: 3.5rem;
+  font-style: italic;
+}
+.dashboard-item .tag-confirmed .fa-check-circle {
+  color: #5cb85c;
+  margin-right: 6px;
+}
 .title {
   margin: 0;
   line-height: 56px;
@@ -3302,6 +3321,9 @@ h2.block-header {
   height: 9px;
   z-index: 99;
   content: "";
+}
+.event-detail .list-unstyled {
+  word-break: break-word;
 }
 .event-detail-description {
   color: black;
@@ -10467,6 +10489,14 @@ button.close {
 }
 .roles-results .table thead tr th:last-child {
   width: 20%;
+}
+.query-search-bar .form-group {
+  width: 100%;
+  display: flex;
+}
+.query-search-bar #user-search-input {
+  width: 50%;
+  margin: 0 10px;
 }
 [udb-form-group] .help-block {
   display: none;

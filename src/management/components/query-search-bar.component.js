@@ -14,7 +14,9 @@ angular
     controllerAs: 'qsb',
     bindings: {
       onChange: '&',
-      searchLabel: '@'
+      searchLabel: '@',
+      helpLink: '@',
+      helpLabel: '@'
     }
   });
 
