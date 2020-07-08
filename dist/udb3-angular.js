@@ -24948,15 +24948,14 @@ function OfferController(
       });
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
+      controller.addedLabel = newLabel.name;
       offerLabeller.label(cachedOffer, newLabel.name)
         .then(function() {
           controller.labelResponse = 'success';
-          controller.addedLabel = newLabel.name;
           $scope.event.labels = angular.copy(cachedOffer.labels);
         })
-        .catch(function(err) {
+        .catch(function() {
           controller.labelResponse = 'error';
-          controller.labelsError = err;
         });
     }
   };
@@ -31542,7 +31541,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            label-added=\"eventCtrl.labelAdded(label)\"\n" +
     "                            label-removed=\"eventCtrl.labelRemoved(label)\"></udb-label-select>\n" +
     "          <div ng-if=\"eventCtrl.labelResponse === 'error'\" class=\"alert alert-danger\">\n" +
-    "            Het toevoegen van het label '{{eventCtrl.labelsError.name}}' is niet gelukt.\n" +
+    "            Het toevoegen van het label '{{eventCtrl.addedLabel}}' is niet gelukt.\n" +
     "          </div>\n" +
     "          <div ng-if=\"eventCtrl.labelResponse === 'success'\" class=\"alert alert-success\">\n" +
     "            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
