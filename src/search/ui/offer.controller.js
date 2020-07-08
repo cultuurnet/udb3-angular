@@ -203,6 +203,7 @@ function OfferController(
         .then(function() {
           controller.labelResponse = 'success';
           controller.addedLabel = newLabel.name;
+          $scope.event.labels = angular.copy(cachedOffer.labels);
         })
         .catch(function(err) {
           controller.labelResponse = 'error';

@@ -24939,7 +24939,6 @@ function OfferController(
    * @param {Label} newLabel
    */
   controller.labelAdded = function (newLabel) {
-    console.log('label added');
     var similarLabel = _.find(cachedOffer.labels, function (label) {
       return newLabel.name.toUpperCase() === label.toUpperCase();
     });
@@ -24953,6 +24952,7 @@ function OfferController(
         .then(function() {
           controller.labelResponse = 'success';
           controller.addedLabel = newLabel.name;
+          $scope.event.labels = angular.copy(cachedOffer.labels);
         })
         .catch(function(err) {
           controller.labelResponse = 'error';
