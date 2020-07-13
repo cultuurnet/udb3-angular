@@ -24,6 +24,7 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
    */
   var EventExportJob = function (commandId, eventCount, format, details) {
     BaseJob.call(this, commandId);
+    this.type = 'export';
     this.exportUrl = '';
     this.eventCount = eventCount;
     this.format = format;

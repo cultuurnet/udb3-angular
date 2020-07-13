@@ -23,6 +23,7 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
    */
   var OfferLabelBatchJob = function (commandId, offers, label) {
     BaseJob.call(this, commandId);
+    this.type = 'label_batch';
     this.events = offers;
     this.addEventsAsTask(offers);
     this.label = label;

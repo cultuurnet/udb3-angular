@@ -23,6 +23,7 @@ function QueryLabelJobFactory(BaseJob, JobStates) {
    */
   var QueryLabelJob = function (commandId, eventCount, label) {
     BaseJob.call(this, commandId);
+    this.type = 'label_query';
     this.eventCount = eventCount;
     this.label = label;
 
