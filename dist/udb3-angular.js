@@ -9041,9 +9041,16 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
    */
   var OfferLabelBatchJob = function (commandId, offers, label) {
     BaseJob.call(this, commandId);
+    this.type = 'label_batch';
     this.events = offers;
     this.addEventsAsTask(offers);
     this.label = label;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getOfferLabelBatchJobDescription(this, JobStates.CREATED, JobStates);
+    this.messages[JobStates.STARTED] = getOfferLabelBatchJobDescription(this, JobStates.STARTED, JobStates);
+    this.messages[JobStates.FINISHED] = getOfferLabelBatchJobDescription(this, JobStates.FINISHED, JobStates);
+    this.messages[JobStates.FAILED] = getOfferLabelBatchJobDescription(this, JobStates.FAILED, JobStates);
   };
 
   OfferLabelBatchJob.prototype = Object.create(BaseJob.prototype);
@@ -9057,21 +9064,24 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
   };
 
   OfferLabelBatchJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Labelen van evenementen mislukt';
-    } else {
-      description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
-    }
-
-    return description;
+    return getOfferLabelBatchJobDescription(this, this.state, JobStates);
   };
 
   return (OfferLabelBatchJob);
 }
 OfferLabelBatchJobFactory.$inject = ["BaseJob", "JobStates"];
+
+function getOfferLabelBatchJobDescription (job, state, JobStates) {
+  var description;
+
+  if (state === JobStates.FAILED) {
+    description = 'Labelen van evenementen mislukt';
+  } else {
+    description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
+  }
+
+  return description;
+}
 })();
 
 // Source: src/entry/labelling/offer-label-modal.controller.js
@@ -9297,7 +9307,7 @@ angular
   .factory('QueryLabelJob', QueryLabelJobFactory);
 
 /* @ngInject */
-function QueryLabelJobFactory(BaseJob) {
+function QueryLabelJobFactory(BaseJob, JobStates) {
 
   /**
    * @class QueryLabelJob
@@ -9308,8 +9318,15 @@ function QueryLabelJobFactory(BaseJob) {
    */
   var QueryLabelJob = function (commandId, eventCount, label) {
     BaseJob.call(this, commandId);
+    this.type = 'label_query';
     this.eventCount = eventCount;
     this.label = label;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.STARTED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.FINISHED] = getQueryLabelJobDescription(this);
+    this.messages[JobStates.FAILED] = getQueryLabelJobDescription(this);
   };
 
   QueryLabelJob.prototype = Object.create(BaseJob.prototype);
@@ -9320,13 +9337,16 @@ function QueryLabelJobFactory(BaseJob) {
   };
 
   QueryLabelJob.prototype.getDescription = function() {
-    var job = this;
-    return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
+    return getQueryLabelJobDescription(this);
   };
 
   return (QueryLabelJob);
 }
-QueryLabelJobFactory.$inject = ["BaseJob"];
+QueryLabelJobFactory.$inject = ["BaseJob", "JobStates"];
+
+function getQueryLabelJobDescription (job) {
+  return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
+}
 })();
 
 // Source: src/entry/logging/base-job.factory.js
@@ -9682,6 +9702,16 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
   };
 
   this.addJob = function (job) {
+    window.parent.postMessage({
+      source: 'UDB',
+      type: 'JOB_ADDED',
+      job: {
+        type: job.type,
+        id: job.id,
+        messages: job.messages
+      }
+    }, '*');
+
     jobs.unshift(job);
     console.log('job with id: ' + job.id + ' created');
     updateJobLists();
@@ -16096,11 +16126,18 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
    */
   var EventExportJob = function (commandId, eventCount, format, details) {
     BaseJob.call(this, commandId);
+    this.type = 'export';
     this.exportUrl = '';
     this.eventCount = eventCount;
     this.format = format;
     this.extension = _.find(ExportFormats, {type: format}).extension;
     this.details = details;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getEventExportDescription(this, JobStates.CREATED, JobStates);
+    this.messages[JobStates.STARTED] = getEventExportDescription(this, JobStates.STARTED, JobStates);
+    this.messages[JobStates.FINISHED] = getEventExportDescription(this, JobStates.FINISHED, JobStates);
+    this.messages[JobStates.FAILED] = getEventExportDescription(this, JobStates.FAILED, JobStates);
   };
 
   EventExportJob.prototype = Object.create(BaseJob.prototype);
@@ -16124,15 +16161,7 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
   };
 
   EventExportJob.prototype.getDescription = function () {
-    var description = '';
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Exporteren van evenementen mislukt';
-    } else {
-      description = 'Document .' + this.extension + ' met ' + this.eventCount + ' evenementen';
-    }
-
-    return description;
+    return getEventExportDescription(this, this.state, JobStates);
   };
 
   EventExportJob.prototype.info = function (jobData) {
@@ -16148,6 +16177,18 @@ function EventExportJobFactory(BaseJob, JobStates, ExportFormats) {
   return (EventExportJob);
 }
 EventExportJobFactory.$inject = ["BaseJob", "JobStates", "ExportFormats"];
+
+function getEventExportDescription (job, state, JobStates) {
+  var description = '';
+
+  if (state === JobStates.FAILED) {
+    description = 'Exporteren van evenementen mislukt';
+  } else {
+    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' evenementen';
+  }
+
+  return description;
+}
 })();
 
 // Source: src/export/event-export.controller.js
