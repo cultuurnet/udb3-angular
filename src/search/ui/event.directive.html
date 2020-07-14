@@ -149,7 +149,7 @@
                             label-added="eventCtrl.labelAdded(label)"
                             label-removed="eventCtrl.labelRemoved(label)"></udb-label-select>
           <div ng-if="eventCtrl.labelResponse === 'error'" class="alert alert-danger">
-            Het toevoegen van het label '{{eventCtrl.labelsError.name}}' is niet gelukt.
+            Het toevoegen van het label '{{eventCtrl.addedLabel}}' is niet gelukt.
           </div>
           <div ng-if="eventCtrl.labelResponse === 'success'" class="alert alert-success">
             Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.
