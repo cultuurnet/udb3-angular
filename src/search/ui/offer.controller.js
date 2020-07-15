@@ -199,17 +199,14 @@ function OfferController(
       });
       $window.alert('Het label "' + newLabel.name + '" is reeds toegevoegd als "' + similarLabel + '".');
     } else {
+      controller.addedLabel = newLabel.name;
       offerLabeller.label(cachedOffer, newLabel.name)
-        .then(function(response) {
-          if (response && response.success) {
-            controller.labelResponse = 'success';
-            controller.addedLabel = response.name;
-          }
-          else {
-            controller.labelResponse = 'error';
-            controller.labelsError = response;
-          }
+        .then(function() {
+          controller.labelResponse = 'success';
           $scope.event.labels = angular.copy(cachedOffer.labels);
+        })
+        .catch(function() {
+          controller.labelResponse = 'error';
         });
     }
   };
