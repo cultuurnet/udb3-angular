@@ -23,9 +23,16 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
    */
   var OfferLabelBatchJob = function (commandId, offers, label) {
     BaseJob.call(this, commandId);
+    this.type = 'label_batch';
     this.events = offers;
     this.addEventsAsTask(offers);
     this.label = label;
+
+    this.messages = {};
+    this.messages[JobStates.CREATED] = getOfferLabelBatchJobDescription(this, JobStates.CREATED, JobStates);
+    this.messages[JobStates.STARTED] = getOfferLabelBatchJobDescription(this, JobStates.STARTED, JobStates);
+    this.messages[JobStates.FINISHED] = getOfferLabelBatchJobDescription(this, JobStates.FINISHED, JobStates);
+    this.messages[JobStates.FAILED] = getOfferLabelBatchJobDescription(this, JobStates.FAILED, JobStates);
   };
 
   OfferLabelBatchJob.prototype = Object.create(BaseJob.prototype);
@@ -39,17 +46,20 @@ function OfferLabelBatchJobFactory(BaseJob, JobStates) {
   };
 
   OfferLabelBatchJob.prototype.getDescription = function () {
-    var job = this,
-        description;
-
-    if (this.state === JobStates.FAILED) {
-      description = 'Labelen van evenementen mislukt';
-    } else {
-      description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
-    }
-
-    return description;
+    return getOfferLabelBatchJobDescription(this, this.state, JobStates);
   };
 
   return (OfferLabelBatchJob);
+}
+
+function getOfferLabelBatchJobDescription (job, state, JobStates) {
+  var description;
+
+  if (state === JobStates.FAILED) {
+    description = 'Labelen van evenementen mislukt';
+  } else {
+    description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
+  }
+
+  return description;
 }
