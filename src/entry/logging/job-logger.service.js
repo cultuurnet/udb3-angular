@@ -127,6 +127,16 @@ function JobLogger(udbSocket, JobStates, EventExportJob, $rootScope) {
   };
 
   this.addJob = function (job) {
+    window.parent.postMessage({
+      source: 'UDB',
+      type: 'JOB_ADDED',
+      job: {
+        type: job.type,
+        id: job.id,
+        messages: job.messages
+      }
+    }, '*');
+
     jobs.unshift(job);
     console.log('job with id: ' + job.id + ' created');
     updateJobLists();
