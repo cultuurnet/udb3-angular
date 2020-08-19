@@ -7521,7 +7521,12 @@ function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
     if (newToken && newToken !== currentToken) {
       currentToken = newToken;
       service.setToken(newToken);
-      $location.search('jwt', null);
+
+      if (window === window.parent) {
+        // Redirect to the current URL but without jwt param, but only if the app is not running in an iframe.
+        // @see https://jira.uitdatabank.be/browse/III-3408
+        $location.search('jwt', null);
+      }
     }
 
     return currentToken;
