@@ -37,8 +37,10 @@
     </div>
   </span>
   <span ng-if="::offerCtrl.offerExpired">
-    <div class="pull-right">
+    <div class="pull-right text-right">
       <span class="text-muted" translate-once="dashboard.directive.expired_event"></span>
+      <br ng-if="offerCtrl.showConcludedButton()" />
+      <button type="button" class="btn btn-default" ng-if="offerCtrl.showConcludedButton()" ng-click="offerCtrl.handleConcludedButtonClick(event.id, event.name)" ng-bind="::offerCtrl.concludedButtonLabel"></button>
     </div>
   </span>
 </td>
