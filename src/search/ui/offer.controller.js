@@ -238,6 +238,21 @@ function OfferController(
     );
   };
 
+  controller.showConcludedButton = function () {
+    return (
+      $scope.offerType === 'event' &&
+      _.get(appConfig, 'concludedButton.toggle', false)
+    );
+  };
+
+  controller.concludedButtonLabel = _.get(appConfig, 'concludedButton.label', '');
+
+  controller.handleConcludedButtonClick = function (eventId, eventTitle) {
+    window.parent.location.href = _.get(appConfig, 'concludedButton.url', '')
+      .replace(/%EVENT_ID%/gi, eventId)
+      .replace(/%EVENT_TITLE%/gi, eventTitle);
+  };
+
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';

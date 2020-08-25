@@ -25037,6 +25037,21 @@ function OfferController(
     );
   };
 
+  controller.showConcludedButton = function () {
+    return (
+      $scope.offerType === 'event' &&
+      _.get(appConfig, 'concludedButton.toggle', false)
+    );
+  };
+
+  controller.concludedButtonLabel = _.get(appConfig, 'concludedButton.label', '');
+
+  controller.handleConcludedButtonClick = function (eventId, eventTitle) {
+    window.parent.location.href = _.get(appConfig, 'concludedButton.url', '')
+      .replace(/%EVENT_ID%/gi, eventId)
+      .replace(/%EVENT_TITLE%/gi, eventTitle);
+  };
+
   function clearLabelsError() {
     controller.labelResponse = '';
     controller.labelsError = '';
@@ -26282,8 +26297,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "  </span>\n" +
     "  <span ng-if=\"::offerCtrl.offerExpired\">\n" +
-    "    <div class=\"pull-right\">\n" +
+    "    <div class=\"pull-right text-right\">\n" +
     "      <span class=\"text-muted\" translate-once=\"dashboard.directive.expired_event\"></span>\n" +
+    "      <br ng-if=\"offerCtrl.showConcludedButton()\" />\n" +
+    "      <button type=\"button\" class=\"btn btn-default\" ng-if=\"offerCtrl.showConcludedButton()\" ng-click=\"offerCtrl.handleConcludedButtonClick(event.id, event.name)\" ng-bind=\"::offerCtrl.concludedButtonLabel\"></button>\n" +
     "    </div>\n" +
     "  </span>\n" +
     "</td>\n"
