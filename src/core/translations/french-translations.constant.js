@@ -503,6 +503,22 @@ angular.module('udb.core')
         'bookable_event_success_message': 'Le lieu est déterminé en consultation avec l\'école.'
       },
       step4: {
+        age: {
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Seniors',
+          'Custom': 'Autres',
+          'from': 'Du',
+          'till': 'au',
+          'age': 'ans',
+          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
+        },
         'basic_data': 'Données de base',
         'name_event': 'Nom de l\'événement',
         'name_place': 'Nom du lieu',
@@ -567,22 +583,6 @@ angular.module('udb.core')
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter une image',
-        age: {
-          'age_label': 'Adapté à',
-          'All ages': 'De tous âges',
-          'Toddlers': 'Tout-petits',
-          'Preschoolers': 'Enfants d\'âge préscolaire',
-          'Kids': 'Enfants',
-          'Teenagers': 'Adolescents',
-          'Youngsters': 'Jeunes',
-          'Adults': 'Adultes',
-          'Seniors': 'Seniors',
-          'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'au',
-          'age': 'ans',
-          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
-        },
         priceInfo: {
           'price_label': 'Prix',
           'add_prices': 'Ajouter prix',

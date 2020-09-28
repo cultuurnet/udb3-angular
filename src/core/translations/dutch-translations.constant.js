@@ -506,6 +506,22 @@ angular.module('udb.core')
         'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
       step4: {
+        age: {
+          'age_label': 'Geschikt voor',
+          'All ages': 'Alle leeftijden',
+          'Toddlers': 'Peuters',
+          'Preschoolers': 'Kleuters',
+          'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
+          'Youngsters': 'Jongeren',
+          'Adults': 'Volwassenen',
+          'Seniors': 'Senioren',
+          'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar',
+          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
+        },
         'basic_data': 'Basisgegevens',
         'name_event': 'Naam van het evenement',
         'name_place': 'Naam van de locatie',
@@ -570,22 +586,6 @@ angular.module('udb.core')
         'delete': 'Verwijderen',
         'main_image': 'Maak hoofdafbeelding',
         'add_image': 'Afbeelding toevoegen',
-        age: {
-          'age_label': 'Geschikt voor',
-          'All ages': 'Alle leeftijden',
-          'Toddlers': 'Peuters',
-          'Preschoolers': 'Kleuters',
-          'Kids': 'Kinderen',
-          'Teenagers': 'Tieners',
-          'Youngsters': 'Jongeren',
-          'Adults': 'Volwassenen',
-          'Seniors': 'Senioren',
-          'Custom': 'Andere',
-          'from': 'Van',
-          'till': 'tot',
-          'age': 'jaar',
-          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
-        },
         priceInfo: {
           'price_label': 'Prijs',
           'add_prices': 'Prijzen toevoegen',

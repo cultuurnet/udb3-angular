@@ -61,7 +61,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
       controller.hasError = true;
-      showError($translate.instant('eventForm.step5.age.error_max_lower_than_min')); return;
+      showError($translate.instant('eventForm.step4.age.error_max_lower_than_min')); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
@@ -146,7 +146,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   }
 
   $scope.translateAgeRange = function (ageRange) {
-    return $translate.instant('eventForm.step5.age.' + ageRange);
+    return $translate.instant('eventForm.step4.age.' + ageRange);
   };
 
   $scope.getAgeRangeLabel = function (ageRange) {
