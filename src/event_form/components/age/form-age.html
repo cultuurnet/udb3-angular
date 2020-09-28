@@ -1,48 +1,70 @@
 <div class="row extra-leeftijd">
-    <div class="extra-task" ng-class="{'state-complete': !!fagec.activeAgeRange}">
-        <div class="col-sm-3">
-            <em class="extra-task-label" translate-once="eventForm.step5.age.age_label"></em>
-        </div>
-        <div class="col-sm-9">
-            <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
-                <button class="form-age-range-button"
-                   ng-class="(fagec.activeAgeRange === type) ? 'btn active' : 'btn btn-default'"
-                   ng-mousedown="fagec.setAgeRangeByType(type);">
-                  {{ translateAgeRange(ageRange.label) }} 
-                  <span>{{ getAgeRangeLabel(ageRange) }}</span>
-            </button>
-            </span>
-            <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
-               <form name="ageForm">
-                   <div class="form-group" >
-                    <label for="min-age" translate-once="eventForm.step5.age.from"></label>
-                    <input type="text"
-                           class="form-control"
-                           id="min-age"
-                           name="min"
-                           ng-model="fagec.minAge"
-                           ng-blur="fagec.instantSaveAgeRange()"
-                           ng-change="fagec.delayedSaveAgeRange()"
-                           udb-age-input>
-                    <span class="form-text" translate-once="eventForm.step5.age.age"></span>
-                </div>
-                <div class="form-group">
-                    <label for="max-age" translate-once="eventForm.step5.age.till"></label>
-                    <input type="text"
-                           class="form-control"
-                           id="max-age"
-                           name="max"
-                           ng-model="fagec.maxAge"
-                           ng-blur="fagec.instantSaveAgeRange()"
-                           ng-change="fagec.delayedSaveAgeRange()"
-                           udb-age-input>
-                    <span class="form-text" translate-once="eventForm.step5.age.age"></span>
-                </div>
-               </form>
-            </div>
-            <div class="alert alert-danger" role="alert" ng-show="fagec.error">
-                <span ng-bind="fagec.error"></span>
-            </div>
-        </div>
+  <div
+    class="extra-task col-md-8 col-lg-7"
+    ng-class="{'state-complete': !!fagec.activeAgeRange}"
+  >
+    <label
+      ng-show="eventFormData.isEvent"
+      translate-once="eventForm.step5.age.age_label"
+    ></label>
+    <div>
+      <span ng-repeat="(type, ageRange) in ::fagec.ageRanges">
+        <button
+          class="form-age-range-button"
+          ng-class="(fagec.activeAgeRange === type) ? 'btn active' : 'btn btn-default'"
+          ng-mousedown="fagec.setAgeRangeByType(type);"
+        >
+          {{ translateAgeRange(ageRange.label) }}
+          <span>{{ getAgeRangeLabel(ageRange) }}</span>
+        </button>
+      </span>
+      <div ng-show="fagec.rangeInputEnabled" class="form-inline" id="form-age">
+        <form name="ageForm">
+          <div class="form-group">
+            <label
+              for="min-age"
+              translate-once="eventForm.step5.age.from"
+            ></label>
+            <input
+              type="text"
+              class="form-control"
+              id="min-age"
+              name="min"
+              ng-model="fagec.minAge"
+              ng-blur="fagec.instantSaveAgeRange()"
+              ng-change="fagec.delayedSaveAgeRange()"
+              udb-age-input
+            />
+            <span
+              class="form-text"
+              translate-once="eventForm.step5.age.age"
+            ></span>
+          </div>
+          <div class="form-group">
+            <label
+              for="max-age"
+              translate-once="eventForm.step5.age.till"
+            ></label>
+            <input
+              type="text"
+              class="form-control"
+              id="max-age"
+              name="max"
+              ng-model="fagec.maxAge"
+              ng-blur="fagec.instantSaveAgeRange()"
+              ng-change="fagec.delayedSaveAgeRange()"
+              udb-age-input
+            />
+            <span
+              class="form-text"
+              translate-once="eventForm.step5.age.age"
+            ></span>
+          </div>
+        </form>
+      </div>
+      <div class="alert alert-danger" role="alert" ng-show="fagec.error">
+        <span ng-bind="fagec.error"></span>
+      </div>
     </div>
+  </div>
 </div>
