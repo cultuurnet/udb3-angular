@@ -86,6 +86,10 @@ function EventFormStep4Controller(
       $scope.missingInfo.push('title is missing');
     }
 
+    if (!EventFormData.ageRange) {
+      $scope.missingInfo.push('age range is missing');
+    }
+
     if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
       return;

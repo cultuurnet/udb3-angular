@@ -752,6 +752,7 @@ angular.module('udb.core')
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
     'title is missing': 'Gaf je je aanbod een titel in <a href="#titel" class="alert-link">stap 4</a>?',
+    'age range is missing': 'Gaf je je aanbod een leeftijdsgroep in <a href="#titel" class="alert-link">stap 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',

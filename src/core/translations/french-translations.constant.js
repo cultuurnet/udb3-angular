@@ -748,6 +748,7 @@ angular.module('udb.core')
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
+    'age range is missing': 'Avez-vous choisi une tranche d\'âge en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
