@@ -184,6 +184,7 @@ function EventFormStep4Controller(
     if (EventFormData.showStep5 === true) {
       eventCrud.updateTypicalAgeRange(EventFormData);
     }
+    validateEvent();
   });
 
   /**
