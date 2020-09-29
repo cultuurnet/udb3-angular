@@ -43,6 +43,9 @@ function EventFormStep4Controller(
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
 
+  /**
+   * Validate when an existing event is opened
+   */
   if ($scope.eventFormData.showStep1 === true &&
     $scope.eventFormData.showStep2 === true &&
     $scope.eventFormData.showStep3 === true) {
