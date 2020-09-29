@@ -86,7 +86,7 @@ function EventFormStep4Controller(
       $scope.missingInfo.push('title is missing');
     }
 
-    if (!EventFormData.ageRange) {
+    if (!EventFormData.typicalAgeRange) {
       $scope.missingInfo.push('age range is missing');
     }
 
@@ -167,6 +167,13 @@ function EventFormStep4Controller(
     }
   }
 
+  $rootScope.$on('changeTypicalAgeRange', function (event, ageRange) {
+    $scope.eventFormData.typicalAgeRange = ageRange;
+    if (EventFormData.showStep5 === true) {
+      eventCrud.updateTypicalAgeRange(EventFormData);
+    }
+  });
+
   /**
    * Save Event for the first time.
    */
@@ -179,6 +186,7 @@ function EventFormStep4Controller(
 
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
+      eventCrud.updateTypicalAgeRange(EventFormData);
       EventFormData.majorInfoChanged = false;
 
       $scope.saving = false;

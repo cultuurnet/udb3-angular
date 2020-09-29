@@ -13,7 +13,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud, $translate) {
+function FormAgeController($scope, EventFormData, eventCrud, $translate, $rootScope) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -65,7 +65,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     }
 
     controller.formData.setTypicalAgeRange(min, max);
-    eventCrud.updateTypicalAgeRange(controller.formData);
+    $rootScope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
   }
 
   function digestSaveAgeRange() {
