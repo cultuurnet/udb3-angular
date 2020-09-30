@@ -8060,12 +8060,8 @@ PlaceDeleteConfirmModalController.$inject = ["$scope", "$uibModalInstance", "eve
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer;
-    dash.toggleInfoMessage = (appConfig.toggleInfoMessage);
     dash.username = '';
     dash.hideOnlineDate = false;
-    if (appConfig.infoMessage && appConfig.infoMessage[language]) {
-      dash.infoMessage = appConfig.infoMessage[language];
-    }
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
@@ -13580,7 +13576,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       if (formData.calendar.calendarType === 'periodic') {
         formData.calendar.startDate = moment().startOf('day').toDate();
-        if (appConfig.addOffer.defaultEndPeriod) {
+        if (appConfig.addOffer && appConfig.addOffer.defaultEndPeriod) {
           var defaultEndPeriod = appConfig.addOffer.defaultEndPeriod;
           formData.calendar.endDate =
               moment(formData.calendar.startDate).add(defaultEndPeriod, 'd').startOf('day').toDate();
@@ -26410,10 +26406,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"row udb-dashboard\">\n" +
     "    <div class=\"col-xs-12\">\n" +
-    "\n" +
-    "      <div class=\"alert alert-info\" ng-if=\"dash.toggleInfoMessage && dash.infoMessage\">\n" +
-    "        <span ng-bind-html=\"::dash.infoMessage\"></span>\n" +
-    "      </div>\n" +
     "\n" +
     "      <div class=\"alert alert-info\" ng-if=\"!dash.toggleAddOffer && dash.addOfferExpirationMessage\">\n" +
     "        <span ng-bind-html=\"::dash.addOfferExpirationMessage\"></span>\n" +
