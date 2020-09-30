@@ -34,12 +34,8 @@
     dash.updateItemViewer = updateItemViewer;
     dash.openCreateOrganizerModal = openCreateOrganizerModal;
     dash.updateOrganizerViewer = updateOrganizerViewer;
-    dash.toggleInfoMessage = (appConfig.toggleInfoMessage);
     dash.username = '';
     dash.hideOnlineDate = false;
-    if (appConfig.infoMessage && appConfig.infoMessage[language]) {
-      dash.infoMessage = appConfig.infoMessage[language];
-    }
 
     if (typeof(appConfig.addOffer) !== 'undefined') {
       if (typeof(appConfig.addOffer.toggle) !== 'undefined') {
