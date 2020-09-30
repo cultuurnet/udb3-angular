@@ -5601,6 +5601,17 @@ function UdbApi(
     );
   };
 
+  this.updateTypicalAgeRange = function(offerLocation, typicalAgeRange) {
+    var updateData = {
+      'typicalAgeRange': typicalAgeRange
+    };
+    return $http.put(
+      offerLocation + '/typicalAgeRange',
+      updateData,
+      defaultApiConfig
+    );
+  };
+
   this.updatePriceInfo = function(offerLocation, price) {
     return $http.put(
       offerLocation + '/priceInfo',
@@ -8772,7 +8783,10 @@ function EventCrud(
    * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
-    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
+    var path = item.apiUrl.origin + '/events/' + item.id;
+    return udbApi
+      .updateTypicalAgeRange(path, item.typicalAgeRange)
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -8896,6 +8910,7 @@ function EventCrud(
    * @return {Promise}
    */
   function updateOfferProperty(offer, propertyName, jobName) {
+    console.log('updateOfferProperty ' + propertyName);
     return udbApi
       .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
       .then(responseHandlerFactory(offer));
@@ -10486,7 +10501,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud, $translate, $rootScope) {
+function FormAgeController($scope, EventFormData, $translate, $rootScope) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -10632,7 +10647,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate, $rootSc
     return ageRange.min.toString() + '+';
   };
 }
-FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate", "$rootScope"];
+FormAgeController.$inject = ["$scope", "EventFormData", "$translate", "$rootScope"];
 })();
 
 // Source: src/event_form/components/age/form-age.directive.js
@@ -15133,7 +15148,7 @@ function EventFormStep4Controller(
   $scope.saving = false;
   $scope.error = false;
 
-  $scope.validateEvent = validateEvent;
+  $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
@@ -15155,9 +15170,6 @@ function EventFormStep4Controller(
     }
   };
 
-  /**
-   * Validate date after step 4 to enter step 5.
-   */
   function validateEvent() {
 
     // First check if all data is correct.
@@ -15199,6 +15211,18 @@ function EventFormStep4Controller(
       $scope.infoMissing = true;
       return;
     }
+  }
+
+  /**
+   * Validate date after step 4 to enter step 5.
+   */
+  function validateEventAfterStep4() {
+    validateEvent();
+
+    if ($scope.missingInfo.length > 0) {
+      $scope.infoMissing = true;
+      return;
+    }
 
     if (ignoreDuplicates) {
       createOffer();
@@ -15206,7 +15230,6 @@ function EventFormStep4Controller(
     else {
       suggestExistingOffers(EventFormData);
     }
-
   }
 
   /**
@@ -15277,9 +15300,7 @@ function EventFormStep4Controller(
    */
   $rootScope.$on('changeTypicalAgeRange', function (event, ageRange) {
     $scope.eventFormData.typicalAgeRange = ageRange;
-    if (EventFormData.showStep5 === true) {
-      eventCrud.updateTypicalAgeRange(EventFormData);
-    }
+    eventCrud.updateTypicalAgeRange(EventFormData);
     validateEvent();
   });
 
@@ -28629,6 +28650,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-form-step4.html',
     "<div ng-controller=\"EventFormStep4Controller as EventFormStep4\">\n" +
+    "\n" +
     "  <a name=\"titel\"></a>\n" +
     "  <section id=\"titel\" ng-show=\"eventFormData.showStep4\">\n" +
     "    <div class=\"step-title\">\n" +
@@ -28644,37 +28666,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-md-8 col-lg-7\">\n" +
-    "        <label\n" +
-    "          ng-show=\"eventFormData.isEvent\"\n" +
-    "          translate-once=\"eventForm.step4.name_event\"\n" +
-    "        ></label>\n" +
-    "        <label\n" +
-    "          ng-show=\"eventFormData.isPlace\"\n" +
-    "          translate-once=\"eventForm.step4.name_place\"\n" +
-    "        ></label>\n" +
+    "        <label ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.name_event\"></label>\n" +
+    "        <label ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.name_place\"></label>\n" +
     "\n" +
     "        <div class=\"form-group-lg\">\n" +
-    "          <input\n" +
-    "            type=\"text\"\n" +
-    "            class=\"form-control\"\n" +
-    "            ng-model=\"eventFormData.name\"\n" +
-    "            ng-model-options=\"titleInputOptions\"\n" +
-    "            ng-change=\"eventTitleChanged()\"\n" +
-    "            focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
-    "            udb-auto-scroll\n" +
-    "          />\n" +
+    "          <input type=\"text\"\n" +
+    "                 class=\"form-control\"\n" +
+    "                 ng-model=\"eventFormData.name\"\n" +
+    "                 ng-model-options=\"titleInputOptions\"\n" +
+    "                 ng-change=\"eventTitleChanged()\"\n" +
+    "                 focus-if=\"eventFormData.showStep4 && eventFormData.id === ''\"\n" +
+    "                 udb-auto-scroll>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"help-block\">\n" +
     "          <p>\n" +
-    "            <span\n" +
-    "              ng-show=\"eventFormData.isEvent\"\n" +
-    "              translate-once=\"eventForm.step4.help_event\"\n" +
-    "            ></span>\n" +
-    "            <span\n" +
-    "              ng-show=\"eventFormData.isPlace\"\n" +
-    "              translate-once=\"eventForm.step4.help_place\"\n" +
-    "            ></span>\n" +
+    "            <span ng-show=\"eventFormData.isEvent\" translate-once=\"eventForm.step4.help_event\"></span>\n" +
+    "            <span ng-show=\"eventFormData.isPlace\" translate-once=\"eventForm.step4.help_place\"></span>\n" +
     "            <span translate-once=\"eventForm.step4.help_description\"></span>\n" +
     "          </p>\n" +
     "        </div>\n" +
@@ -28692,47 +28700,40 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </ul>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div\n" +
-    "      class=\"alert alert-danger\"\n" +
-    "      translate-once=\"eventForm.step4.save_error\"\n" +
-    "      ng-show=\"error\"\n" +
-    "    ></div>\n" +
+    "    <div class=\"alert alert-danger\"\n" +
+    "         translate-once=\"eventForm.step4.save_error\"\n" +
+    "         ng-show=\"error\">\n" +
+    "    </div>\n" +
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
-    "      <a class=\"btn btn-primary titel-doorgaan\" ng-click=\"validateEvent();\">\n" +
-    "        <span translate-once=\"eventForm.step4.continue\"></span>\n" +
-    "        <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
+    "          ng-click=\"validateEvent(true);\">\n" +
+    "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
+    "\n" +
     "  </section>\n" +
     "\n" +
-    "  <div class=\"spinner\" style=\"display: none\">\n" +
+    "  <div class=\"spinner\" style=\"display: none;\">\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "  </div>\n" +
     "\n" +
     "  <a name=\"dubbeldetectie\"></a>\n" +
     "  <section class=\"dubbeldetectie\" ng-show=\"eventFormData.name !== ''\">\n" +
+    "\n" +
     "    <div class=\"panel panel-info\" ng-show=\"resultViewer.totalItems > 0\">\n" +
     "      <div class=\"panel-body bg-info text-info\">\n" +
-    "        <p\n" +
-    "          class=\"h2\"\n" +
-    "          style=\"margin-top: 0\"\n" +
-    "          translate-once=\"eventForm.step4.doubles_title\"\n" +
-    "        ></p>\n" +
+    "        <p class=\"h2\" style=\"margin-top: 0;\" translate-once=\"eventForm.step4.doubles_title\"></p>\n" +
     "        <p translate-once=\"eventForm.step4.doubles_help\"></p>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'event'\">\n" +
-    "          <div\n" +
-    "            ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Event'}\"\n" +
-    "          >\n" +
+    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Event'}\">\n" +
     "            <udb-event-suggestion></udb-event-suggestion>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "\n" +
     "        <div class=\"row clearfix\" ng-if=\"eventFormData.getType() === 'place'\">\n" +
-    "          <div\n" +
-    "            ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Place'}\"\n" +
-    "          >\n" +
+    "          <div ng-repeat=\"event in resultViewer.events | filter:{'@type': 'Place'}\">\n" +
     "            <udb-place-suggestion></udb-place-suggestion>\n" +
     "          </div>\n" +
     "        </div>\n" +
@@ -28740,33 +28741,23 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <h3 ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
-    "      <span\n" +
-    "        translate-once=\"eventForm.step4.sure\"\n" +
-    "        translate-values=\"{ name: '{{eventFormData.name}}' }\"\n" +
-    "      ></span>\n" +
+    "      <span translate-once=\"eventForm.step4.sure\" translate-values=\"{ name: '{{eventFormData.name}}' }\"></span>\n" +
     "    </h3>\n" +
-    "    <ul\n" +
-    "      class=\"list-inline\"\n" +
-    "      ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\"\n" +
-    "    >\n" +
+    "    <ul class=\"list-inline\" ng-show=\"duplicatesSearched && resultViewer.totalItems > 0\">\n" +
     "      <li>\n" +
-    "        <a\n" +
-    "          class=\"btn btn-default\"\n" +
-    "          translate-once=\"eventForm.step4.return_dashboard\"\n" +
-    "          href=\"dashboard\"\n" +
-    "        ></a>\n" +
+    "        <a class=\"btn btn-default\"\n" +
+    "           translate-once=\"eventForm.step4.return_dashboard\"\n" +
+    "           href=\"dashboard\"></a>\n" +
     "      </li>\n" +
     "      <li>\n" +
-    "        <a\n" +
-    "          class=\"btn btn-primary dubbeldetectie-doorgaan\"\n" +
-    "          ng-click=\"saveEvent()\"\n" +
-    "        >\n" +
-    "          <span translate-once=\"eventForm.step4.yes_continue\"></span>\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
+    "        <a class=\"btn btn-primary dubbeldetectie-doorgaan\" ng-click=\"saveEvent()\">\n" +
+    "          <span translate-once=\"eventForm.step4.yes_continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "        </a>\n" +
     "      </li>\n" +
     "    </ul>\n" +
+    "\n" +
     "  </section>\n" +
+    "\n" +
     "</div>\n"
   );
 
