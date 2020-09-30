@@ -189,9 +189,7 @@ function EventFormStep4Controller(
    */
   $rootScope.$on('changeTypicalAgeRange', function (event, ageRange) {
     $scope.eventFormData.typicalAgeRange = ageRange;
-    if (EventFormData.showStep5 === true) {
-      eventCrud.updateTypicalAgeRange(EventFormData);
-    }
+    eventCrud.updateTypicalAgeRange(EventFormData);
     validateEvent();
   });
 
