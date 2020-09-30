@@ -13,7 +13,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud, $translate, $rootScope) {
+function FormAgeController($scope, EventFormData, $translate, $rootScope) {
   var controller = this;
   /**
    * Enum for age ranges.
