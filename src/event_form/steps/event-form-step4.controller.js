@@ -37,7 +37,7 @@ function EventFormStep4Controller(
   $scope.saving = false;
   $scope.error = false;
 
-  $scope.validateEvent = validateEvent;
+  $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
@@ -59,9 +59,6 @@ function EventFormStep4Controller(
     }
   };
 
-  /**
-   * Validate date after step 4 to enter step 5.
-   */
   function validateEvent() {
 
     // First check if all data is correct.
@@ -103,6 +100,18 @@ function EventFormStep4Controller(
       $scope.infoMissing = true;
       return;
     }
+  }
+
+  /**
+   * Validate date after step 4 to enter step 5.
+   */
+  function validateEventAfterStep4() {
+    validateEvent();
+
+    if ($scope.missingInfo.length > 0) {
+      $scope.infoMissing = true;
+      return;
+    }
 
     if (ignoreDuplicates) {
       createOffer();
@@ -110,7 +119,6 @@ function EventFormStep4Controller(
     else {
       suggestExistingOffers(EventFormData);
     }
-
   }
 
   /**
