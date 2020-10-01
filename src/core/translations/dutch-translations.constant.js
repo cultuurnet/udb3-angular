@@ -920,6 +920,7 @@ angular.module('udb.core')
       'Festival': 'Festival',
       'Film': 'Film',
       'Sportwedstrijd bekijken': 'Sportwedstrijd bekijken',
+      'Cursus met open sessies': 'Cursus met open sessies',
       'Cursus of workshop': 'Cursus of workshop',
       'Sport en beweging': 'Sport en beweging',
       'Kamp of vakantie': 'Kamp of vakantie',
