@@ -24916,6 +24916,17 @@ function OfferController(
     }
   };
 
+  function translateType (type) {
+    // Work around for III-3348
+    var translatedString = $translate.instant('offerTypes.' + type);
+    if (_.includes(translatedString, 'offerTypes.')) {
+      return type;
+    }
+    else {
+      return translatedString;
+    }
+  }
+
   function formatOffers(offerObject) {
 
     var sortedFacilities = offerObject.facilities.sort(
@@ -24929,7 +24940,7 @@ function OfferController(
 
     $scope.event = jsonLDLangFilter(cachedOffer, defaultLanguage, true);
     $scope.offerType = $scope.event.url.split('/').shift();
-    $scope.translatedOfferType = $translate.instant('offerTypes.' +  $scope.event.type.label);
+    $scope.translatedOfferType = translateType($scope.event.type.label);
     controller.offerExpired = $scope.offerType === 'event' ? offerObject.isExpired() : false;
     controller.hasFutureAvailableFrom = offerObject.hasFutureAvailableFrom();
     controller.fetching = false;
