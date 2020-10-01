@@ -913,6 +913,7 @@ angular.module('udb.core')
       'Toeristisch evenement': 'Événement touristique',
       'Film': 'Cinéma',
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
+      'Cursus met open sessies': 'Cours avec sessions ouvertes',
       'Cursus of workshop': 'Cours ou atelier',
       'Sportactiviteit': 'Activité sportive',
       'Kamp of vakantie': 'Camp de vacances',
