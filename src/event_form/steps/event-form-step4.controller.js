@@ -46,9 +46,7 @@ function EventFormStep4Controller(
   /**
    * Validate when an existing event is opened
    */
-  if ($scope.eventFormData.showStep1 === true &&
-    $scope.eventFormData.showStep2 === true &&
-    $scope.eventFormData.showStep3 === true) {
+  if (EventFormData.showStep4 === true) {
     validateEvent();
   }
 
