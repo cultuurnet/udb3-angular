@@ -8912,7 +8912,6 @@ function EventCrud(
    * @return {Promise}
    */
   function updateOfferProperty(offer, propertyName, jobName) {
-    console.log('updateOfferProperty ' + propertyName);
     return udbApi
       .updateProperty(offer.apiUrl, propertyName, offer[propertyName])
       .then(responseHandlerFactory(offer));
@@ -10555,7 +10554,7 @@ function FormAgeController($scope, EventFormData, $translate, $rootScope) {
     }
 
     controller.formData.setTypicalAgeRange(min, max);
-    $rootScope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
+    $scope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
   }
 
   function digestSaveAgeRange() {
@@ -13599,7 +13598,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       if (formData.calendar.calendarType === 'periodic') {
         formData.calendar.startDate = moment().startOf('day').toDate();
-        if (appConfig.addOffer && appConfig.addOffer.defaultEndPeriod) {
+        if (appConfig.addOffer.defaultEndPeriod) {
           var defaultEndPeriod = appConfig.addOffer.defaultEndPeriod;
           formData.calendar.endDate =
               moment(formData.calendar.startDate).add(defaultEndPeriod, 'd').startOf('day').toDate();
@@ -15159,9 +15158,7 @@ function EventFormStep4Controller(
   /**
    * Validate when an existing event is opened
    */
-  if ($scope.eventFormData.showStep1 === true &&
-    $scope.eventFormData.showStep2 === true &&
-    $scope.eventFormData.showStep3 === true) {
+  if (EventFormData.showStep4 === true) {
     validateEvent();
   }
 
@@ -15300,9 +15297,11 @@ function EventFormStep4Controller(
   /**
    * Update typicalAgeRange in formdata on changeTypicalAgeRange
    */
-  $rootScope.$on('changeTypicalAgeRange', function (event, ageRange) {
+  $scope.$on('changeTypicalAgeRange', function (event, ageRange) {
     $scope.eventFormData.typicalAgeRange = ageRange;
-    eventCrud.updateTypicalAgeRange(EventFormData);
+    if (EventFormData.showStep5 === true) {
+      eventCrud.updateTypicalAgeRange(EventFormData);
+    }
     validateEvent();
   });
 
