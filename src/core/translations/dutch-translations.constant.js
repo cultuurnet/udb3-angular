@@ -927,7 +927,7 @@ angular.module('udb.core')
       'Route': 'Route',
       'Spel of quiz': 'Spel of quiz',
       'Party of fuif': 'Party of fuif',
-      'Kermis of feestelijkheid': 'Kermis of feestelijkheid',
+      'Festiviteit': 'Festiviteit',
       'Congres of studiedag': 'Congres of studiedag',
       'Eten en drinken': 'Eten en drinken',
       'Thema of pretpark': 'Thema of pretpark',

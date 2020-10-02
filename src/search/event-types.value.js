@@ -20,7 +20,7 @@ angular
     {label: 'Festival', id: '0.5.0.0.0'},
     {label: 'Film', id: '0.50.6.0.0'},
     {label: 'Kamp of vakantie', id: '0.57.0.0.0'},
-    {label: 'Kermis of feestelijkheid', id: '0.28.0.0.0'},
+    {label: 'Festiviteit', id: '0.28.0.0.0'},
     {label: 'Lezing of congres', id: '0.3.2.0.0'},
     {label: 'Markt, braderie of kermis', id: '0.37.0.0.0'},
     {label: 'Opendeurdag', id: '0.12.0.0.0'},
