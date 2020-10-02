@@ -13,7 +13,7 @@ angular
     {label: 'Begeleide rondleiding', id: '0.7.0.0.0'},
     {label: 'Beurs', id: '0.6.0.0.0'},
     {label: 'Concert', id: '0.50.4.0.0'},
-    {label: 'Cursus of workshop', id: '0.3.1.0.0'},
+    {label: 'Lessenreeks', id: '0.3.1.0.0'},
     {label: 'Cursus met open sessies', id: '0.3.1.0.1'},
     {label: 'Dansvoorstelling', id: '0.54.0.0.0'},
     {label: 'Eten en drinken', id: '1.50.0.0.0'},

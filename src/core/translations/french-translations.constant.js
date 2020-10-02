@@ -914,7 +914,7 @@ angular.module('udb.core')
       'Film': 'Cinéma',
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
       'Cursus met open sessies': 'Cours avec sessions ouvertes',
-      'Cursus of workshop': 'Cours ou atelier',
+      'Lessenreeks': 'Série de cours',
       'Sportactiviteit': 'Activité sportive',
       'Kamp of vakantie': 'Camp de vacances',
       'Begeleide rondleiding': 'Visite guidé',

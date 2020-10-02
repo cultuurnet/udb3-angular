@@ -920,7 +920,7 @@ angular.module('udb.core')
       'Film': 'Film',
       'Sportwedstrijd bekijken': 'Sportwedstrijd bekijken',
       'Cursus met open sessies': 'Cursus met open sessies',
-      'Cursus of workshop': 'Cursus of workshop',
+      'Lessenreeks': 'Lessenreeks',
       'Sport en beweging': 'Sport en beweging',
       'Kamp of vakantie': 'Kamp of vakantie',
       'Begeleide rondleiding': 'Begeleide  rondleiding',
