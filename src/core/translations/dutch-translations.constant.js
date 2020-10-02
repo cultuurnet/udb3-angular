@@ -929,7 +929,7 @@ angular.module('udb.core')
       'Party of fuif': 'Party of fuif',
       'Festiviteit': 'Festiviteit',
       'Congres of studiedag': 'Congres of studiedag',
-      'Eten en drinken': 'Eten en drinken',
+      'Eet- of drankfestijn': 'Eet- of drankfestijn',
       'Thema of pretpark': 'Thema of pretpark',
       'Theater': 'Theater',
       'Jeugdhuis of jeugdcentrum': 'Jeugdhuis of jeugdcentrum',

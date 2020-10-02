@@ -16,7 +16,7 @@ angular
     {label: 'Lessenreeks', id: '0.3.1.0.0'},
     {label: 'Cursus met open sessies', id: '0.3.1.0.1'},
     {label: 'Dansvoorstelling', id: '0.54.0.0.0'},
-    {label: 'Eten en drinken', id: '1.50.0.0.0'},
+    {label: 'Eet- of drankfestijn', id: '1.50.0.0.0'},
     {label: 'Festival', id: '0.5.0.0.0'},
     {label: 'Film', id: '0.50.6.0.0'},
     {label: 'Kamp of vakantie', id: '0.57.0.0.0'},

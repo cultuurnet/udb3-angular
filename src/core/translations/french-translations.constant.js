@@ -923,7 +923,7 @@ angular.module('udb.core')
       'Party of fuif': 'Soirée',
       'Festiviteit': 'Festiviteit',
       'Congres of studiedag': 'Congrès ou journée d\'étude',
-      'Eten en drinken': 'Manger et boire',
+      'Eet- of drankfestijn': 'Festin de nourriture ou de boisson',
       'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
       'Theater': 'Théâtre',
       'Jeugdhuis of jeugdcentrum': 'Maison de jeunes ou centre de jeunesse',
