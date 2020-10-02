@@ -972,7 +972,7 @@ angular.module('udb.core')
       'Stijl en salondansen': 'Stijl en salondansen',
       'Moderne dans': 'Moderne dans',
       'Erfgoed': 'Erfgoed',
-      'Actie en avontuur': 'Actie en avontuur',
+      'Actie- en avonturenfilm': 'Actie- en avonturenfilm',
       'Animatie en kinderfilms': 'Animatie en kinderfilms',
       'Documentaires en reportages': 'Documentaires en reportages',
       'Griezelfilm of horror': 'Griezelfilm of horror',

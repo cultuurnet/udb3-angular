@@ -972,7 +972,7 @@ angular.module('udb.core')
       'Sport': 'Sport',
       'Technologie': 'La technologie',
       'Koken': 'La cuisine',
-      'Actie en avontuur': 'Action et aventure',
+      'Actie- en avonturenfilm': 'Film d\'action et d\'aventure',
       'Animatie en kinderfilms': 'Films animés et films pour enfants',
       'Documentaires en reportages': 'Documentaires et reportages',
       'Griezelfilm of horror': 'Films d\'épouvantes ou orreurs',
