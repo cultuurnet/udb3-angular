@@ -1014,7 +1014,7 @@ angular.module('udb.core')
       'Atletiek, wandelen en fietsen': 'Athlétisme, marche et cyclisme',
       'Zwemmen en watersport': 'Natation et sports nautiques',
       'Fitness, gymnastiek, dans en vechtsport': 'Fitness, gymnastique, danse et arts martiaux',
-      'Outdoor en adventure': 'Plein air et aventure',
+      'Outdoor en Adventure sport': 'Sports de plein air et d\'aventure',
       'Lucht en motorsport': 'Sports aero et moteurs',
       'Volkssporten': 'Sports folkloriques',
       'Omnisport en andere': 'Omnisports et autres',
