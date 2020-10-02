@@ -1019,7 +1019,7 @@ angular.module('udb.core')
       'Volkssporten': 'Sports folkloriques',
       'Omnisport en andere': 'Omnisports et autres',
       'Tekst en muziektheater': 'Théâtre dramatique et musical',
-      'Humor en comedy': 'Comédie',
+      'Humor en comedy': 'L\'humour et la comédie',
       'Musical': 'Comédie musicale',
       'Figuren en poppentheater': 'Théâtre de marionnettes',
       'Opera en operette': 'Opéra et opérette',
