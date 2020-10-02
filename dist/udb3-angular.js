@@ -21104,25 +21104,20 @@ function PlaceDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var event = permissionsData[1];
 
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
-            return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          });
-
-          if (mayAlwaysDelete.length) {
-            $scope.mayAlwaysDelete = true;
-          }
+          $scope.canModerate = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.AANBOD_MODEREREN;
+          }).length > 0;
         })
         .finally(function() {
-          if ($scope.mayAlwaysDelete) {
+          if ($scope.canModerate) {
             $scope.permissions = {editing: true, duplication: true};
           }
           else {
-            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+            $scope.permissions = {editing: false, duplication: true};
           }
           setTabs();
         });
