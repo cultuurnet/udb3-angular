@@ -65,7 +65,7 @@ function FormAgeController($scope, EventFormData, $translate, $rootScope) {
     }
 
     controller.formData.setTypicalAgeRange(min, max);
-    $rootScope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
+    $scope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
   }
 
   function digestSaveAgeRange() {
