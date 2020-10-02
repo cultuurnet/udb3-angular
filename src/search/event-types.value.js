@@ -22,7 +22,7 @@ angular
     {label: 'Kamp of vakantie', id: '0.57.0.0.0'},
     {label: 'Kermis of feestelijkheid', id: '0.28.0.0.0'},
     {label: 'Lezing of congres', id: '0.3.2.0.0'},
-    {label: 'Markt of braderie', id: '0.37.0.0.0'},
+    {label: 'Markt, braderie of kermis', id: '0.37.0.0.0'},
     {label: 'Opendeurdag', id: '0.12.0.0.0'},
     {label: 'Party of fuif', id: '0.49.0.0.0'},
     {label: 'Route', id: '0.17.0.0.0'},

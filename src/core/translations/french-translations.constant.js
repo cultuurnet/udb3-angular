@@ -934,7 +934,7 @@ angular.module('udb.core')
       'Horeca': 'Horeca',
       'Openbare ruimte': 'Espace public',
       'Tentoonstelling': 'Exposition',
-      'Markt of braderie': 'Marché ou braderie',
+      'Markt, braderie of kermis': 'Marché, foire ou fête foraine',
       'Natuurgebied of park': 'Zone naturelle ou parc',
       'Natuur, park of tuin': 'Zone naturelle ou parc',
       'Beurs': 'Foire / exposition',

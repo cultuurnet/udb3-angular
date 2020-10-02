@@ -940,7 +940,7 @@ angular.module('udb.core')
       'Horeca': 'Horeca',
       'Openbare ruimte': 'Openbare ruimte',
       'Tentoonstelling': 'Tentoonstelling',
-      'Markt of braderie': 'Markt of braderie',
+      'Markt, braderie of kermis': 'Markt, braderie of kermis',
       'Natuur, park of tuin': 'Natuur, park of tuin',
       'Beurs': 'Beurs',
       'Monument': 'Monument',
