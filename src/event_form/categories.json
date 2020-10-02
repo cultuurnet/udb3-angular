@@ -101,7 +101,7 @@
         },
         {
           "id": "1.8.3.3.0",
-          "label": "Dance"
+          "label": "Dance muziek"
         },
         {
           "id": "1.8.4.0.0",
@@ -212,7 +212,7 @@
           "group": "Muziek"
         }, {
           "id": "1.8.3.3.0",
-          "label": "Dance",
+          "label": "Dance muziek",
           "group": "Muziek"
         }, {
           "id": "1.8.4.0.0",
@@ -394,7 +394,7 @@
           "group": "Muziek"
         }, {
           "id": "1.8.3.3.0",
-          "label": "Dance",
+          "label": "Dance muziek",
           "group": "Muziek"
         }, {
           "id": "1.8.4.0.0",
@@ -530,7 +530,7 @@
         },
         {
           "id": "1.8.3.3.0",
-          "label": "Dance"
+          "label": "Dance muziek"
         },
         {
           "id": "1.8.4.0.0",
