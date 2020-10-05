@@ -101,7 +101,7 @@
         },
         {
           "id": "1.8.3.3.0",
-          "label": "Dance"
+          "label": "Dance muziek"
         },
         {
           "id": "1.8.4.0.0",
@@ -126,7 +126,7 @@
       ]
     },
     {
-      "label": "Cursus of workshop",
+      "label": "Lessenreeks",
       "id": "0.3.1.0.0",
       "primary": true,
       "themes": [{
@@ -212,7 +212,7 @@
           "group": "Muziek"
         }, {
           "id": "1.8.3.3.0",
-          "label": "Dance",
+          "label": "Dance muziek",
           "group": "Muziek"
         }, {
           "id": "1.8.4.0.0",
@@ -257,7 +257,7 @@
           "group": "Sport"
         }, {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure",
+          "label": "Outdoor en Adventure sport",
           "group": "Sport"
         }, {
           "id": "1.51.10.0.0",
@@ -394,7 +394,7 @@
           "group": "Muziek"
         }, {
           "id": "1.8.3.3.0",
-          "label": "Dance",
+          "label": "Dance muziek",
           "group": "Muziek"
         }, {
           "id": "1.8.4.0.0",
@@ -439,7 +439,7 @@
           "group": "Sport"
         }, {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure",
+          "label": "Outdoor en Adventure sport",
           "group": "Sport"
         }, {
           "id": "1.51.10.0.0",
@@ -512,7 +512,7 @@
       ]
     },
     {
-      "label": "Eten en drinken",
+      "label": "Eet- of drankfestijn",
       "id": "1.50.0.0.0",
       "primary": false
     },
@@ -530,7 +530,7 @@
         },
         {
           "id": "1.8.3.3.0",
-          "label": "Dance"
+          "label": "Dance muziek"
         },
         {
           "id": "1.8.4.0.0",
@@ -588,7 +588,7 @@
       "primary": true,
       "themes": [{
           "id": "1.7.2.0.0",
-          "label": "Actie en avontuur"
+          "label": "Actie- en avonturenfilm"
         },
         {
           "id": "1.7.12.0.0",
@@ -675,7 +675,7 @@
       ]
     },
     {
-      "label": "Kermis of feestelijkheid",
+      "label": "Festiviteit",
       "id": "0.28.0.0.0",
       "primary": false
     },
@@ -742,7 +742,7 @@
       ]
     },
     {
-      "label": "Markt of braderie",
+      "label": "Markt, braderie of kermis",
       "id": "0.37.0.0.0",
       "primary": false,
       "themes": [{
@@ -862,7 +862,7 @@
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
+          "label": "Outdoor en Adventure sport"
         },
         {
           "id": "1.51.10.0.0",
@@ -900,7 +900,7 @@
         },
         {
           "id": "1.51.11.0.0",
-          "label": "Outdoor en adventure"
+          "label": "Outdoor en Adventure sport"
         },
         {
           "id": "1.51.10.0.0",
