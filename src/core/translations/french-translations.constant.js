@@ -503,6 +503,22 @@ angular.module('udb.core')
         'bookable_event_success_message': 'Le lieu est déterminé en consultation avec l\'école.'
       },
       step4: {
+        age: {
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Seniors',
+          'Custom': 'Autres',
+          'from': 'Du',
+          'till': 'au',
+          'age': 'ans',
+          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
+        },
         'basic_data': 'Données de base',
         'name_event': 'Nom de l\'événement',
         'name_place': 'Nom du lieu',
@@ -567,22 +583,6 @@ angular.module('udb.core')
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter une image',
-        age: {
-          'age_label': 'Adapté à',
-          'All ages': 'De tous âges',
-          'Toddlers': 'Tout-petits',
-          'Preschoolers': 'Enfants d\'âge préscolaire',
-          'Kids': 'Enfants',
-          'Teenagers': 'Adolescents',
-          'Youngsters': 'Jeunes',
-          'Adults': 'Adultes',
-          'Seniors': 'Seniors',
-          'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'au',
-          'age': 'ans',
-          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
-        },
         priceInfo: {
           'price_label': 'Prix',
           'add_prices': 'Ajouter prix',
@@ -748,6 +748,7 @@ angular.module('udb.core')
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
+    'age range is missing': 'Avez-vous choisi une tranche d\'âge en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',

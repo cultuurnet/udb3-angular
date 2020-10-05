@@ -657,6 +657,17 @@ function UdbApi(
     );
   };
 
+  this.updateTypicalAgeRange = function(offerLocation, typicalAgeRange) {
+    var updateData = {
+      'typicalAgeRange': typicalAgeRange
+    };
+    return $http.put(
+      offerLocation + '/typicalAgeRange',
+      updateData,
+      defaultApiConfig
+    );
+  };
+
   this.updatePriceInfo = function(offerLocation, price) {
     return $http.put(
       offerLocation + '/priceInfo',

@@ -3281,6 +3281,22 @@ angular.module('udb.core')
         'bookable_event_success_message': 'De locatie wordt bepaald in overleg met de school.'
       },
       step4: {
+        age: {
+          'age_label': 'Geschikt voor',
+          'All ages': 'Alle leeftijden',
+          'Toddlers': 'Peuters',
+          'Preschoolers': 'Kleuters',
+          'Kids': 'Kinderen',
+          'Teenagers': 'Tieners',
+          'Youngsters': 'Jongeren',
+          'Adults': 'Volwassenen',
+          'Seniors': 'Senioren',
+          'Custom': 'Andere',
+          'from': 'Van',
+          'till': 'tot',
+          'age': 'jaar',
+          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
+        },
         'basic_data': 'Basisgegevens',
         'name_event': 'Naam van het evenement',
         'name_place': 'Naam van de locatie',
@@ -3345,22 +3361,6 @@ angular.module('udb.core')
         'delete': 'Verwijderen',
         'main_image': 'Maak hoofdafbeelding',
         'add_image': 'Afbeelding toevoegen',
-        age: {
-          'age_label': 'Geschikt voor',
-          'All ages': 'Alle leeftijden',
-          'Toddlers': 'Peuters',
-          'Preschoolers': 'Kleuters',
-          'Kids': 'Kinderen',
-          'Teenagers': 'Tieners',
-          'Youngsters': 'Jongeren',
-          'Adults': 'Volwassenen',
-          'Seniors': 'Senioren',
-          'Custom': 'Andere',
-          'from': 'Van',
-          'till': 'tot',
-          'age': 'jaar',
-          'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
-        },
         priceInfo: {
           'price_label': 'Prijs',
           'add_prices': 'Prijzen toevoegen',
@@ -3527,6 +3527,7 @@ angular.module('udb.core')
     'place missing for event': 'Koos je een plaats in <a href="#waar" class="alert-link">stap 3</a>?',
     'location missing for place': 'Koos je een locatie in <a href="#waar" class="alert-link">stap 3</a>?',
     'title is missing': 'Gaf je je aanbod een titel in <a href="#titel" class="alert-link">stap 4</a>?',
+    'age range is missing': 'Gaf je je aanbod een leeftijdsgroep in <a href="#titel" class="alert-link">stap 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Om organisaties in de UiTdatabank uniek bij te houden, vragen we elke organisatie een unieke & geldige hyperlink.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Vul alle openings- en sluitingstijden in.',
@@ -4365,6 +4366,22 @@ angular.module('udb.core')
         'bookable_event_success_message': 'Le lieu est déterminé en consultation avec l\'école.'
       },
       step4: {
+        age: {
+          'age_label': 'Adapté à',
+          'All ages': 'De tous âges',
+          'Toddlers': 'Tout-petits',
+          'Preschoolers': 'Enfants d\'âge préscolaire',
+          'Kids': 'Enfants',
+          'Teenagers': 'Adolescents',
+          'Youngsters': 'Jeunes',
+          'Adults': 'Adultes',
+          'Seniors': 'Seniors',
+          'Custom': 'Autres',
+          'from': 'Du',
+          'till': 'au',
+          'age': 'ans',
+          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
+        },
         'basic_data': 'Données de base',
         'name_event': 'Nom de l\'événement',
         'name_place': 'Nom du lieu',
@@ -4429,22 +4446,6 @@ angular.module('udb.core')
         'delete': 'Supprimer',
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter une image',
-        age: {
-          'age_label': 'Adapté à',
-          'All ages': 'De tous âges',
-          'Toddlers': 'Tout-petits',
-          'Preschoolers': 'Enfants d\'âge préscolaire',
-          'Kids': 'Enfants',
-          'Teenagers': 'Adolescents',
-          'Youngsters': 'Jeunes',
-          'Adults': 'Adultes',
-          'Seniors': 'Seniors',
-          'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'au',
-          'age': 'ans',
-          'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
-        },
         priceInfo: {
           'price_label': 'Prix',
           'add_prices': 'Ajouter prix',
@@ -4610,6 +4611,7 @@ angular.module('udb.core')
     'place missing for event': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'location missing for place': 'Avez-vous choisi un lieu en <a href="#où" class="alert-link">étape 3</a>?',
     'title is missing': 'Avez-vous choisi une titre en <a href="#titel" class="alert-link">étape 4</a>?',
+    'age range is missing': 'Avez-vous choisi une tranche d\'âge en <a href="#titel" class="alert-link">étape 4</a>?',
     'UNIQUE_ORGANIZER_NOTICE': 'Pour préserver à chaque organisation une identité unique dans UiTdatabank, nous demandons à chaque organisation de fournir un hyperlien unique et valide.',
     'OPENING_HOURS_ERROR': {
       'openAndClose': 'Introduisez toutes les heures d\'ouverture et de fermeture.',
@@ -5596,6 +5598,17 @@ function UdbApi(
 
     return $http.post(
       offerLocation +  '/' + path,
+      updateData,
+      defaultApiConfig
+    );
+  };
+
+  this.updateTypicalAgeRange = function(offerLocation, typicalAgeRange) {
+    var updateData = {
+      'typicalAgeRange': typicalAgeRange
+    };
+    return $http.put(
+      offerLocation + '/typicalAgeRange',
       updateData,
       defaultApiConfig
     );
@@ -8772,7 +8785,11 @@ function EventCrud(
    * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
-    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
+    var type = item.isEvent ? 'events' : 'places';
+    var path = item.apiUrl.origin + '/' + type + '/' + item.id;
+    return udbApi
+      .updateTypicalAgeRange(path, item.typicalAgeRange)
+      .then(responseHandlerFactory(item));
   };
 
   /**
@@ -10486,7 +10503,7 @@ angular
   .controller('FormAgeController', FormAgeController);
 
 /* @ngInject */
-function FormAgeController($scope, EventFormData, eventCrud, $translate) {
+function FormAgeController($scope, EventFormData, $translate, $rootScope) {
   var controller = this;
   /**
    * Enum for age ranges.
@@ -10534,11 +10551,11 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
 
     if (_.isNumber(min) && _.isNumber(max) && min > max) {
       controller.hasError = true;
-      showError($translate.instant('eventForm.step5.age.error_max_lower_than_min')); return;
+      showError($translate.instant('eventForm.step4.age.error_max_lower_than_min')); return;
     }
 
     controller.formData.setTypicalAgeRange(min, max);
-    eventCrud.updateTypicalAgeRange(controller.formData);
+    $scope.$emit('changeTypicalAgeRange', controller.formData.typicalAgeRange);
   }
 
   function digestSaveAgeRange() {
@@ -10619,7 +10636,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
   }
 
   $scope.translateAgeRange = function (ageRange) {
-    return $translate.instant('eventForm.step5.age.' + ageRange);
+    return $translate.instant('eventForm.step4.age.' + ageRange);
   };
 
   $scope.getAgeRangeLabel = function (ageRange) {
@@ -10632,7 +10649,7 @@ function FormAgeController($scope, EventFormData, eventCrud, $translate) {
     return ageRange.min.toString() + '+';
   };
 }
-FormAgeController.$inject = ["$scope", "EventFormData", "eventCrud", "$translate"];
+FormAgeController.$inject = ["$scope", "EventFormData", "$translate", "$rootScope"];
 })();
 
 // Source: src/event_form/components/age/form-age.directive.js
@@ -15133,11 +15150,18 @@ function EventFormStep4Controller(
   $scope.saving = false;
   $scope.error = false;
 
-  $scope.validateEvent = validateEvent;
+  $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
+
+  /**
+   * Validate when an existing event is opened
+   */
+  if (EventFormData.showStep4 === true) {
+    validateEvent();
+  }
 
   // Check if we need to show the leave warning
   window.onbeforeunload = function (event) {
@@ -15146,9 +15170,6 @@ function EventFormStep4Controller(
     }
   };
 
-  /**
-   * Validate date after step 4 to enter step 5.
-   */
   function validateEvent() {
 
     // First check if all data is correct.
@@ -15182,6 +15203,22 @@ function EventFormStep4Controller(
       $scope.missingInfo.push('title is missing');
     }
 
+    if (!EventFormData.typicalAgeRange) {
+      $scope.missingInfo.push('age range is missing');
+    }
+
+    if ($scope.missingInfo.length > 0) {
+      $scope.infoMissing = true;
+      return;
+    }
+  }
+
+  /**
+   * Validate date after step 4 to enter step 5.
+   */
+  function validateEventAfterStep4() {
+    validateEvent();
+
     if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
       return;
@@ -15193,7 +15230,6 @@ function EventFormStep4Controller(
     else {
       suggestExistingOffers(EventFormData);
     }
-
   }
 
   /**
@@ -15260,6 +15296,17 @@ function EventFormStep4Controller(
   }
 
   /**
+   * Update typicalAgeRange in formdata on changeTypicalAgeRange
+   */
+  $scope.$on('changeTypicalAgeRange', function (event, ageRange) {
+    $scope.eventFormData.typicalAgeRange = ageRange;
+    if (EventFormData.showStep5 === true) {
+      eventCrud.updateTypicalAgeRange(EventFormData);
+    }
+    validateEvent();
+  });
+
+  /**
    * Save Event for the first time.
    */
   function createOffer() {
@@ -15271,6 +15318,7 @@ function EventFormStep4Controller(
 
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
+      eventCrud.updateTypicalAgeRange(EventFormData);
       EventFormData.majorInfoChanged = false;
 
       $scope.saving = false;
@@ -26967,52 +27015,74 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/form-age.html',
     "<div class=\"row extra-leeftijd\">\n" +
-    "    <div class=\"extra-task\" ng-class=\"{'state-complete': !!fagec.activeAgeRange}\">\n" +
-    "        <div class=\"col-sm-3\">\n" +
-    "            <em class=\"extra-task-label\" translate-once=\"eventForm.step5.age.age_label\"></em>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-sm-9\">\n" +
-    "            <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
-    "                <button class=\"form-age-range-button\"\n" +
-    "                   ng-class=\"(fagec.activeAgeRange === type) ? 'btn active' : 'btn btn-default'\"\n" +
-    "                   ng-mousedown=\"fagec.setAgeRangeByType(type);\">\n" +
-    "                  {{ translateAgeRange(ageRange.label) }} \n" +
-    "                  <span>{{ getAgeRangeLabel(ageRange) }}</span>\n" +
-    "            </button>\n" +
-    "            </span>\n" +
-    "            <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
-    "               <form name=\"ageForm\">\n" +
-    "                   <div class=\"form-group\" >\n" +
-    "                    <label for=\"min-age\" translate-once=\"eventForm.step5.age.from\"></label>\n" +
-    "                    <input type=\"text\"\n" +
-    "                           class=\"form-control\"\n" +
-    "                           id=\"min-age\"\n" +
-    "                           name=\"min\"\n" +
-    "                           ng-model=\"fagec.minAge\"\n" +
-    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
-    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
-    "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
-    "                </div>\n" +
-    "                <div class=\"form-group\">\n" +
-    "                    <label for=\"max-age\" translate-once=\"eventForm.step5.age.till\"></label>\n" +
-    "                    <input type=\"text\"\n" +
-    "                           class=\"form-control\"\n" +
-    "                           id=\"max-age\"\n" +
-    "                           name=\"max\"\n" +
-    "                           ng-model=\"fagec.maxAge\"\n" +
-    "                           ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
-    "                           ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
-    "                           udb-age-input>\n" +
-    "                    <span class=\"form-text\" translate-once=\"eventForm.step5.age.age\"></span>\n" +
-    "                </div>\n" +
-    "               </form>\n" +
-    "            </div>\n" +
-    "            <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
-    "                <span ng-bind=\"fagec.error\"></span>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
+    "  <div\n" +
+    "    class=\"extra-task col-md-8 col-lg-7\"\n" +
+    "    ng-class=\"{'state-complete': !!fagec.activeAgeRange}\"\n" +
+    "  >\n" +
+    "    <label\n" +
+    "      ng-show=\"eventFormData.isEvent\"\n" +
+    "      translate-once=\"eventForm.step4.age.age_label\"\n" +
+    "    ></label>\n" +
+    "    <div>\n" +
+    "      <span ng-repeat=\"(type, ageRange) in ::fagec.ageRanges\">\n" +
+    "        <button\n" +
+    "          class=\"form-age-range-button\"\n" +
+    "          ng-class=\"(fagec.activeAgeRange === type) ? 'btn active' : 'btn btn-default'\"\n" +
+    "          ng-mousedown=\"fagec.setAgeRangeByType(type);\"\n" +
+    "        >\n" +
+    "          {{ translateAgeRange(ageRange.label) }}\n" +
+    "          <span>{{ getAgeRangeLabel(ageRange) }}</span>\n" +
+    "        </button>\n" +
+    "      </span>\n" +
+    "      <div ng-show=\"fagec.rangeInputEnabled\" class=\"form-inline\" id=\"form-age\">\n" +
+    "        <form name=\"ageForm\">\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <label\n" +
+    "              for=\"min-age\"\n" +
+    "              translate-once=\"eventForm.step4.age.from\"\n" +
+    "            ></label>\n" +
+    "            <input\n" +
+    "              type=\"text\"\n" +
+    "              class=\"form-control\"\n" +
+    "              id=\"min-age\"\n" +
+    "              name=\"min\"\n" +
+    "              ng-model=\"fagec.minAge\"\n" +
+    "              ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "              ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "              udb-age-input\n" +
+    "            />\n" +
+    "            <span\n" +
+    "              class=\"form-text\"\n" +
+    "              translate-once=\"eventForm.step4.age.age\"\n" +
+    "            ></span>\n" +
+    "          </div>\n" +
+    "          <div class=\"form-group\">\n" +
+    "            <label\n" +
+    "              for=\"max-age\"\n" +
+    "              translate-once=\"eventForm.step4.age.till\"\n" +
+    "            ></label>\n" +
+    "            <input\n" +
+    "              type=\"text\"\n" +
+    "              class=\"form-control\"\n" +
+    "              id=\"max-age\"\n" +
+    "              name=\"max\"\n" +
+    "              ng-model=\"fagec.maxAge\"\n" +
+    "              ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "              ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "              udb-age-input\n" +
+    "            />\n" +
+    "            <span\n" +
+    "              class=\"form-text\"\n" +
+    "              translate-once=\"eventForm.step4.age.age\"\n" +
+    "            ></span>\n" +
+    "          </div>\n" +
+    "        </form>\n" +
+    "      </div>\n" +
+    "      <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"fagec.error\">\n" +
+    "        <span ng-bind=\"fagec.error\"></span>\n" +
+    "      </div>\n" +
     "    </div>\n" +
+    "  </div>\n" +
     "</div>\n"
   );
 
@@ -28633,6 +28703,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
+    "    <udb-form-age></udb-form-age>\n" +
+    "\n" +
     "    <div class=\"alert alert-warning\" ng-show=\"infoMissing\">\n" +
     "      <strong translate-once=\"eventForm.step4.info_missing\"></strong>\n" +
     "      <ul>\n" +
@@ -28798,8 +28870,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "          </div>\n" +
     "        </div>\n" +
-    "\n" +
-    "        <udb-form-age></udb-form-age>\n" +
     "\n" +
     "        <div class=\"row extra-organisator\">\n" +
     "          <div class=\"extra-task\" ng-class=\"organizerCssClass\">\n" +
