@@ -23,17 +23,9 @@
 
   <div class="col-sm-2" ng-switch="event.calendarType">
     <span ng-switch-when="permanent">permanent</span>
-    <span ng-switch-when="single">
-        <span class="udb-start-date" ng-bind="event.startDate | date: 'dd/MM/yyyy'"></span>
-    </span>
     <span ng-switch-when="periodic" class="udb-date-range">
       <span class="udb-start-date" ng-bind="event.startDate | date: 'dd/MM/yyyy'"></span>
         <i class="fa fa-long-arrow-right"></i>
-        <span class="udb-end-date" ng-bind="event.endDate | date: 'dd/MM/yyyy'"></span>
-    </span>
-    <span ng-switch-when="multiple" class="udb-date-range">
-        <span class="udb-start-date" ng-bind="event.startDate | date: 'dd/MM/yyyy'"></span>
-        ,…,
         <span class="udb-end-date" ng-bind="event.endDate | date: 'dd/MM/yyyy'"></span>
     </span>
   </div>

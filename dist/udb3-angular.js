@@ -31734,17 +31734,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"col-sm-2\" ng-switch=\"event.calendarType\">\n" +
     "    <span ng-switch-when=\"permanent\">permanent</span>\n" +
-    "    <span ng-switch-when=\"single\">\n" +
-    "        <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "    </span>\n" +
     "    <span ng-switch-when=\"periodic\" class=\"udb-date-range\">\n" +
     "      <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "        <i class=\"fa fa-long-arrow-right\"></i>\n" +
-    "        <span class=\"udb-end-date\" ng-bind=\"event.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "    </span>\n" +
-    "    <span ng-switch-when=\"multiple\" class=\"udb-date-range\">\n" +
-    "        <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
-    "        ,…,\n" +
     "        <span class=\"udb-end-date\" ng-bind=\"event.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
     "    </span>\n" +
     "  </div>\n" +
