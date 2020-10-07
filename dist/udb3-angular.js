@@ -3853,7 +3853,8 @@ angular.module('udb.core')
     },
     search: {
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
+      periodicOpen: 'periodiek open'
     }
   }
 );
@@ -4936,7 +4937,8 @@ angular.module('udb.core')
     },
     search: {
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
+      periodicOpen: 'ouvert périodiquement'
     }
   }
 );
@@ -31733,7 +31735,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-2\">\n" +
-    "    <span>permanent</span>\n" +
+    "    <span translate-once=\"search.periodicOpen\"></span>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-3 rv-specific-event-info\">\n" +

@@ -1078,7 +1078,8 @@ angular.module('udb.core')
     },
     search: {
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
+      periodicOpen: 'periodiek open'
     }
   }
 );
