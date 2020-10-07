@@ -3853,8 +3853,7 @@ angular.module('udb.core')
     },
     search: {
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
-      periodicOpen: 'periodiek open'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
   }
 );
@@ -4937,8 +4936,7 @@ angular.module('udb.core')
     },
     search: {
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
-      periodicOpen: 'ouvert périodiquement'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
   }
 );
@@ -31734,8 +31732,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"udb-place-city\" ng-bind=\"event.address.addressLocality\"></div>\n" +
     "  </div>\n" +
     "\n" +
-    "  <div class=\"col-sm-2\">\n" +
-    "    <span translate-once=\"search.periodicOpen\"></span>\n" +
+    "  <div class=\"col-sm-2\" ng-switch=\"event.calendarType\">\n" +
+    "    <span ng-switch-when=\"permanent\">permanent</span>\n" +
+    "    <span ng-switch-when=\"single\">\n" +
+    "        <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "    </span>\n" +
+    "    <span ng-switch-when=\"periodic\" class=\"udb-date-range\">\n" +
+    "      <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "        <i class=\"fa fa-long-arrow-right\"></i>\n" +
+    "        <span class=\"udb-end-date\" ng-bind=\"event.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "    </span>\n" +
+    "    <span ng-switch-when=\"multiple\" class=\"udb-date-range\">\n" +
+    "        <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "        ,…,\n" +
+    "        <span class=\"udb-end-date\" ng-bind=\"event.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "    </span>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-3 rv-specific-event-info\">\n" +
