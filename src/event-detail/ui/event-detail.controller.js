@@ -110,7 +110,7 @@ function EventDetail(
   $scope.calendarSummary = undefined;
 
   function setTabs() {
-    if ($scope.mayAlwaysDelete) {
+    if ($scope.isGodUser) {
       $scope.tabs = [
         {
           id: 'data'
