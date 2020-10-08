@@ -5271,20 +5271,19 @@ function UdbApi(
    * @param {number} limit
    * @param {string|null} website
    * @param {string|null} query
-   * @param {boolean} useAdvancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, query, useAdvancedQuery) {
+  this.findOrganisations = function(start, limit, website, query) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
-    if (website) { params.website = website; }
-    if (useAdvancedQuery && query) {
-      params.q = query;
-    } else if (query) {
+    if (website) {
+      params.website = website;
+    }
+    if (query) {
       params.name = query;
     }
 
@@ -20961,7 +20960,7 @@ function OrganizerManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findOrganisations(start, limit, null, query, false);
+    return udbApi.findOrganisations(start, limit, null, query);
   };
 
   /**
