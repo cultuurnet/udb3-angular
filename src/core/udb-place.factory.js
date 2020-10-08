@@ -359,7 +359,9 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       event = event || this;
       updateTranslationState(event);
     },
-
+    isExpired: function () {
+      return this.calendarType !== 'permanent' && (new Date(this.endDate) < new Date());
+    },
     hasFutureAvailableFrom: function() {
       var tomorrow = moment(new Date()).add(1, 'days');
       tomorrow.hours(0);
