@@ -59,6 +59,7 @@ function EventDetail(
 
     if (hasPermission) {
       $scope.permissions = {editing: !event.isExpired(), duplication: true};
+      setTabs();
       return;
     }
 
@@ -70,6 +71,7 @@ function EventDetail(
           }).length > 0;
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+            setTabs();
           }
         });
   }

@@ -61,6 +61,7 @@ function PlaceDetail(
 
     if (hasPermission) {
       $scope.permissions = {editing: !place.isExpired(), duplication: true};
+      setTabs();
       return;
     }
 
@@ -72,6 +73,7 @@ function PlaceDetail(
           }).length > 0;
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+            setTabs();
           }
         });
   }
