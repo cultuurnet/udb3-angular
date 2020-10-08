@@ -526,7 +526,7 @@ function UdbApi(
       offerLocation + '/permission',
       defaultApiConfig
     ).then(function (response) {
-      return response.data.hasPermission;
+      return !!response.data.hasPermission;
     });
   };
 
