@@ -467,7 +467,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&q=foo-bar&start=0')
+      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&name=foo-bar&start=0')
       .respond(JSON.stringify(response));
     service
       .findOrganisations(0, 10, null, organizerName, true)
