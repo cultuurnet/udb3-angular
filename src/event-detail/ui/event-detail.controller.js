@@ -39,6 +39,8 @@ function EventDetail(
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
 
+    permission.then(function (response) { console.log('permission response', response); });
+
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
@@ -54,25 +56,27 @@ function EventDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var hasPermission = permissionsData[0];
-    var event = permissionsData[1];
-
-    if (hasPermission) {
-      $scope.permissions = {editing: !event.isExpired(), duplication: true};
-      setTabs();
-      return;
-    }
 
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
+
           $scope.isGodUser = _.filter(userPermissions, function(permission) {
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
+
+          var hasPermission = permissionsData[0];
+          var event = permissionsData[1];
+
+          if (hasPermission) {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          }
+
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
-            setTabs();
           }
+
+          setTabs();
         });
   }
 
