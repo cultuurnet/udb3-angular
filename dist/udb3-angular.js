@@ -5472,7 +5472,7 @@ function UdbApi(
       offerLocation + '/permission',
       defaultApiConfig
     ).then(function (response) {
-      return response.data.hasPermission;
+      return !!response.data.hasPermission;
     });
   };
 
@@ -10081,9 +10081,7 @@ function EventDetail(
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
 
   /**
@@ -10096,25 +10094,24 @@ function EventDetail(
     var hasPermission = permissionsData[0];
     var event = permissionsData[1];
 
-    if (hasPermission) {
-      $scope.permissions = {editing: !event.isExpired(), duplication: true};
-      return;
-    }
-
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
+
           $scope.isGodUser = _.filter(userPermissions, function(permission) {
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
+
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+          } else if (hasPermission) {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
-        });
-  }
 
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
+          setTabs();
+        });
   }
 
   function getModerationItems(roles) {
@@ -10147,7 +10144,7 @@ function EventDetail(
   $scope.calendarSummary = undefined;
 
   function setTabs() {
-    if ($scope.mayAlwaysDelete) {
+    if ($scope.isGodUser) {
       $scope.tabs = [
         {
           id: 'data'
@@ -21134,14 +21131,8 @@ function PlaceDetail(
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
-
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
-  }
   /**
    * Grant permissions based on permission-data.
    * @param {Array} permissionsData
@@ -21152,20 +21143,23 @@ function PlaceDetail(
     var hasPermission = permissionsData[0];
     var place = permissionsData[1];
 
-    if (hasPermission) {
-      $scope.permissions = {editing: !place.isExpired(), duplication: true};
-      return;
-    }
-
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
+
           $scope.isGodUser = _.filter(userPermissions, function(permission) {
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
+
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+          } else if (hasPermission) {
+            $scope.permissions = {editing: !place.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
+
+          setTabs();
         });
   }
 
