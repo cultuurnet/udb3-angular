@@ -41,14 +41,8 @@ function PlaceDetail(
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
-
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
-  }
   /**
    * Grant permissions based on permission-data.
    * @param {Array} permissionsData
@@ -56,6 +50,8 @@ function PlaceDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
+    var hasPermission = permissionsData[0];
+    var place = permissionsData[1];
 
     authorizationService
         .getPermissions()
@@ -65,12 +61,12 @@ function PlaceDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var place = permissionsData[1];
-
-          $scope.permissions = {editing: !place.isExpired(), duplication: true};
-
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+          } else if (hasPermission) {
+            $scope.permissions = {editing: !place.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
 
           setTabs();
