@@ -65,12 +65,9 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var hasPermission = permissionsData[0];
           var event = permissionsData[1];
 
-          if (hasPermission) {
-            $scope.permissions = {editing: !event.isExpired(), duplication: true};
-          }
+          $scope.permissions = {editing: !event.isExpired(), duplication: true};
 
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
