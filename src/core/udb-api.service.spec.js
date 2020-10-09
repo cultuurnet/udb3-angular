@@ -796,19 +796,6 @@ describe('Service: UDB3 Api', function () {
 
     $httpBackend.flush();
   });
-  it('should reject when the user has no permission to the offer location', function (done) {
-    var responseNoPermission = {
-      hasPermission: false
-    };
-    $httpBackend
-      .expectGET('offerLocation/permission')
-      .respond(responseNoPermission);
-    service
-      .hasPermission('offerLocation')
-      .catch(done);
-
-    $httpBackend.flush();
-  });
 
   // labelOffers
   it('should label multiple offers using the api', function(done){
