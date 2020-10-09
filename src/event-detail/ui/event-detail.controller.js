@@ -39,14 +39,10 @@ function EventDetail(
     var offer = udbApi.getOffer(offerLocation);
     var permission = udbApi.hasPermission(offerLocation);
 
-    permission.then(function (response) { console.log('permission response', response); });
-
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
 
   /**
@@ -56,6 +52,8 @@ function EventDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
+    var hasPermission = permissionsData[0];
+    var event = permissionsData[1];
 
     authorizationService
         .getPermissions()
@@ -65,20 +63,16 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var event = permissionsData[1];
-
-          $scope.permissions = {editing: !event.isExpired(), duplication: true};
-
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+          } else if (hasPermission) {
+            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
 
           setTabs();
         });
-  }
-
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
   }
 
   function getModerationItems(roles) {
