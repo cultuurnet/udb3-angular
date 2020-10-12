@@ -37,11 +37,18 @@ function EventFormStep4Controller(
   $scope.saving = false;
   $scope.error = false;
 
-  $scope.validateEvent = validateEvent;
+  $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
   $scope.resultViewer = new SearchResultViewer();
   $scope.eventTitleChanged = eventTitleChanged;
   $scope.previewSuggestedItem = previewSuggestedItem;
+
+  /**
+   * Validate when an existing event is opened
+   */
+  if (EventFormData.showStep4 === true) {
+    validateEvent();
+  }
 
   // Check if we need to show the leave warning
   window.onbeforeunload = function (event) {
@@ -50,9 +57,6 @@ function EventFormStep4Controller(
     }
   };
 
-  /**
-   * Validate date after step 4 to enter step 5.
-   */
   function validateEvent() {
 
     // First check if all data is correct.
@@ -86,6 +90,22 @@ function EventFormStep4Controller(
       $scope.missingInfo.push('title is missing');
     }
 
+    if (!EventFormData.typicalAgeRange) {
+      $scope.missingInfo.push('age range is missing');
+    }
+
+    if ($scope.missingInfo.length > 0) {
+      $scope.infoMissing = true;
+      return;
+    }
+  }
+
+  /**
+   * Validate date after step 4 to enter step 5.
+   */
+  function validateEventAfterStep4() {
+    validateEvent();
+
     if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
       return;
@@ -97,7 +117,6 @@ function EventFormStep4Controller(
     else {
       suggestExistingOffers(EventFormData);
     }
-
   }
 
   /**
@@ -164,6 +183,17 @@ function EventFormStep4Controller(
   }
 
   /**
+   * Update typicalAgeRange in formdata on changeTypicalAgeRange
+   */
+  $scope.$on('changeTypicalAgeRange', function (event, ageRange) {
+    $scope.eventFormData.typicalAgeRange = ageRange;
+    if (EventFormData.showStep5 === true) {
+      eventCrud.updateTypicalAgeRange(EventFormData);
+    }
+    validateEvent();
+  });
+
+  /**
    * Save Event for the first time.
    */
   function createOffer() {
@@ -175,6 +205,7 @@ function EventFormStep4Controller(
 
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
+      eventCrud.updateTypicalAgeRange(EventFormData);
       EventFormData.majorInfoChanged = false;
 
       $scope.saving = false;

@@ -41,14 +41,8 @@ function PlaceDetail(
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
-
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
-  }
   /**
    * Grant permissions based on permission-data.
    * @param {Array} permissionsData
@@ -56,26 +50,25 @@ function PlaceDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var event = permissionsData[1];
+    var hasPermission = permissionsData[0];
+    var place = permissionsData[1];
 
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
-            return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          });
 
-          if (mayAlwaysDelete.length) {
-            $scope.mayAlwaysDelete = true;
-          }
-        })
-        .finally(function() {
-          if ($scope.mayAlwaysDelete) {
+          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          }).length > 0;
+
+          if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
+          } else if (hasPermission) {
+            $scope.permissions = {editing: !place.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
-          else {
-            $scope.permissions = {editing: !event.isExpired(), duplication: true};
-          }
+
           setTabs();
         });
   }
@@ -90,7 +83,7 @@ function PlaceDetail(
   $scope.finishedLoading = false;
   $scope.placeHistory = undefined;
   function setTabs() {
-    if ($scope.mayAlwaysDelete) {
+    if ($scope.isGodUser) {
       $scope.tabs = [
         {
           id: 'data'

@@ -325,20 +325,19 @@ function UdbApi(
    * @param {number} limit
    * @param {string|null} website
    * @param {string|null} query
-   * @param {boolean} useAdvancedQuery
    *
    * @return {Promise.<PagedCollection>}
    */
-  this.findOrganisations = function(start, limit, website, query, useAdvancedQuery) {
+  this.findOrganisations = function(start, limit, website, query) {
     var params = {
       limit: limit ? limit : 10,
       start: start ? start : 0,
       embed: true
     };
-    if (website) { params.website = website; }
-    if (useAdvancedQuery && query) {
-      params.q = query;
-    } else if (query) {
+    if (website) {
+      params.website = website;
+    }
+    if (query) {
       params.name = query;
     }
 
@@ -527,7 +526,7 @@ function UdbApi(
       offerLocation + '/permission',
       defaultApiConfig
     ).then(function (response) {
-      return response.data.hasPermission ? $q.resolve() : $q.reject();
+      return !!response.data.hasPermission;
     });
   };
 
@@ -652,6 +651,17 @@ function UdbApi(
 
     return $http.post(
       offerLocation +  '/' + path,
+      updateData,
+      defaultApiConfig
+    );
+  };
+
+  this.updateTypicalAgeRange = function(offerLocation, typicalAgeRange) {
+    var updateData = {
+      'typicalAgeRange': typicalAgeRange
+    };
+    return $http.put(
+      offerLocation + '/typicalAgeRange',
       updateData,
       defaultApiConfig
     );

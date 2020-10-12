@@ -425,56 +425,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
-
-  // findOrganisations by name.
-  it('should find organizers via advanced query', function (done) {
-    var organizerName = 'foo-bar';
-    var response = {
-      "itemsPerPage": 30,
-      "totalItems": 3562,
-      "member": [
-        {
-          "name": "foo-bar",
-          "address": {
-            "addressCountry": "BE",
-            "addressLocality": "Leuven",
-            "postalCode": 3000,
-            "streetAddress": "Sluisstraat 79"
-          },
-          "contactPoint": {
-            "url": [
-              "http://google.be"
-            ],
-            "email": [
-              "joske@2dotstwice.be"
-            ],
-            "phone": [
-              "0123456789"
-            ]
-          },
-          "creator": "evenementen@stad.diksmuide.be",
-          "created": "2015-05-07T12:02:53+00:00",
-          "modified": "2015-05-07T12:02:53+00:00",
-          "url": "http://www.stuk.be/",
-          "labels": [
-            {
-              "uuid": "80f63f49-5de2-42ea-9642-59fc0400f2c5",
-              "name": "Mijn label"
-            }
-          ]
-        }
-      ]
-    };
-
-    $httpBackend
-      .expectGET(baseUrl + 'organizers/?embed=true&limit=10&q=foo-bar&start=0')
-      .respond(JSON.stringify(response));
-    service
-      .findOrganisations(0, 10, null, organizerName, true)
-      .then(done);
-    $httpBackend.flush();
-  });
-
+  
   // findOrganisations by website.
   it('should find organizers by a given website', function (done) {
     var organizerWebsite = 'www.stuk.be';
@@ -842,19 +793,6 @@ describe('Service: UDB3 Api', function () {
     service
       .hasPermission('offerLocation')
       .then(done);
-
-    $httpBackend.flush();
-  });
-  it('should reject when the user has no permission to the offer location', function (done) {
-    var responseNoPermission = {
-      hasPermission: false
-    };
-    $httpBackend
-      .expectGET('offerLocation/permission')
-      .respond(responseNoPermission);
-    service
-      .hasPermission('offerLocation')
-      .catch(done);
 
     $httpBackend.flush();
   });

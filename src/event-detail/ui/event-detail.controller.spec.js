@@ -13,6 +13,8 @@ describe('Controller: Event Detail', function() {
       $window,
       $uibModal,
       ModerationService,
+      RolePermission,
+      authorizationService,
       roles = [
     {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
@@ -197,7 +199,7 @@ describe('Controller: Event Detail', function() {
     $provide.constant('appConfig', appConfig);
   }));
 
-  beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
+  beforeEach(inject(function($injector, $rootScope, $controller, _$q_, _RolePermission_) {
     $scope = $rootScope.$new();
     eventId = 'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc';
     udbApi = $injector.get('udbApi');
@@ -211,6 +213,8 @@ describe('Controller: Event Detail', function() {
     ModerationService = jasmine.createSpyObj('ModerationService', ['getMyRoles', 'find']);
     ModerationService.getMyRoles.and.returnValue($q.resolve(roles));
     ModerationService.find.and.returnValue($q.resolve(events));
+    RolePermission = _RolePermission_;
+    authorizationService = jasmine.createSpyObj('authorizationService', ['getPermissions']);
     deferredEvent = $q.defer(); 
     deferredPermission = $q.defer();
 
@@ -231,7 +235,9 @@ describe('Controller: Event Detail', function() {
         $uibModal: $uibModal,
         $window: $window,
         offerLabeller: offerLabeller,
-        ModerationService : ModerationService
+        ModerationService : ModerationService,
+        RolePermission: RolePermission,
+        authorizationService: authorizationService
       }
     );
   }));
@@ -374,8 +380,10 @@ describe('Controller: Event Detail', function() {
 
   it('should not show an event as editable when the user does not have the required permissions', function () {
     var event = new UdbEvent(exampleEventJson);
+
+    authorizationService.getPermissions.and.returnValue($q.resolve([]));
+    deferredPermission.resolve(false);
     deferredEvent.resolve(event);
-    deferredPermission.reject();
 
     $scope.$digest();
     expect($scope.permissions.editing).toEqual(false);
@@ -388,7 +396,8 @@ describe('Controller: Event Detail', function() {
     var event = new UdbEvent(exampleEventJson);
     event.endDate = '2021-06-20T19:00:00+02:00';
 
-    deferredPermission.resolve();
+    authorizationService.getPermissions.and.returnValue($q.resolve([]));
+    deferredPermission.resolve(true);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
@@ -407,11 +416,52 @@ describe('Controller: Event Detail', function() {
     var event = new UdbEvent(exampleEventJson);
     event.endDate = '2016-06-20T19:00:00+02:00';
 
-    deferredPermission.resolve();
+    authorizationService.getPermissions.and.returnValue($q.resolve([]));
+    deferredPermission.resolve(true);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
       editing: false,
+      duplication: true
+    };
+
+    $scope.$digest();
+    expect($scope.permissions).toEqual(expectedPermissions);
+  });
+
+  it('should not show an event as editable when the user does not have the required permissions', function () {
+    var baseTime = new Date(2020, 9, 23);
+    jasmine.clock().mockDate(baseTime);
+
+    var event = new UdbEvent(exampleEventJson);
+    event.endDate = '2016-06-20T19:00:00+02:00';
+
+    authorizationService.getPermissions.and.returnValue($q.resolve([]));
+    deferredPermission.resolve(false);
+    deferredEvent.resolve(event);
+
+    var expectedPermissions = {
+      editing: false,
+      duplication: false
+    };
+
+    $scope.$digest();
+    expect($scope.permissions).toEqual(expectedPermissions);
+  });
+
+  it('should show an event as editable when the user does not have the required permissions but is a god user', function () {
+    var baseTime = new Date(2020, 9, 23);
+    jasmine.clock().mockDate(baseTime);
+
+    var event = new UdbEvent(exampleEventJson);
+    event.endDate = '2016-06-20T19:00:00+02:00';
+
+    authorizationService.getPermissions.and.returnValue($q.resolve(['GEBRUIKERS_BEHEREN']));
+    deferredPermission.resolve(false);
+    deferredEvent.resolve(event);
+
+    var expectedPermissions = {
+      editing: true,
       duplication: true
     };
 

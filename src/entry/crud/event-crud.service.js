@@ -148,7 +148,11 @@ function EventCrud(
    * @returns {Promise}
    */
   service.updateTypicalAgeRange = function(item) {
-    return updateOfferProperty(item, 'typicalAgeRange', 'updateTypicalAgeRange');
+    var type = item.isEvent ? 'events' : 'places';
+    var path = item.apiUrl.origin + '/' + type + '/' + item.id;
+    return udbApi
+      .updateTypicalAgeRange(path, item.typicalAgeRange)
+      .then(responseHandlerFactory(item));
   };
 
   /**
