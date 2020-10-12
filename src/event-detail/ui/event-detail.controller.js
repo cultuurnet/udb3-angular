@@ -42,9 +42,7 @@ function EventDetail(
     offer.then(showOffer, failedToLoad);
 
     $q.all([permission, offer])
-      .then(grantPermissions, denyAllPermissions);
-
-    permission.catch(denyAllPermissions);
+      .then(grantPermissions);
   });
 
   /**
@@ -54,32 +52,27 @@ function EventDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
+    var hasPermission = permissionsData[0];
     var event = permissionsData[1];
 
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-          var mayAlwaysDelete = _.filter(userPermissions, function(permission) {
-            return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          });
 
-          if (mayAlwaysDelete.length) {
-            $scope.mayAlwaysDelete = true;
-          }
-        })
-        .finally(function() {
-          if ($scope.mayAlwaysDelete) {
+          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          }).length > 0;
+
+          if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
-          }
-          else {
+          } else if (hasPermission) {
             $scope.permissions = {editing: !event.isExpired(), duplication: true};
+          } else {
+            $scope.permissions = {editing: false, duplication: false};
           }
+
           setTabs();
         });
-  }
-
-  function denyAllPermissions() {
-    $scope.permissions = {editing: false, duplication: false};
   }
 
   function getModerationItems(roles) {
@@ -112,7 +105,7 @@ function EventDetail(
   $scope.calendarSummary = undefined;
 
   function setTabs() {
-    if ($scope.mayAlwaysDelete) {
+    if ($scope.isGodUser) {
       $scope.tabs = [
         {
           id: 'data'

@@ -32,7 +32,7 @@ function OrganizerManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findOrganisations(start, limit, null, query, true);
+    return udbApi.findOrganisations(start, limit, null, query);
   };
 
   /**
