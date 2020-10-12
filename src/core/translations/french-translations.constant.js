@@ -922,7 +922,7 @@ angular.module('udb.core')
       'Route': 'Itinéraire',
       'Spel of quiz': 'Jeu ou quiz',
       'Party of fuif': 'Soirée',
-      'Festiviteit': 'Festiviteit',
+      'Festiviteit': 'Festivité',
       'Congres of studiedag': 'Congrès ou journée d\'étude',
       'Eet- of drankfestijn': 'Festin de nourriture ou de boisson',
       'Thema of pretpark': 'Parc à thème ou parc d\'attractions',
