@@ -999,7 +999,7 @@ angular.module('udb.core')
       'Jazz en blues': 'Jazz en blues',
       'Pop en rock': 'Pop en rock',
       'Hiphop, r&b en rap': 'Hiphop, r&b en rap',
-      'Dance muziek': 'Dance muziek muziek',
+      'Dance muziek': 'Dance muziek',
       'Folk en wereldmuziek': 'Folk en wereldmuziek',
       'Amusementsmuziek': 'Amusementsmuziek',
       'Politiek en maatschappij': 'Politiek en maatschappij',
