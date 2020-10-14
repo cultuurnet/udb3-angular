@@ -6564,6 +6564,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         // if it's a full organizer object, parse it as one
         if (jsonEvent.organizer['@id']) {
           this.organizer = new UdbOrganizer(jsonEvent.organizer);
+          this.hasDummyOrganizer = false;
         } else {
           // just create an object
           this.organizer = {
@@ -6571,6 +6572,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
             email: jsonEvent.organizer.email ? (jsonEvent.organizer.email[0] || '-') : '-',
             phone: jsonEvent.organizer.phone ? (jsonEvent.organizer.phone[0] || '-') : '-'
           };
+          this.hasDummyOrganizer = true;
         }
       }
       if (jsonEvent.bookingInfo && jsonEvent.bookingInfo.length > 0) {
@@ -26920,7 +26922,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.organizer\"></span></td>\n" +
-    "                <td ng-if=\"::event.organizer\"><a ng-href=\"/organizer/{{event.organizer.id}}/preview\" >{{::event.organizer.name}}</a></td>\n" +
+    "                <td ng-if=\"::event.organizer\">\n" +
+    "                  <a ng-if=\"::(!event.hasDummyOrganizer)\" ng-href=\"/organizer/{{event.organizer.id}}/preview\" >{{::event.organizer.name}}</a>\n" +
+    "                  <span ng-if=\"::(event.hasDummyOrganizer)\">{{::event.organizer.name}}</span>\n" +
+    "                </td>\n" +
     "                <td ng-if=\"::(!event.organizer)\" translate-once=\"preview.no_organizer\"></td>\n" +
     "              </tr>\n" +
     "              <tr class=\"rv-event-info-price\" ng-class=\"::{muted: !event.priceInfo.length}\">\n" +
