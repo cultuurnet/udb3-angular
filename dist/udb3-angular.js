@@ -28822,7 +28822,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
     "                            ng-focus=\"focusDescription()\"\n" +
-    "                            class=\"form-control\"\n" +
+    "                            class=\"form-control event-description\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
@@ -28848,7 +28848,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-click=\"saveDescription(true)\">\n" +
     "                    </a>\n" +
     "                  </p>\n" +
-    "                  <div class=\"tip\" ng-switch=\"eventFormData.type.id\">\n" +
+    "                  <div class=\"alert alert-info\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tip_route\"></p>\n" +
     "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tip_rondleiding\"></p>\n" +
     "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tip_monument\"></p>\n" +

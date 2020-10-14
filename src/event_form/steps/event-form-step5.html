@@ -51,7 +51,7 @@
                 <div class="form-group">
                   <textarea ng-blur="saveDescription()"
                             ng-focus="focusDescription()"
-                            class="form-control"
+                            class="form-control event-description"
                             ng-model="description"
                             rows="6"
                             udb-auto-scroll
@@ -77,7 +77,7 @@
                        ng-click="saveDescription(true)">
                     </a>
                   </p>
-                  <div class="tip" ng-switch="eventFormData.type.id">
+                  <div class="alert alert-info" ng-switch="eventFormData.type.id">
                     <p ng-switch-when="0.17.0.0.0" translate-once="eventForm.step5.tip_route"></p>
                     <p ng-switch-when="0.7.0.0.0" translate-once="eventForm.step5.tip_rondleiding"></p>
                     <p ng-switch-when="0.14.0.0.0" translate-once="eventForm.step5.tip_monument"></p>
