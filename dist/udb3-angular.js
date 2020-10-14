@@ -15314,6 +15314,7 @@ function EventFormStep4Controller(
 
     eventCrudPromise.then(function(newEventFormData) {
       EventFormData = newEventFormData;
+      eventCrud.updateTypicalAgeRange(EventFormData);
       EventFormData.majorInfoChanged = false;
 
       $scope.saving = false;
