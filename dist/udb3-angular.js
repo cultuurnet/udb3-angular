@@ -15298,8 +15298,8 @@ function EventFormStep4Controller(
     $scope.eventFormData.typicalAgeRange = ageRange;
     if (EventFormData.showStep5 === true) {
       eventCrud.updateTypicalAgeRange(EventFormData);
+      validateEvent();
     }
-    validateEvent();
   });
 
   /**
