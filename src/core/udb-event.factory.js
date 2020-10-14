@@ -132,6 +132,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
         // if it's a full organizer object, parse it as one
         if (jsonEvent.organizer['@id']) {
           this.organizer = new UdbOrganizer(jsonEvent.organizer);
+          this.hasDummyOrganizer = false;
         } else {
           // just create an object
           this.organizer = {
@@ -139,6 +140,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
             email: jsonEvent.organizer.email ? (jsonEvent.organizer.email[0] || '-') : '-',
             phone: jsonEvent.organizer.phone ? (jsonEvent.organizer.phone[0] || '-') : '-'
           };
+          this.hasDummyOrganizer = true;
         }
       }
       if (jsonEvent.bookingInfo && jsonEvent.bookingInfo.length > 0) {
