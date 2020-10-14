@@ -28817,7 +28817,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div class=\"form-group\">\n" +
     "                  <textarea ng-blur=\"saveDescription()\"\n" +
     "                            ng-focus=\"focusDescription()\"\n" +
-    "                            class=\"form-control\"\n" +
+    "                            class=\"form-control event-description\"\n" +
     "                            ng-model=\"description\"\n" +
     "                            rows=\"6\"\n" +
     "                            udb-auto-scroll\n" +
