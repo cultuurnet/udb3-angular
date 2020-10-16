@@ -3293,7 +3293,7 @@ angular.module('udb.core')
           'Seniors': 'Senioren',
           'Custom': 'Andere',
           'from': 'Van',
-          'till': 'tot',
+          'till': 'Tot',
           'age': 'jaar',
           'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
         },
@@ -4378,7 +4378,7 @@ angular.module('udb.core')
           'Seniors': 'Seniors',
           'Custom': 'Autres',
           'from': 'Du',
-          'till': 'au',
+          'till': 'Au',
           'age': 'ans',
           'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
@@ -27033,40 +27033,44 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              for=\"min-age\"\n" +
     "              translate-once=\"eventForm.step4.age.from\"\n" +
     "            ></label>\n" +
-    "            <input\n" +
-    "              type=\"text\"\n" +
-    "              class=\"form-control\"\n" +
-    "              id=\"min-age\"\n" +
-    "              name=\"min\"\n" +
-    "              ng-model=\"fagec.minAge\"\n" +
-    "              ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
-    "              ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
-    "              udb-age-input\n" +
-    "            />\n" +
-    "            <span\n" +
-    "              class=\"form-text\"\n" +
-    "              translate-once=\"eventForm.step4.age.age\"\n" +
-    "            ></span>\n" +
+    "            <div>\n" +
+    "              <input\n" +
+    "                type=\"text\"\n" +
+    "                class=\"form-control\"\n" +
+    "                id=\"min-age\"\n" +
+    "                name=\"min\"\n" +
+    "                ng-model=\"fagec.minAge\"\n" +
+    "                ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                udb-age-input\n" +
+    "              />\n" +
+    "              <span\n" +
+    "                class=\"form-text\"\n" +
+    "                translate-once=\"eventForm.step4.age.age\"\n" +
+    "              ></span>\n" +
+    "            </div>\n" +
     "          </div>\n" +
     "          <div class=\"form-group\">\n" +
     "            <label\n" +
     "              for=\"max-age\"\n" +
     "              translate-once=\"eventForm.step4.age.till\"\n" +
     "            ></label>\n" +
-    "            <input\n" +
-    "              type=\"text\"\n" +
-    "              class=\"form-control\"\n" +
-    "              id=\"max-age\"\n" +
-    "              name=\"max\"\n" +
-    "              ng-model=\"fagec.maxAge\"\n" +
-    "              ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
-    "              ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
-    "              udb-age-input\n" +
-    "            />\n" +
-    "            <span\n" +
-    "              class=\"form-text\"\n" +
-    "              translate-once=\"eventForm.step4.age.age\"\n" +
-    "            ></span>\n" +
+    "            <div>\n" +
+    "              <input\n" +
+    "                type=\"text\"\n" +
+    "                class=\"form-control\"\n" +
+    "                id=\"max-age\"\n" +
+    "                name=\"max\"\n" +
+    "                ng-model=\"fagec.maxAge\"\n" +
+    "                ng-blur=\"fagec.instantSaveAgeRange()\"\n" +
+    "                ng-change=\"fagec.delayedSaveAgeRange()\"\n" +
+    "                udb-age-input\n" +
+    "              />\n" +
+    "              <span\n" +
+    "                class=\"form-text\"\n" +
+    "                translate-once=\"eventForm.step4.age.age\"\n" +
+    "              ></span>\n" +
+    "            </div> \n" +
     "          </div>\n" +
     "        </form>\n" +
     "      </div>\n" +
