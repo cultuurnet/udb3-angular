@@ -2984,8 +2984,8 @@ input + .alert {
 .offer-form .form-inline .multiselect-container label.radio {
   padding: 3px 20px 3px 40px;
 }
-.offer-form .form-inline .multiselect-container li a label.checkbox input[type=checkbox],
-.offer-form .form-inline .multiselect-container li a label.radio input[type=radio] {
+.offer-form .form-inline .multiselect-container li a label.checkbox input[type="checkbox"],
+.offer-form .form-inline .multiselect-container li a label.radio input[type="radio"] {
   margin-left: -20px;
   margin-right: 0;
 }
@@ -3043,7 +3043,7 @@ input + .alert {
   height: 0px;
   border-style: solid;
   border-width: 0 0 50px 50px;
-  border-color: transparent transparent #FFF transparent;
+  border-color: transparent transparent #fff transparent;
 }
 .offer-form .btn-tile:hover .preview-icon {
   display: block;
@@ -3136,7 +3136,7 @@ input + .alert {
 }
 .event-type-choser-label > span {
   background-color: #ffffff;
-  padding: .2em 1em;
+  padding: 0.2em 1em;
 }
 .event-type-choser-label:before {
   border-top: 1px solid #cccccc;
@@ -3148,10 +3148,10 @@ input + .alert {
   z-index: -1;
 }
 .event-type-choser-label.event {
-  background-image: url('../images/icons/icon-event.svg');
+  background-image: url("../images/icons/icon-event.svg");
 }
 .event-type-choser-label.place {
-  background-image: url('../images/icons/icon-place.svg');
+  background-image: url("../images/icons/icon-place.svg");
 }
 .event-type-splitter {
   display: block;
@@ -3277,6 +3277,9 @@ form.booking-period table {
 }
 #form-age .form-group {
   margin-bottom: 0.5em;
+}
+#form-age .form-group:not(:last-child) {
+  margin-right: 1rem;
 }
 .muted td {
   background-color: #EDEDED;

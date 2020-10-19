@@ -518,7 +518,7 @@ angular.module('udb.core')
           'Seniors': 'Senioren',
           'Custom': 'Andere',
           'from': 'Van',
-          'till': 'tot',
+          'till': 'Tot',
           'age': 'jaar',
           'error_max_lower_than_min': 'De maximumleeftijd kan niet lager zijn dan de minimumleeftijd.'
         },

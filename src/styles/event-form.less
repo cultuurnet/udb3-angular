@@ -53,7 +53,7 @@
   }
 
   .theme-refinement {
-   margin-bottom: 1em;
+    margin-bottom: 1em;
   }
 
   .list-themes {
@@ -171,7 +171,6 @@
   .add-date-link:focus *,
   .add-date-link:active * {
     text-decoration: none;
-
   }
 
   .add-date-link {
@@ -321,7 +320,6 @@
 
   .extra-tickets-telefoon .checkbox,
   .extra-tickets-email .checkbox {
-
   }
   .extra-tickets-website .checkbox {
     margin-top: 0.5em;
@@ -412,7 +410,6 @@
   }
 
   .extra-leeftijd {
-
     .form-group {
       margin-bottom: 0;
     }
@@ -547,8 +544,13 @@
     padding: 3px 20px 3px 40px;
   }
 
-  .form-inline .multiselect-container li a label.checkbox input[type=checkbox],
-  .form-inline .multiselect-container li a label.radio input[type=radio] {
+  .form-inline
+    .multiselect-container
+    li
+    a
+    label.checkbox
+    input[type="checkbox"],
+  .form-inline .multiselect-container li a label.radio input[type="radio"] {
     margin-left: -20px;
     margin-right: 0;
   }
@@ -612,7 +614,7 @@
         height: 0px;
         border-style: solid;
         border-width: 0 0 50px 50px;
-        border-color: transparent transparent #FFF transparent;
+        border-color: transparent transparent #fff transparent;
       }
       .preview-icon {
         display: block;
@@ -641,7 +643,7 @@
         bottom: 0;
         left: 0;
         content: " ";
-        z-index: 0
+        z-index: 0;
       }
     }
     .title {
@@ -718,7 +720,7 @@
   z-index: 0;
   > span {
     background-color: @body-bg;
-    padding: .2em 1em;
+    padding: 0.2em 1em;
   }
   &:before {
     border-top: 1px solid @udb-gray;
@@ -730,17 +732,17 @@
     z-index: -1;
   }
   &.event {
-    background-image: url('../images/icons/icon-event.svg');
+    background-image: url("../images/icons/icon-event.svg");
   }
   &.place {
-    background-image: url('../images/icons/icon-place.svg');
+    background-image: url("../images/icons/icon-place.svg");
   }
 }
 .event-type-splitter {
   display: block;
   margin-bottom: 1em;
   margin-top: 1em;
-  @media(min-width: @screen-xs-min) {
+  @media (min-width: @screen-xs-min) {
     margin-top: 75px;
   }
 }
@@ -794,8 +796,8 @@ form.booking-period {
   font-size: small;
 }
 
-.padding-left-12-5{
-    padding-left: 12.5px;
+.padding-left-12-5 {
+  padding-left: 12.5px;
 }
 
 .permanent-title {
@@ -845,7 +847,7 @@ form.booking-period {
 
   .empty {
     width: 100%;
-    background-color: darken(#EDEDED,5);
+    background-color: darken(#ededed, 5);
     position: absolute;
     top: 0;
     left: 0;
@@ -860,7 +862,7 @@ form.booking-period {
     bottom: 0;
   }
 
-  .description-info{
+  .description-info {
     font-size: small;
   }
 }
@@ -869,7 +871,7 @@ form.booking-period {
   margin-bottom: 0.2em;
   color: #333333;
 
-  span{
+  span {
     font-size: small;
     color: grey;
     font-weight: 300;
@@ -886,7 +888,11 @@ form.booking-period {
 }
 
 #form-age {
-  .form-group{
+  .form-group {
     margin-bottom: 0.5em;
+  }
+
+  .form-group:not(:last-child) {
+    margin-right: 1rem;
   }
 }
