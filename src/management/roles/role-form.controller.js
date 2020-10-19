@@ -57,7 +57,6 @@ function RoleFormController(
   editor.availablePermissions = [];
   editor.errorMessage = false;
   editor.editName = false;
-  editor.editConstraintV2 = false;
   editor.editConstraintV3 = false;
 
   editor.addUser = addUser;
@@ -180,12 +179,7 @@ function RoleFormController(
     RoleManager
         .createRoleConstraint(roleId, version, editor.role.constraints[version])
         .then(function() {
-          if (version === 'v3') {
             editor.editConstraintV3 = false;
-          }
-          else {
-            editor.editConstraintV2 = false;
-          }
         }, showProblem)
         .finally(function() {
           editor.saving = false;
@@ -197,12 +191,7 @@ function RoleFormController(
     RoleManager
       .updateRoleConstraint(roleId, version, editor.role.constraints[version])
       .then(function() {
-        if (version === 'v3') {
           editor.editConstraintV3 = false;
-        }
-        else {
-          editor.editConstraintV2 = false;
-        }
       }, showProblem)
       .finally(function() {
         editor.saving = false;
@@ -214,13 +203,7 @@ function RoleFormController(
     RoleManager
         .removeRoleConstraint(roleId, version)
         .then(function() {
-          if (version === 'v3') {
             editor.editConstraintV3 = false;
-          }
-          else {
-            editor.editConstraintV2 = false;
-          }
-
           if (_.has(editor.role.constraints, version)) {
             delete(editor.role.constraints[version]);
           }
