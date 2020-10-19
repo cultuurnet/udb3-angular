@@ -10070,7 +10070,6 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -10118,15 +10117,12 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints[$scope.apiVersion]) {
-        query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
+      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + '(' + role.constraints.v3 + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
-    var idField = 'id';
-    if ($scope.apiVersion === 'v3') {
-      idField = 'cdbid';
-    }
+    var idField = 'cdbid';
 
     query = '(' + query + ' AND ' + idField + ':' + $scope.event.id + ')';
 
@@ -17262,8 +17258,6 @@ function listItems(
     .getMyRoles()
     .then(generateModerationListItems);
 
-  var apiVersion;
-
   return $q
     .all([globalPermissionListItems, moderationListItems])
     .then(_.flatten);
@@ -17273,13 +17267,11 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = appConfig.roleConstraintsMode;
-
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints !== undefined && role.constraints[apiVersion]) {
-        query += (query ? ' OR ' : '') + role.constraints[apiVersion];
+      if (role.constraints !== undefined && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + role.constraints.v3;
       }
     });
     query = (query ? '(' + query + ')' : '');
@@ -17659,7 +17651,6 @@ function ModerationListController(
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
@@ -17685,7 +17676,7 @@ function ModerationListController(
     query$ = rx.createObservableFunction(moderator, 'queryChanged');
     page$ = rx.createObservableFunction(moderator, 'pageChanged');
     searchResultGenerator = new SearchResultGenerator(
-      ModerationService, query$, page$, itemsPerPage, currentRole.constraints[$scope.apiVersion]
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraints.v3
     );
     searchResult$ = searchResultGenerator.getSearchResult$();
 
@@ -17730,7 +17721,7 @@ function ModerationListController(
   }
 
   function findModerationContent(currentRole) {
-    moderator.queryChanged(currentRole.constraints[$scope.apiVersion]);
+    moderator.queryChanged(currentRole.constraints.v3);
   }
 
   /**

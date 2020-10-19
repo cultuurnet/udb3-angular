@@ -189,9 +189,7 @@ describe('Controller: Event Detail', function() {
 
   var deferredEvent, deferredPermission, deferredUpdate;
 
-  var appConfig = {
-    'roleConstraintsMode': 'v3'
-  };
+  var appConfig = {};
 
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));

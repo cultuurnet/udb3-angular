@@ -29,9 +29,7 @@ describe('Factory: List Items', function () {
     }
   ];
 
-  var appConfig = {
-    "roleConstraintsMode": "v3"
-  };
+  var appConfig = {};
 
   var resultset = {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",

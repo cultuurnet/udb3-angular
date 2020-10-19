@@ -31,7 +31,6 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -79,15 +78,12 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints[$scope.apiVersion]) {
-        query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
+      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + '(' + role.constraints.v3 + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
-    var idField = 'id';
-    if ($scope.apiVersion === 'v3') {
-      idField = 'cdbid';
-    }
+    var idField = 'cdbid';
 
     query = '(' + query + ' AND ' + idField + ':' + $scope.event.id + ')';
 
