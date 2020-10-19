@@ -24,13 +24,13 @@ describe('Factory: List Items', function () {
         "AANBOD_VERWIJDEREN"
       ],
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       }
     }
   ];
 
   var appConfig = {
-    "roleConstraintsMode": "v2"
+    "roleConstraintsMode": "v3"
   };
 
   var resultset = {
@@ -185,7 +185,7 @@ describe('Factory: List Items', function () {
             "AANBOD_VERWIJDEREN"
           ],
           "constraints": {
-            "v2": "city:leuven"
+            "v3": "city:leuven"
           }
         },
         {

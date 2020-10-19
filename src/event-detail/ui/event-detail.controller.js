@@ -85,7 +85,7 @@ function EventDetail(
     });
     query = (query ? '(' + query + ')' : '');
     var idField = 'id';
-    if ($scope.apiVersion === 'v2') {
+    if ($scope.apiVersion === 'v3') {
       idField = 'cdbid';
     }
 

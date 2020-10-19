@@ -16,7 +16,7 @@ describe('Controller: Moderation List', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "AANBOD_MODEREREN"
@@ -26,7 +26,7 @@ describe('Controller: Moderation List', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
@@ -37,7 +37,7 @@ describe('Controller: Moderation List', function() {
   beforeEach(module('udb.management'));
   beforeEach(module('udb.management.moderation', function ($provide) {
       var appConfig = {
-          roleConstraintsMode: 'v2'
+          roleConstraintsMode: 'v3'
       };
 
       $provide.constant('appConfig', appConfig);
@@ -80,7 +80,7 @@ describe('Controller: Moderation List', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "AANBOD_MODEREREN"
@@ -110,7 +110,7 @@ describe('Controller: Moderation List', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Editor Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "AANBOD_INVOEREN"
@@ -120,7 +120,7 @@ describe('Controller: Moderation List', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
@@ -166,7 +166,7 @@ describe('Controller: Moderation List', function() {
     var sub = searchResult$.subscribe(assertSeachResults);
 
     moderator
-      .findModerationContent({uuid:'3aad5023-84e2-4ba9-b1ce-201cee64504c', constraints: {v2: 'city:leuven'}});
+      .findModerationContent({uuid:'3aad5023-84e2-4ba9-b1ce-201cee64504c', constraints: {v3: 'city:leuven'}});
 
     $scope.$digest();
     expect(moderator.loading).toEqual(true);
