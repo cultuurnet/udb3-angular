@@ -31,8 +31,6 @@ function listItems(
     .getMyRoles()
     .then(generateModerationListItems);
 
-  var apiVersion;
-
   return $q
     .all([globalPermissionListItems, moderationListItems])
     .then(_.flatten);
@@ -42,13 +40,11 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = appConfig.roleConstraintsMode;
-
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints !== undefined && role.constraints[apiVersion]) {
-        query += (query ? ' OR ' : '') + role.constraints[apiVersion];
+      if (role.constraints !== undefined && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + role.constraints.v3;
       }
     });
     query = (query ? '(' + query + ')' : '');

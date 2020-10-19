@@ -425,7 +425,7 @@ describe('Service: UDB3 Api', function () {
       .then(done);
     $httpBackend.flush();
   });
-  
+
   // findOrganisations by website.
   it('should find organizers by a given website', function (done) {
     var organizerWebsite = 'www.stuk.be';
@@ -651,11 +651,11 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-        .expectPOST(baseUrl + 'roles/roleid/constraints/v2', expectedData, expectedHeaders)
+        .expectPOST(baseUrl + 'roles/roleid/constraints/v3', expectedData, expectedHeaders)
         .respond(JSON.stringify({}));
 
     service
-        .createRoleConstraint('roleid', 'v2', 'newconstraint')
+        .createRoleConstraint('roleid', 'v3', 'newconstraint')
         .then(done);
     $httpBackend.flush();
   });
@@ -685,11 +685,11 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-      .expectPUT(baseUrl + 'roles/roleid/constraints/v2', expectedData, expectedHeaders)
+      .expectPUT(baseUrl + 'roles/roleid/constraints/v3', expectedData, expectedHeaders)
       .respond(JSON.stringify({}));
 
     service
-      .updateRoleConstraint('roleid', 'v2', 'newconstraint')
+      .updateRoleConstraint('roleid', 'newconstraint')
       .then(done);
     $httpBackend.flush();
   });
@@ -715,11 +715,11 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-        .expectDELETE(baseUrl + 'roles/roleid/constraints/v2', expectedHeaders)
+        .expectDELETE(baseUrl + 'roles/roleid/constraints/v3', expectedHeaders)
         .respond(JSON.stringify({}));
 
     service
-        .removeRoleConstraint('roleid', 'v2')
+        .removeRoleConstraint('roleid')
         .then(done);
     $httpBackend.flush();
   });
@@ -1867,11 +1867,11 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-        .expectPOST(baseUrl + 'roles/1/constraints/v2', updateData)
+        .expectPOST(baseUrl + 'roles/1/constraints/v3', updateData)
         .respond(JSON.stringify(expectedCommandId));
 
     service
-        .createRoleConstraint(1, 'v2', 'bazinga!')
+        .createRoleConstraint(1, 'v3', 'bazinga!')
         .then(assertRole);
 
     $httpBackend.flush();
@@ -1892,11 +1892,11 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-      .expectPUT(baseUrl + 'roles/1/constraints/v2', updateData)
+      .expectPUT(baseUrl + 'roles/1/constraints/v3', updateData)
       .respond(JSON.stringify(expectedCommandId));
 
     service
-      .updateRoleConstraint(1, 'v2', 'bazinga!')
+      .updateRoleConstraint(1, 'bazinga!')
       .then(assertRole);
 
     $httpBackend.flush();
@@ -1913,11 +1913,11 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-        .expectDELETE(baseUrl + 'roles/1/constraints/v2')
+        .expectDELETE(baseUrl + 'roles/1/constraints/v3')
         .respond(JSON.stringify(expectedCommandId));
 
     service
-        .removeRoleConstraint(1, 'v2')
+        .removeRoleConstraint(1)
         .then(assertRole);
 
     $httpBackend.flush();
@@ -2372,7 +2372,7 @@ describe('Service: UDB3 Api', function () {
           }
       ]
     };
-    var reformattedEvents = service.reformatJsonLDData(events); 
+    var reformattedEvents = service.reformatJsonLDData(events);
     expect(expectedEvents).toEqual(reformattedEvents);
   })
 

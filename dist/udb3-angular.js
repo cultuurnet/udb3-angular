@@ -6115,11 +6115,10 @@ function UdbApi(
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
    */
-  this.updateRoleConstraint = function (roleId, version, constraint) {
+  this.updateRoleConstraint = function (roleId, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=updateConstraint';
 
@@ -6128,22 +6127,21 @@ function UdbApi(
     };
 
     return $http
-        .put(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, updateData, requestOptions)
+        .put(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', updateData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
    */
-  this.removeRoleConstraint = function (roleId, version) {
+  this.removeRoleConstraint = function (roleId) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=removeConstraint';
 
     return $http
-        .delete(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, requestOptions)
+        .delete(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -10072,7 +10070,6 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -10120,15 +10117,12 @@ function EventDetail(
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints[$scope.apiVersion]) {
-        query += (query ? ' OR ' : '') + '(' + role.constraints[$scope.apiVersion] + ')';
+      if (_.contains(role.permissions, 'AANBOD_MODEREREN') && role.constraints && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + '(' + role.constraints.v3 + ')';
       }
     });
     query = (query ? '(' + query + ')' : '');
-    var idField = 'id';
-    if ($scope.apiVersion === 'v2') {
-      idField = 'cdbid';
-    }
+    var idField = 'cdbid';
 
     query = '(' + query + ' AND ' + idField + ':' + $scope.event.id + ')';
 
@@ -17262,8 +17256,6 @@ function listItems(
     .getMyRoles()
     .then(generateModerationListItems);
 
-  var apiVersion;
-
   return $q
     .all([globalPermissionListItems, moderationListItems])
     .then(_.flatten);
@@ -17273,13 +17265,11 @@ function listItems(
    * @return {number}
    */
   function countOffersWaitingForValidation(roles) {
-    apiVersion = appConfig.roleConstraintsMode;
-
     var query = '';
 
     _.forEach(roles, function(role) {
-      if (role.constraints !== undefined && role.constraints[apiVersion]) {
-        query += (query ? ' OR ' : '') + role.constraints[apiVersion];
+      if (role.constraints !== undefined && role.constraints.v3) {
+        query += (query ? ' OR ' : '') + role.constraints.v3;
       }
     });
     query = (query ? '(' + query + ')' : '');
@@ -17659,7 +17649,6 @@ function ModerationListController(
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
@@ -17685,7 +17674,7 @@ function ModerationListController(
     query$ = rx.createObservableFunction(moderator, 'queryChanged');
     page$ = rx.createObservableFunction(moderator, 'pageChanged');
     searchResultGenerator = new SearchResultGenerator(
-      ModerationService, query$, page$, itemsPerPage, currentRole.constraints[$scope.apiVersion]
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraints.v3
     );
     searchResult$ = searchResultGenerator.getSearchResult$();
 
@@ -17730,7 +17719,7 @@ function ModerationListController(
   }
 
   function findModerationContent(currentRole) {
-    moderator.queryChanged(currentRole.constraints[$scope.apiVersion]);
+    moderator.queryChanged(currentRole.constraints.v3);
   }
 
   /**
@@ -18266,8 +18255,7 @@ function RoleFormController(
   editor.availablePermissions = [];
   editor.errorMessage = false;
   editor.editName = false;
-  editor.editConstraintV2 = false;
-  editor.editConstraintV3 = false;
+  editor.editConstraint = false;
 
   editor.addUser = addUser;
   editor.addLabel = addLabel;
@@ -18380,58 +18368,42 @@ function RoleFormController(
     }
   }
 
-  function constraintExists(version) {
-    return _.has(editor.role.constraints, version) && editor.role.constraints[version] !== null;
+  function constraintExists() {
+    return _.has(editor.role.constraints, 'v3') && editor.role.constraints.v3 !== null;
   }
 
-  function createConstraint(version) {
+  function createConstraint() {
     editor.saving = true;
     RoleManager
-        .createRoleConstraint(roleId, version, editor.role.constraints[version])
+        .createRoleConstraint(roleId, editor.role.constraints.v3)
         .then(function() {
-          if (version === 'v3') {
-            editor.editConstraintV3 = false;
-          }
-          else {
-            editor.editConstraintV2 = false;
-          }
+          editor.editConstraint = false;
         }, showProblem)
         .finally(function() {
           editor.saving = false;
         });
   }
 
-  function updateConstraint(version) {
+  function updateConstraint() {
     editor.saving = true;
     RoleManager
-      .updateRoleConstraint(roleId, version, editor.role.constraints[version])
+      .updateRoleConstraint(roleId, editor.role.constraints.v3)
       .then(function() {
-        if (version === 'v3') {
-          editor.editConstraintV3 = false;
-        }
-        else {
-          editor.editConstraintV2 = false;
-        }
+        editor.editConstraint = false;
       }, showProblem)
       .finally(function() {
         editor.saving = false;
       });
   }
 
-  function removeConstraint(version) {
+  function removeConstraint() {
     editor.saving = true;
     RoleManager
-        .removeRoleConstraint(roleId, version)
+        .removeRoleConstraint(roleId)
         .then(function() {
-          if (version === 'v3') {
-            editor.editConstraintV3 = false;
-          }
-          else {
-            editor.editConstraintV2 = false;
-          }
-
-          if (_.has(editor.role.constraints, version)) {
-            delete(editor.role.constraints[version]);
+          editor.editConstraint = false;
+          if (_.has(editor.role.constraints, 'v3')) {
+            delete(editor.role.constraints.v3);
           }
         }, showProblem)
         .finally(function() {
@@ -18712,34 +18684,31 @@ function RoleManager(udbApi) {
   /**
    *
    * @param {uuid} roleId
-   * @param {string} version
    * @param {string} constraint
    * @returns {Promise}
    */
-  service.createRoleConstraint = function(roleId, version, constraint) {
+  service.createRoleConstraint = function(roleId, constraint) {
     return udbApi
-        .createRoleConstraint(roleId, version, constraint);
+        .createRoleConstraint(roleId, constraint);
   };
 
   /**
    * @param {uuid} roleId
-   * @param {string} version
    * @param {string} constraint
    * @return {Promise}
    */
-  service.updateRoleConstraint = function(roleId, version, constraint) {
+  service.updateRoleConstraint = function(roleId, constraint) {
     return udbApi
-        .updateRoleConstraint(roleId, version, constraint);
+        .updateRoleConstraint(roleId, constraint);
   };
 
   /**
    * @param {uuid} roleId
-   * @param {string} version
    * @return {Promise}
    */
-  service.removeRoleConstraint = function(roleId, version) {
+  service.removeRoleConstraint = function(roleId) {
     return udbApi
-        .removeRoleConstraint(roleId, version);
+        .removeRoleConstraint(roleId);
   };
 
   /**
@@ -29845,49 +29814,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "    <div class=\"row\" ng-show=\"editor.role['uuid']\">\n" +
     "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraintV2\">\n" +
-    "              <label class=\"control-label\">Bewerkrecht v2</label>\n" +
-    "              <p><span ng-bind=\"editor.role.constraints.v2\"></span>\n" +
-    "              <a href ng-click=\"editor.editConstraintV2 = true\">Wijzigen</a>\n" +
-    "              <a href ng-click=\"editor.removeConstraint('v2')\" ng-if=\"editor.constraintExists('v2')\">Verwijderen</a></p>\n" +
-    "            </div>\n" +
-    "            <div ng-if=\"editor.editConstraintV2\">\n" +
-    "                <div class=\"form-group\" udb-form-group>\n" +
-    "                    <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht v2</label>\n" +
-    "                    <input id=\"constraint-v2-field\"\n" +
-    "                           class=\"form-control\"\n" +
-    "                           name=\"constraintv2\"\n" +
-    "                           type=\"text\"\n" +
-    "                           ng-maxlength=\"255\"\n" +
-    "                           ng-model=\"editor.role.constraints.v2\"\n" +
-    "                           ng-disabled=\"editor.saving\">\n" +
-    "                </div>\n" +
-    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "                  type=\"button\"\n" +
-    "                  class=\"btn btn-primary\"\n" +
-    "                  ng-if=\"::editor.constraintExists('v2')\"\n" +
-    "                  ng-click=\"editor.updateConstraint('v2')\">\n" +
-    "                  Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "                </button>\n" +
-    "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "                        type=\"button\"\n" +
-    "                        class=\"btn btn-primary\"\n" +
-    "                        ng-if=\"::!editor.constraintExists('v2')\"\n" +
-    "                        ng-click=\"editor.createConstraint('v2')\">\n" +
-    "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "                </button>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraintV3\">\n" +
-    "                <label class=\"control-label\">Bewerkrecht v3</label>\n" +
+    "            <div class=\"form-group\" udb-form-group ng-if=\"!editor.editConstraint\">\n" +
+    "                <label class=\"control-label\">Bewerkrecht</label>\n" +
     "                <p><span ng-bind=\"editor.role.constraints.v3\"></span>\n" +
-    "                    <a href ng-click=\"editor.editConstraintV3 = true\">Wijzigen</a>\n" +
-    "                    <a href ng-click=\"editor.removeConstraint('v3')\" ng-if=\"editor.constraintExists('v3')\">Verwijderen</a></p>\n" +
+    "                    <a href ng-click=\"editor.editConstraint = true\">Wijzigen</a>\n" +
+    "                    <a href ng-click=\"editor.removeConstraint()\" ng-if=\"editor.constraintExists()\">Verwijderen</a></p>\n" +
     "            </div>\n" +
-    "            <div ng-if=\"editor.editConstraintV3\">\n" +
+    "            <div ng-if=\"editor.editConstraint\">\n" +
     "                <div class=\"form-group\" udb-form-group>\n" +
-    "                    <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht v3</label>\n" +
+    "                    <label class=\"control-label\" for=\"label-name-field\">Bewerkrecht</label>\n" +
     "                    <input id=\"constraint-v3-field\"\n" +
     "                           class=\"form-control\"\n" +
     "                           name=\"constraintv3\"\n" +
@@ -29898,15 +29833,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
     "                        type=\"button\"\n" +
     "                        class=\"btn btn-primary\"\n" +
-    "                        ng-if=\"::editor.constraintExists('v3')\"\n" +
-    "                        ng-click=\"editor.updateConstraint('v3')\">\n" +
+    "                        ng-if=\"::editor.constraintExists()\"\n" +
+    "                        ng-click=\"editor.updateConstraint()\">\n" +
     "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
     "                </button>\n" +
     "                <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
     "                        type=\"button\"\n" +
     "                        class=\"btn btn-primary\"\n" +
-    "                        ng-if=\"::!editor.constraintExists('v3')\"\n" +
-    "                        ng-click=\"editor.createConstraint('v3')\">\n" +
+    "                        ng-if=\"::!editor.constraintExists()\"\n" +
+    "                        ng-click=\"editor.createConstraint()\">\n" +
     "                    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
     "                </button>\n" +
     "            </div>\n" +

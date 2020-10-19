@@ -24,14 +24,12 @@ describe('Factory: List Items', function () {
         "AANBOD_VERWIJDEREN"
       ],
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       }
     }
   ];
 
-  var appConfig = {
-    "roleConstraintsMode": "v2"
-  };
+  var appConfig = {};
 
   var resultset = {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",
@@ -185,7 +183,7 @@ describe('Factory: List Items', function () {
             "AANBOD_VERWIJDEREN"
           ],
           "constraints": {
-            "v2": "city:leuven"
+            "v3": "city:leuven"
           }
         },
         {

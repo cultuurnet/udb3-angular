@@ -20,7 +20,7 @@ describe('Controller: Event Detail', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64504c",
       "name": "Moderator Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "AANBOD_MODEREREN"
@@ -30,7 +30,7 @@ describe('Controller: Event Detail', function() {
       "uuid": "3aad5023-84e2-4ba9-b1ce-201cee64505d",
       "name": "Beheerder Leuven",
       "constraints": {
-        "v2": "city:leuven"
+        "v3": "city:leuven"
       },
       "permissions": [
         "GEBRUIKERS_BEHEREN"
@@ -189,9 +189,7 @@ describe('Controller: Event Detail', function() {
 
   var deferredEvent, deferredPermission, deferredUpdate;
 
-  var appConfig = {
-    'roleConstraintsMode': 'v2'
-  };
+  var appConfig = {};
 
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
@@ -215,7 +213,7 @@ describe('Controller: Event Detail', function() {
     ModerationService.find.and.returnValue($q.resolve(events));
     RolePermission = _RolePermission_;
     authorizationService = jasmine.createSpyObj('authorizationService', ['getPermissions']);
-    deferredEvent = $q.defer(); 
+    deferredEvent = $q.defer();
     deferredPermission = $q.defer();
 
     spyOn(udbApi, 'hasPermission').and.returnValue(deferredPermission.promise);
@@ -330,7 +328,7 @@ describe('Controller: Event Detail', function() {
     $scope.eventId = {
       toString: function () {
         return 'http://foo.bar/events/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
-      } 
+      }
     };
 
     $scope.openEditPage();

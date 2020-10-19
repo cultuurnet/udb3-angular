@@ -33,7 +33,6 @@ function ModerationListController(
 
   var query$, page$, searchResultGenerator, searchResult$;
   var itemsPerPage = 10;
-  $scope.apiVersion = appConfig.roleConstraintsMode;
 
   moderator.roles = [];
 
@@ -59,7 +58,7 @@ function ModerationListController(
     query$ = rx.createObservableFunction(moderator, 'queryChanged');
     page$ = rx.createObservableFunction(moderator, 'pageChanged');
     searchResultGenerator = new SearchResultGenerator(
-      ModerationService, query$, page$, itemsPerPage, currentRole.constraints[$scope.apiVersion]
+      ModerationService, query$, page$, itemsPerPage, currentRole.constraints.v3
     );
     searchResult$ = searchResultGenerator.getSearchResult$();
 
@@ -104,7 +103,7 @@ function ModerationListController(
   }
 
   function findModerationContent(currentRole) {
-    moderator.queryChanged(currentRole.constraints[$scope.apiVersion]);
+    moderator.queryChanged(currentRole.constraints.v3);
   }
 
   /**
