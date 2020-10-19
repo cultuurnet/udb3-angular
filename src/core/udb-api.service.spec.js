@@ -689,7 +689,7 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify({}));
 
     service
-      .updateRoleConstraint('roleid', 'v3', 'newconstraint')
+      .updateRoleConstraint('roleid', 'newconstraint')
       .then(done);
     $httpBackend.flush();
   });
@@ -719,7 +719,7 @@ describe('Service: UDB3 Api', function () {
         .respond(JSON.stringify({}));
 
     service
-        .removeRoleConstraint('roleid', 'v3')
+        .removeRoleConstraint('roleid')
         .then(done);
     $httpBackend.flush();
   });
@@ -1896,7 +1896,7 @@ describe('Service: UDB3 Api', function () {
       .respond(JSON.stringify(expectedCommandId));
 
     service
-      .updateRoleConstraint(1, 'v3', 'bazinga!')
+      .updateRoleConstraint(1, 'bazinga!')
       .then(assertRole);
 
     $httpBackend.flush();
@@ -1917,7 +1917,7 @@ describe('Service: UDB3 Api', function () {
         .respond(JSON.stringify(expectedCommandId));
 
     service
-        .removeRoleConstraint(1, 'v3')
+        .removeRoleConstraint(1)
         .then(assertRole);
 
     $httpBackend.flush();

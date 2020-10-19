@@ -125,34 +125,31 @@ function RoleManager(udbApi) {
   /**
    *
    * @param {uuid} roleId
-   * @param {string} version
    * @param {string} constraint
    * @returns {Promise}
    */
-  service.createRoleConstraint = function(roleId, version, constraint) {
+  service.createRoleConstraint = function(roleId, constraint) {
     return udbApi
-        .createRoleConstraint(roleId, version, constraint);
+        .createRoleConstraint(roleId, constraint);
   };
 
   /**
    * @param {uuid} roleId
-   * @param {string} version
    * @param {string} constraint
    * @return {Promise}
    */
-  service.updateRoleConstraint = function(roleId, version, constraint) {
+  service.updateRoleConstraint = function(roleId, constraint) {
     return udbApi
-        .updateRoleConstraint(roleId, version, constraint);
+        .updateRoleConstraint(roleId, constraint);
   };
 
   /**
    * @param {uuid} roleId
-   * @param {string} version
    * @return {Promise}
    */
-  service.removeRoleConstraint = function(roleId, version) {
+  service.removeRoleConstraint = function(roleId) {
     return udbApi
-        .removeRoleConstraint(roleId, version);
+        .removeRoleConstraint(roleId);
   };
 
   /**

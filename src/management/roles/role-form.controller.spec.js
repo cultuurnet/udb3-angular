@@ -189,10 +189,10 @@ describe('Controller: Roles Form', function() {
     };
     RoleManager.createRoleConstraint.and.returnValue($q.resolve());
 
-    editor.createConstraint('v3');
+    editor.createConstraint();
     $scope.$digest();
 
-    expect(RoleManager.createRoleConstraint).toHaveBeenCalledWith(id, 'v3', 'Ander constraint');
+    expect(RoleManager.createRoleConstraint).toHaveBeenCalledWith(id, 'Ander constraint');
     expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
@@ -210,10 +210,10 @@ describe('Controller: Roles Form', function() {
     };
     RoleManager.updateRoleConstraint.and.returnValue($q.resolve());
 
-    editor.updateConstraint('v3');
+    editor.updateConstraint();
     $scope.$digest();
 
-    expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, 'v3', 'Ander constraint');
+    expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, 'Ander constraint');
     expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
@@ -228,10 +228,10 @@ describe('Controller: Roles Form', function() {
     $scope.$digest();
     RoleManager.removeRoleConstraint.and.returnValue($q.resolve());
 
-    editor.removeConstraint('v3');
+    editor.removeConstraint();
     $scope.$digest();
 
-    expect(RoleManager.removeRoleConstraint).toHaveBeenCalledWith(id, 'v3');
+    expect(RoleManager.removeRoleConstraint).toHaveBeenCalledWith(id);
     expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });

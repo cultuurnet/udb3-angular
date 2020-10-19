@@ -1169,11 +1169,10 @@ function UdbApi(
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
    */
-  this.updateRoleConstraint = function (roleId, version, constraint) {
+  this.updateRoleConstraint = function (roleId, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=updateConstraint';
 
@@ -1182,22 +1181,21 @@ function UdbApi(
     };
 
     return $http
-        .put(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, updateData, requestOptions)
+        .put(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', updateData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @return {Promise.<Object|ApiProblem>} Object containing updated constraint.
    */
-  this.removeRoleConstraint = function (roleId, version) {
+  this.removeRoleConstraint = function (roleId) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=removeConstraint';
 
     return $http
-        .delete(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, requestOptions)
+        .delete(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 

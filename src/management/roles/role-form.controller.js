@@ -170,42 +170,42 @@ function RoleFormController(
     }
   }
 
-  function constraintExists(version) {
-    return _.has(editor.role.constraints, version) && editor.role.constraints[version] !== null;
+  function constraintExists() {
+    return _.has(editor.role.constraints, 'v3') && editor.role.constraints.v3 !== null;
   }
 
-  function createConstraint(version) {
+  function createConstraint() {
     editor.saving = true;
     RoleManager
-        .createRoleConstraint(roleId, version, editor.role.constraints[version])
+        .createRoleConstraint(roleId, editor.role.constraints.v3)
         .then(function() {
-            editor.editConstraint = false;
+          editor.editConstraint = false;
         }, showProblem)
         .finally(function() {
           editor.saving = false;
         });
   }
 
-  function updateConstraint(version) {
+  function updateConstraint() {
     editor.saving = true;
     RoleManager
-      .updateRoleConstraint(roleId, version, editor.role.constraints[version])
+      .updateRoleConstraint(roleId, editor.role.constraints.v3)
       .then(function() {
-          editor.editConstraint = false;
+        editor.editConstraint = false;
       }, showProblem)
       .finally(function() {
         editor.saving = false;
       });
   }
 
-  function removeConstraint(version) {
+  function removeConstraint() {
     editor.saving = true;
     RoleManager
-        .removeRoleConstraint(roleId, version)
+        .removeRoleConstraint(roleId)
         .then(function() {
-            editor.editConstraint = false;
-          if (_.has(editor.role.constraints, version)) {
-            delete(editor.role.constraints[version]);
+          editor.editConstraint = false;
+          if (_.has(editor.role.constraints, 'v3')) {
+            delete(editor.role.constraints.v3);
           }
         }, showProblem)
         .finally(function() {

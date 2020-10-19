@@ -48,10 +48,10 @@
     <div class="row" ng-show="editor.role['uuid']">
         <div class="col-md-12">
             <div class="form-group" udb-form-group ng-if="!editor.editConstraint">
-                <label class="control-label">Bewerkrecht v3</label>
+                <label class="control-label">Bewerkrecht</label>
                 <p><span ng-bind="editor.role.constraints.v3"></span>
                     <a href ng-click="editor.editConstraint = true">Wijzigen</a>
-                    <a href ng-click="editor.removeConstraint('v3')" ng-if="editor.constraintExists('v3')">Verwijderen</a></p>
+                    <a href ng-click="editor.removeConstraint()" ng-if="editor.constraintExists()">Verwijderen</a></p>
             </div>
             <div ng-if="editor.editConstraint">
                 <div class="form-group" udb-form-group>
@@ -66,15 +66,15 @@
                 <button ng-disabled="!editor.form.$valid || editor.saving"
                         type="button"
                         class="btn btn-primary"
-                        ng-if="::editor.constraintExists('v3')"
-                        ng-click="editor.updateConstraint('v3')">
+                        ng-if="::editor.constraintExists()"
+                        ng-click="editor.updateConstraint()">
                     Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
                 </button>
                 <button ng-disabled="!editor.form.$valid || editor.saving"
                         type="button"
                         class="btn btn-primary"
-                        ng-if="::!editor.constraintExists('v3')"
-                        ng-click="editor.createConstraint('v3')">
+                        ng-if="::!editor.constraintExists()"
+                        ng-click="editor.createConstraint()">
                     Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
                 </button>
             </div>

@@ -243,14 +243,13 @@ describe('Service: Role Manager', function () {
     function assertAPICall() {
       expect(udbApi.createRoleConstraint).toHaveBeenCalledWith(
         '0823f57e-a6bd-450a-b4f5-8459b4b11043',
-        'v3',
         'andere constraint'
       );
       done();
     }
 
     service
-        .createRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v3', 'andere constraint')
+        .createRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere constraint')
         .then(assertAPICall);
 
     $scope.$apply();
@@ -262,14 +261,13 @@ describe('Service: Role Manager', function () {
     function assertAPICall() {
       expect(udbApi.updateRoleConstraint).toHaveBeenCalledWith(
         '0823f57e-a6bd-450a-b4f5-8459b4b11043',
-        'v3',
         'andere constraint'
       );
       done();
     }
 
     service
-      .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v3', 'andere constraint')
+      .updateRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'andere constraint')
       .then(assertAPICall);
 
     $scope.$apply();
@@ -279,12 +277,12 @@ describe('Service: Role Manager', function () {
     udbApi.removeRoleConstraint.and.returnValue($q.resolve());
 
     function assertAPICall() {
-      expect(udbApi.removeRoleConstraint).toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v3');
+      expect(udbApi.removeRoleConstraint).toHaveBeenCalledWith('0823f57e-a6bd-450a-b4f5-8459b4b11043');
       done();
     }
 
     service
-        .removeRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043', 'v3')
+        .removeRoleConstraint('0823f57e-a6bd-450a-b4f5-8459b4b11043')
         .then(assertAPICall);
 
     $scope.$apply();
