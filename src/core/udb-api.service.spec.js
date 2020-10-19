@@ -655,7 +655,7 @@ describe('Service: UDB3 Api', function () {
         .respond(JSON.stringify({}));
 
     service
-        .createRoleConstraint('roleid', 'v3', 'newconstraint')
+        .createRoleConstraint('roleid', 'newconstraint')
         .then(done);
     $httpBackend.flush();
   });
@@ -1871,7 +1871,7 @@ describe('Service: UDB3 Api', function () {
         .respond(JSON.stringify(expectedCommandId));
 
     service
-        .createRoleConstraint(1, 'v3', 'bazinga!')
+        .createRoleConstraint(1, 'bazinga!')
         .then(assertRole);
 
     $httpBackend.flush();
