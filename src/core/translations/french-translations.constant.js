@@ -515,7 +515,7 @@ angular.module('udb.core')
           'Seniors': 'Seniors',
           'Custom': 'Autres',
           'from': 'Du',
-          'till': 'au',
+          'till': 'Au',
           'age': 'ans',
           'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },

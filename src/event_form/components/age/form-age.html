@@ -25,40 +25,44 @@
               for="min-age"
               translate-once="eventForm.step4.age.from"
             ></label>
-            <input
-              type="text"
-              class="form-control"
-              id="min-age"
-              name="min"
-              ng-model="fagec.minAge"
-              ng-blur="fagec.instantSaveAgeRange()"
-              ng-change="fagec.delayedSaveAgeRange()"
-              udb-age-input
-            />
-            <span
-              class="form-text"
-              translate-once="eventForm.step4.age.age"
-            ></span>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                id="min-age"
+                name="min"
+                ng-model="fagec.minAge"
+                ng-blur="fagec.instantSaveAgeRange()"
+                ng-change="fagec.delayedSaveAgeRange()"
+                udb-age-input
+              />
+              <span
+                class="form-text"
+                translate-once="eventForm.step4.age.age"
+              ></span>
+            </div>
           </div>
           <div class="form-group">
             <label
               for="max-age"
               translate-once="eventForm.step4.age.till"
             ></label>
-            <input
-              type="text"
-              class="form-control"
-              id="max-age"
-              name="max"
-              ng-model="fagec.maxAge"
-              ng-blur="fagec.instantSaveAgeRange()"
-              ng-change="fagec.delayedSaveAgeRange()"
-              udb-age-input
-            />
-            <span
-              class="form-text"
-              translate-once="eventForm.step4.age.age"
-            ></span>
+            <div>
+              <input
+                type="text"
+                class="form-control"
+                id="max-age"
+                name="max"
+                ng-model="fagec.maxAge"
+                ng-blur="fagec.instantSaveAgeRange()"
+                ng-change="fagec.delayedSaveAgeRange()"
+                udb-age-input
+              />
+              <span
+                class="form-text"
+                translate-once="eventForm.step4.age.age"
+              ></span>
+            </div> 
           </div>
         </form>
       </div>
