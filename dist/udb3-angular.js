@@ -3328,9 +3328,30 @@ angular.module('udb.core')
         'required_signs': 'tekens.',
         'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
         'empty': 'Leegmaken',
-        'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
-        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
-        'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
+        'tips': {
+          'Concert': '<p>Geef een enthousiaste omschrijving van het concert.</p> <ul> <li>Welk(e)<strong> artiest(en)</strong> treden op? </li> <li>Welk <strong>genre</strong> is het?</li> </ul> <p>Welk<strong> album</strong> <strong>of werk </strong>wordt voorgesteld? </p>',
+          'Dansvoorstelling': '<p>Geef een enthousiaste omschrijving van de dansvoorstelling.</p><ul><li>Wie is de <strong>choreograaf</strong>?</li><li>Wie zijn de<strong> dansers</strong>?</li><li>In welke <strong>stijl</strong> dansen ze?</li></ul><p>Over welk <strong>thema of onderwerp</strong> gaat de voorstelling?</p>',
+          'Festival': '<p>Geef een enthousiaste omschrijving van het festival. </p> <ul> <li>Wie of wat staat er op het <strong>programma?</strong> </li> </ul> <p>Welke <strong>(rand)animatie</strong> is er?</p>',
+          'Film': '<p>Geef een enthousiaste omschrijving van de film. </p> <ul> <li>Schets kort het <strong>verhaal</strong>. </li> <li>Wie is de <strong>regisseur?</strong> </li> <li>Wie zijn de  <strong>hoofdrolspelers?</strong> </li> </ul> <p>Heeft de film <strong>prijzen</strong> gewonnen? </p>',
+          'Lezing of congres': '<p>Geef een enthousiaste omschrijving van de lezing of het congres. </p> <ul> <li>Welke<strong> thema’s</strong> komen aan bod? </li> </ul> <p>Welke <strong>sprekers </strong>nemen het woord?</p>',
+          'Theatervoorstelling': '<p>Geef een enthousiaste omschrijving van de voorstelling. </p> <ul> <li>Schets kort het <strong>verhaal</strong> of het <strong>thema</strong>. </li> <li>Welk <strong>theatergezelschap</strong> brengt het stuk? </li> </ul> <p>Welke <strong>acteurs</strong> spelen mee?</p>',
+          'Sportwedstrijd bekijken': '<p>Geef een enthousiaste omschrijving van de sportwedstrijd. </p> <ul> <li>Welke <strong>ploegen of deelnemers</strong> spelen er mee? </li> </ul> <p>In welke<strong> competitie</strong> kadert de wedstrijd?</p>',
+          'Markt of braderie': '<p>Geef een enthousiaste omschrijving van de markt of braderie. </p> <ul> <li>In <strong>welke straten</strong> vindt ze plaats? </li> <li>Welke <strong>kramen of standjes</strong> zullen er zijn? </li> </ul> <p>Is er <strong>(rand)animatie</strong>? </p>',
+          'Opendeurdag': '<p>Geef een enthousiaste omschrijving van de opendeurdag. Wat kan je <strong>bekijken </strong>of <strong>beleven?</strong></p>',
+          'Beurs': '<p>Geef een enthousiaste omschrijving van de beurs. Wat kan je kan <strong>bekijken</strong>, <strong>beleven</strong> of <strong>kopen</strong>?</p>',
+          'Tentoonstelling': '<p>Geef een enthousiaste omschrijving van de tentoonstelling. </p> <ul> <li>Welke <strong>kunstenaars</strong> stellen tentoon?</li> <li>Welke<strong> collecties</strong> kan je bekijken? </li> </ul> <p>Is er een <strong>(audio)gids</strong> of <strong>brochure</strong> beschikbaar?</p>',
+          'Begeleide rondleiding': '<p>Geef een enthousiaste omschrijving van de rondleiding. </p> <ul> <li>Wat valt er langs de route te <strong>bekijken of beleven</strong>? </li> <li>Is er een maximaal <strong>aantal deelnemers</strong>? </li> <li>Wordt de rondleiding doorlopend of op <strong>bepaalde tijdstippen</strong> georganiseerd? </li> <li>Zijn er <strong>speciale aandachtspunten</strong> (bv. laarzen aangewezen)?</li> </ul>',
+          'Lessenreeks': '<p>Geef een enthousiaste omschrijving van de lessenreeks. </p> <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li> </ul> <p>Krijg je op het einde een <strong>diploma</strong> of certificaat?</p>',
+          'Cursus met open sessies': '<p>Geef een enthousiaste omschrijving van de workshop of cursus met open sessies. </p> <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li> <li>Krijg je op het einde een <strong>diploma</strong> of certificaat?</li> </ul>',
+          'Kamp of vakantie': '<p>Geef een enthousiaste omschrijving van het kamp of de vakantie. </p> <ul> <li>Welke <strong>activiteiten</strong> kan je er doen? </li> <li>Is er een <strong>thema</strong>? </li> <li>Is het kamp <strong>met of zonder overnachtingen</strong>? </li> <li>Wat is het <strong>start en einduur</strong> voor dagkampen en is er vooraf en nadien <strong>opvang</strong> voorzien?</li> </ul>',
+          'Kermis of feestelijkheid': '<p>Geef een enthousiaste omschrijving van de kermis. </p> <ul> <li>Welke <strong>attracties</strong> zijn er? </li> <li>Zijn er<strong> (rand)activiteiten</strong> (quiz, concerten, foodtrucks, marktje ...)?</li> </ul>',
+          'Route': '<p>Geef een enthousiaste omschrijving van de route. </p> <ul> <li>Leg je de route af <strong>te voet, per fiets, per boot </strong>…? </li> <li>Welke mogelijke <strong>tussenstops</strong> zijn er? </li> <li>Wat is de <strong>afstand</strong> of <strong>duur</strong> van de route?</li> <li>Is de route <strong>begeleid</strong>, met een gids, brochure of wegwijzers?</li> </ul>',
+          'Party of fuif': '<p>Geef een enthousiaste omschrijving van de party of fuif. Welke <strong>dj’s</strong> of <strong>bands</strong> treden er op?</p>',
+          'Eet of drankfestijn': '<p>Geef een enthousiaste omschrijving van het eet -of drankfestijn. </p> <ul> <li>Wat staat er op het <strong>menu?</strong> </li> <li>Gaat de opbrengst naar een<strong> goed doel</strong>? </li> <li>Is er <strong>(rand)animatie</strong>?</li> </ul>',
+          'Spel of quiz': '<p>Geef een enthousiaste omschrijving van de quiz of het spel. </p> <ul> <li>Over welke <strong>onderwerpen</strong> gaat de quiz?</li> <li>Heeft het spel een <strong>thema</strong>?</li> <li>Valt er iets te <strong>winnen</strong>?</li> <li>Is er een <strong>maximaal</strong> aantal <strong>deelnemers</strong>?</li> </ul>',
+          'Sport en beweging': '<p>Geef een enthousiaste omschrijving van de sportactiviteit. </p> <ul> <li>Welke <strong>sport</strong>(en) kan je beoefenen? </li> <li>Welk <strong>materiaal</strong> wordt (niet) voorzien?</li> </ul>',
+          'Monument': '<p>Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).</p>'
+        },
         'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
         'organizer': 'Organisatie',
         'add_organizer': 'Organisatie toevoegen',
@@ -28820,9 +28841,28 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </a>\n" +
     "                  </p>\n" +
     "                  <div class=\"alert alert-info\" ng-switch=\"eventFormData.type.id\">\n" +
-    "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tip_route\"></p>\n" +
-    "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tip_rondleiding\"></p>\n" +
-    "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tip_monument\"></p>\n" +
+    "                    <p ng-switch-when=\"0.50.4.0.0\" translate-once=\"eventForm.step5.tips.Concert\"></p>\n" +
+    "                    <p ng-switch-when=\"0.54.0.0.0\" translate-once=\"eventForm.step5.tips.Dansvoorstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.5.0.0.0\" translate-once=\"eventForm.step5.tips.Festival\"></p>\n" +
+    "                    <p ng-switch-when=\"0.50.6.0.0\" translate-once=\"eventForm.step5.tips.Film\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.2.0.0\" translate-once=\"eventForm.step5.tips.Lezing of congres\"></p>\n" +
+    "                    <p ng-switch-when=\"0.55.0.0.0\" translate-once=\"eventForm.step5.tips.Theatervoorstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.19.0.0.0\" translate-once=\"eventForm.step5.tips.Sportwedstrijd bekijken\"></p>\n" +
+    "                    <p ng-switch-when=\"0.37.0.0.0\" translate-once=\"eventForm.step5.tips.Markt of braderie\"></p>\n" +
+    "                    <p ng-switch-when=\"0.12.0.0.0\" translate-once=\"eventForm.step5.tips.Opendeurdag\"></p>\n" +
+    "                    <p ng-switch-when=\"0.6.0.0.0\" translate-once=\"eventForm.step5.tips.Beurs\"></p>\n" +
+    "                    <p ng-switch-when=\"0.0.0.0.0\" translate-once=\"eventForm.step5.tips.Tentoonstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tips.Begeleide rondleiding\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.1.0.0\" translate-once=\"eventForm.step5.tips.Lessenreeks\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.1.0.1\" translate-once=\"eventForm.step5.tips.Cursus met open sessies\"></p>\n" +
+    "                    <p ng-switch-when=\"0.57.0.0.0\" translate-once=\"eventForm.step5.tips.Kamp of vakantie\"></p>\n" +
+    "                    <p ng-switch-when=\"0.28.0.0.0\" translate-once=\"eventForm.step5.tips.Kermis of feestelijkheid\"></p>                    \n" +
+    "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tips.Route\"></p>\n" +
+    "                    <p ng-switch-when=\"0.49.0.0.0\" translate-once=\"eventForm.step5.tips.Party of fuif\"></p>\n" +
+    "                    <p ng-switch-when=\"1.50.0.0.0\" translate-once=\"eventForm.step5.tips.Eet of drankfestijn\"></p>\n" +
+    "                    <p ng-switch-when=\"0.50.21.0.0\" translate-once=\"eventForm.step5.tips.Spel of quiz\"></p>\n" +
+    "                    <p ng-switch-when=\"0.59.0.0.0\" translate-once=\"eventForm.step5.tips.Sport en beweging\"></p>\n" +
+    "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tips.Monument\"></p>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "                <div ng-show=\"descriptionError\"\n" +
