@@ -17,7 +17,6 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
   efpmc.error = '';
   efpmc.hasPublicationDate = false;
   efpmc.publicationDate = eventFormData.availableFrom;
-  efpmc.maxDate = moment(eventFormData.getFirstStartDate()).subtract(1, 'days').toDate();
   efpmc.opened = false;
   efpmc.dismiss = dismiss;
   efpmc.savePublicationDate = savePublicationDate;
@@ -34,7 +33,6 @@ function EventFormPublishModalController($uibModalInstance, eventFormData, publi
     startOpened: false,
     options: {
       minDate: tomorrow,
-      maxDate: efpmc.maxDate,
       showWeeks: false
     }
   };

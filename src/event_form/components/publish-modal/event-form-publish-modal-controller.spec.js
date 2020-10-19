@@ -72,40 +72,6 @@ describe('Controller: Publish Form Modal', function() {
     expect($uibModalInstance.dismiss).toHaveBeenCalled();
   });
 
-  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with timestamps', function () {
-    var formData = _.cloneDeep(eventFormData);
-    formData.calendar.type
-    formData.calendar.timeSpans = [
-      {
-        start: new Date(2017, 7, 23)
-      },
-      {
-        start: new Date(2017, 8, 16)
-      }
-    ];
-    var today = new Date(2017, 6, 23);
-
-    jasmine.clock().mockDate(today);
-
-    var controller = getController(formData);
-    var latestPublicationDate = controller.drp.options.maxDate;
-
-    expect(latestPublicationDate).toEqual(new Date(2017, 7, 22));
-  });
-
-  it('should upper limit the publication dates to choose from to a day before the calendar start of an offer with a period', function () {
-    var formData = _.cloneDeep(eventFormData);
-    var today = new Date(2017, 6, 23);
-
-    formData.setPeriodicStartDate(new Date(2017, 6, 23));
-    jasmine.clock().mockDate(today);
-
-    var controller = getController(formData);
-    var latestPublicationDate = controller.drp.options.maxDate;
-
-    expect(latestPublicationDate).toEqual(new Date(2017, 6, 22));
-  });
-
   it('should lower limit the publication dates to choose from to a day after today', function () {
     var formData = _.cloneDeep(eventFormData);
     var today = new Date(2017, 9, 23);
