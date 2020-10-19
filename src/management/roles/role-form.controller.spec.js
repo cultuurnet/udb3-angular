@@ -193,7 +193,7 @@ describe('Controller: Roles Form', function() {
     $scope.$digest();
 
     expect(RoleManager.createRoleConstraint).toHaveBeenCalledWith(id, 'v3', 'Ander constraint');
-    expect(editor.editConstraintV3).toEqual(false);
+    expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
 
@@ -214,7 +214,7 @@ describe('Controller: Roles Form', function() {
     $scope.$digest();
 
     expect(RoleManager.updateRoleConstraint).toHaveBeenCalledWith(id, 'v3', 'Ander constraint');
-    expect(editor.editConstraintV3).toEqual(false);
+    expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
 
@@ -232,7 +232,7 @@ describe('Controller: Roles Form', function() {
     $scope.$digest();
 
     expect(RoleManager.removeRoleConstraint).toHaveBeenCalledWith(id, 'v3');
-    expect(editor.editConstraintV3).toEqual(false);
+    expect(editor.editConstraint).toEqual(false);
     expect(editor.saving).toEqual(false);
   });
 

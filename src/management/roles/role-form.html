@@ -47,13 +47,13 @@
     </div>
     <div class="row" ng-show="editor.role['uuid']">
         <div class="col-md-12">
-            <div class="form-group" udb-form-group ng-if="!editor.editConstraintV3">
+            <div class="form-group" udb-form-group ng-if="!editor.editConstraint">
                 <label class="control-label">Bewerkrecht v3</label>
                 <p><span ng-bind="editor.role.constraints.v3"></span>
-                    <a href ng-click="editor.editConstraintV3 = true">Wijzigen</a>
+                    <a href ng-click="editor.editConstraint = true">Wijzigen</a>
                     <a href ng-click="editor.removeConstraint('v3')" ng-if="editor.constraintExists('v3')">Verwijderen</a></p>
             </div>
-            <div ng-if="editor.editConstraintV3">
+            <div ng-if="editor.editConstraint">
                 <div class="form-group" udb-form-group>
                     <label class="control-label" for="label-name-field">Bewerkrecht v3</label>
                     <input id="constraint-v3-field"
