@@ -28861,7 +28861,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-click=\"saveDescription(true)\">\n" +
     "                    </a>\n" +
     "                  </p>\n" +
-    "                  <div class=\"alert alert-info\" ng-switch=\"eventFormData.type.id\">\n" +
+    "                  <div class=\"alert alert-info description-tips\" ng-switch=\"eventFormData.type.id\">\n" +
     "                    <p ng-switch-when=\"0.50.4.0.0\" translate-once=\"eventForm.step5.tips.Concert\"></p>\n" +
     "                    <p ng-switch-when=\"0.54.0.0.0\" translate-once=\"eventForm.step5.tips.Dansvoorstelling\"></p>\n" +
     "                    <p ng-switch-when=\"0.5.0.0.0\" translate-once=\"eventForm.step5.tips.Festival\"></p>\n" +
