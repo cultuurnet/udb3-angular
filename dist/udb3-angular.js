@@ -6137,11 +6137,10 @@ function UdbApi(
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing created constraint.
    */
-  this.createRoleConstraint = function (roleId, version, constraint) {
+  this.createRoleConstraint = function (roleId, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=addConstraint';
 
@@ -6150,7 +6149,7 @@ function UdbApi(
     };
 
     return $http
-        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, requestOptions)
+        .post(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', constraintData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
