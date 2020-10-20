@@ -937,7 +937,7 @@ angular.module('udb.core')
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
       'Cursus met open sessies': 'Cours avec sessions ouvertes',
       'Lessenreeks': 'Série de cours',
-      'Sportactiviteit': 'Activité sportive',
+      'Sport en beweging': 'Sport et mouvement',
       'Kamp of vakantie': 'Camp de vacances',
       'Begeleide rondleiding': 'Visite guidé',
       'Route': 'Itinéraire',
