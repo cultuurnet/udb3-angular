@@ -3328,9 +3328,30 @@ angular.module('udb.core')
         'required_signs': 'tekens.',
         'required_200_help': 'Plaats de belangrijkste boodschap in de eerste 200 tekens. Je kan nog verder aanvullen met achtergrondinformatie.',
         'empty': 'Leegmaken',
-        'tip_route': 'Geef hier een wervende omschrijving van de route. Vermeld in deze tekst <strong>hoe</strong> de route wordt afgelegd (per fiets, per boot, ...), de mogelijke tussenstops, de <strong>duur</strong>, <strong>afstand</strong> en hoe de route <strong>begeleid</strong> is (met gids, brochure of wegwijzers).',
-        'tip_rondleiding': 'Geef hier een wervende omschrijving van de rondleiding. Vermeld het <strong>max. aantal personen</strong> per groepje, <strong>hoe</strong> de rondleiding wordt georganiseerd (doorlopend, met intervallen of op vaste tijdstippen) en of er <strong>speciale aandachtspunten</strong> zijn (vb. laarzen aangewezen).',
-        'tip_monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).',
+        'tips': {
+          'Concert': 'Geef een enthousiaste omschrijving van het concert. <ul><li>Welk(e)<strong> artiest(en)</strong> treden op? </li><li>Welk <strong>genre</strong> is het?</li><li>Welk<strong> album</strong> <strong>of werk </strong>wordt voorgesteld? </li></ul>',
+          'Dansvoorstelling': 'Geef een enthousiaste omschrijving van de dansvoorstelling.<ul><li>Wie is de <strong>choreograaf</strong>?</li><li>Wie zijn de<strong> dansers</strong>?</li><li>In welke <strong>stijl</strong> dansen ze?</li><li>Over welk <strong>thema of onderwerp</strong> gaat de voorstelling?</li></ul>',
+          'Festival': 'Geef een enthousiaste omschrijving van het festival. <ul> <li>Wie of wat staat er op het <strong>programma?</strong> </li> <li>Welke <strong>(rand)animatie</strong> is er?</li> </ul>',
+          'Film': 'Geef een enthousiaste omschrijving van de film. <ul> <li>Schets kort het <strong>verhaal</strong>. </li> <li>Wie is de <strong>regisseur?</strong> </li> <li>Wie zijn de  <strong>hoofdrolspelers?</strong> </li> <li>Heeft de film <strong>prijzen</strong> gewonnen? </li></ul>',
+          'Lezing of congres': 'Geef een enthousiaste omschrijving van de lezing of het congres. <ul> <li>Welke<strong> thema’s</strong> komen aan bod? </li><li>Welke <strong>sprekers </strong>nemen het woord?</li></ul>',
+          'Theatervoorstelling': 'Geef een enthousiaste omschrijving van de voorstelling.  <ul> <li>Schets kort het <strong>verhaal</strong> of het <strong>thema</strong>. </li> <li>Welk <strong>theatergezelschap</strong> brengt het stuk? </li> <li>Welke <strong>acteurs</strong> spelen mee?</li></ul>',
+          'Sportwedstrijd bekijken': 'Geef een enthousiaste omschrijving van de sportwedstrijd. <ul> <li>Welke <strong>ploegen of deelnemers</strong> spelen er mee? </li> <li>In welke<strong> competitie</strong> kadert de wedstrijd?</li></ul>',
+          'Markt of braderie': 'Geef een enthousiaste omschrijving van de markt of braderie. <ul> <li>In <strong>welke straten</strong> vindt ze plaats? </li> <li>Welke <strong>kramen of standjes</strong> zullen er zijn? </li><li>Is er <strong>(rand)animatie</strong>?</li></ul>',
+          'Opendeurdag': 'Geef een enthousiaste omschrijving van de opendeurdag. Wat kan je <strong>bekijken </strong>of <strong>beleven?</strong>',
+          'Beurs': 'Geef een enthousiaste omschrijving van de beurs. Wat kan je kan <strong>bekijken</strong>, <strong>beleven</strong> of <strong>kopen</strong>?',
+          'Tentoonstelling': 'Geef een enthousiaste omschrijving van de tentoonstelling. <ul> <li>Welke <strong>kunstenaars</strong> stellen tentoon?</li> <li>Welke<strong> collecties</strong> kan je bekijken? </li> <li>Is er een <strong>(audio)gids</strong> of <strong>brochure</strong> beschikbaar?</li></ul>',
+          'Begeleide rondleiding': 'Geef een enthousiaste omschrijving van de rondleiding. <ul> <li>Wat valt er langs de route te <strong>bekijken of beleven</strong>? </li> <li>Is er een maximaal <strong>aantal deelnemers</strong>? </li> <li>Wordt de rondleiding doorlopend of op <strong>bepaalde tijdstippen</strong> georganiseerd? </li> <li>Zijn er <strong>speciale aandachtspunten</strong> (bv. laarzen aangewezen)?</li> </ul>',
+          'Lessenreeks': 'Geef een enthousiaste omschrijving van de lessenreeks. <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li><li>Krijg je op het einde een <strong>diploma</strong> of certificaat?</li></ul>',
+          'Cursus met open sessies': 'Geef een enthousiaste omschrijving van de workshop of cursus met open sessies.  <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li> <li>Krijg je op het einde een <strong>diploma</strong> of certificaat?</li> </ul>',
+          'Kamp of vakantie': 'Geef een enthousiaste omschrijving van het kamp of de vakantie.  <ul> <li>Welke <strong>activiteiten</strong> kan je er doen? </li> <li>Is er een <strong>thema</strong>? </li> <li>Is het kamp <strong>met of zonder overnachtingen</strong>? </li> <li>Wat is het <strong>start en einduur</strong> voor dagkampen en is er vooraf en nadien <strong>opvang</strong> voorzien?</li> </ul>',
+          'Festiviteit': 'Geef een enthousiaste omschrijving van de kermis. <ul> <li>Welke <strong>attracties</strong> zijn er? </li> <li>Zijn er<strong> (rand)activiteiten</strong> (quiz, concerten, foodtrucks, marktje ...)?</li> </ul>',
+          'Route': 'Geef een enthousiaste omschrijving van de route. <ul> <li>Leg je de route af <strong>te voet, per fiets, per boot </strong>…? </li> <li>Welke mogelijke <strong>tussenstops</strong> zijn er? </li> <li>Wat is de <strong>afstand</strong> of <strong>duur</strong> van de route?</li> <li>Is de route <strong>begeleid</strong>, met een gids, brochure of wegwijzers?</li> </ul>',
+          'Party of fuif': 'Geef een enthousiaste omschrijving van de party of fuif. Welke <strong>dj’s</strong> of <strong>bands</strong> treden er op?',
+          'Eet of drankfestijn': 'Geef een enthousiaste omschrijving van het eet -of drankfestijn. <ul> <li>Wat staat er op het <strong>menu?</strong> </li> <li>Gaat de opbrengst naar een<strong> goed doel</strong>? </li> <li>Is er <strong>(rand)animatie</strong>?</li> </ul>',
+          'Spel of quiz': 'Geef een enthousiaste omschrijving van de quiz of het spel. <ul> <li>Over welke <strong>onderwerpen</strong> gaat de quiz?</li> <li>Heeft het spel een <strong>thema</strong>?</li> <li>Valt er iets te <strong>winnen</strong>?</li> <li>Is er een <strong>maximaal</strong> aantal <strong>deelnemers</strong>?</li> </ul>',
+          'Sport en beweging': 'Geef een enthousiaste omschrijving van de sportactiviteit. <ul> <li>Welke <strong>sport</strong>(en) kan je beoefenen? </li> <li>Welk <strong>materiaal</strong> wordt (niet) voorzien?</li> </ul>',
+          'Monument': 'Geef hier een wervende omschrijving van het monument. Geef ook aan indien het monument slechts beperkt opengesteld is (vb. enkel salons).'
+        },
         'description_error': 'Er ging iets fout bij het opslaan van de beschrijving.',
         'organizer': 'Organisatie',
         'add_organizer': 'Organisatie toevoegen',
@@ -4413,9 +4434,30 @@ angular.module('udb.core')
         'required_signs': 'symboles.',
         'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
         'empty': 'Vider',
-        'tip_route': 'Donnez ici une description saillante de la route. Mentionnez dans ce texte <strong>comment</strong> la route est parcourue (à vélo, en bateau, ...), les escales possibles, la <strong>durée</strong>, <strong>distance</strong> et comment la route est <strong>accompagnée</strong> (avec guide, brochure ou panneaux).',
-        'tip_rondleiding': 'Donnez ici une description saillante du tour. Mentionnez le <strong>nombre max. de personnes</strong> par groupe, <strong>comment</strong> le tour est organisé (de manière permanente, avec intervalles ou à des temps fixes) et s\'il y a des <strong>préoccupations spéciales</strong> (p.ex. bottes recommandées).',
-        'tip_monument': 'Donnez ici une description saillante du monument. Indiquez également si l\'ouverture du monument est limitée (p.ex. seulement des salons).',
+        'tips': {
+          'Concert': 'Donnez une description enthousiaste du concert. <ul> <li>Quel(s) <strong>artiste(s)</strong> se produisent?</li> <li>De quel <strong>genre</strong> s\'agit-il?</li> <li>Quel <strong>album ou œuvre</strong> sera présenté?</li> </ul>',
+          'Dansvoorstelling': 'Donnez une description enthousiaste du spectacle de danse. <ul> <li>Qui est le <strong>chorégraphe</strong>?</li> <li>Qui sont les <strong>danseurs</strong>?</li> <li>Dans quel <strong>style</strong> dansent-ils?</li> <li>Quel est le <strong>thème ou le sujet</strong> de la représentation?</li> </ul>',
+          'Festival': 'Donnez une description enthousiaste du festival. <ul> <li>Qui ou quoi est au <strong>programme</strong>?</li> <li>Quelle est l\'<strong>animation</strong> (périphérique)?</li> </ul>',
+          'Film': 'Donnez une description enthousiaste du cinéma. <ul> <li>Faites une brève description de <strong>l\'histoire</strong>.</li> <li>Qui est le <strong>réalisateur</strong>?</li> <li>Qui sont les <strong>protagonistes</strong>?</li> <li>Le film a-t-il remporté des <strong>prix</strong>?</li> </ul>',
+          'Lezing of congres': 'Donnez une description enthousiaste de la conférence où congrès <ul> <li>Quels <strong>thèmes</strong> sont couverts?</li> <li>Quels <strong>orateurs</strong> prennent la parole?</li> </ul>',
+          'Theatervoorstelling': 'Donnez une description enthousiaste du théâtre. <ul> <li>Esquissez brièvement <strong>l\'histoire</strong> ou le <strong>thème</strong>.</li> <li>Quelle<strong> compagnie de théâtre</strong> jouera la pièce?</li> <li>Quels sont les <strong>acteurs</strong> qui jouent?</li> </ul>',
+          'Sportwedstrijd bekijken': 'Donnez une description enthousiaste de la compétition sportive. <ul> <li>Quelles <strong>équipes</strong> ou <strong>quels participants </strong>jouent?</li> <li>Dans quelle <strong>compétition</strong> se déroule la compétition?</li> </ul>',
+          'Markt of braderie': 'Donnez une description enthousiaste du marché, foire ou fête foraine <ul> <li>Dans <strong>quelles rues </strong>a-t-il lieu?</li> <li>Quels seront les <strong>stands</strong> ou les <strong>stands de vente</strong>?</li> <li>Y a-t-il une <strong>animation</strong> (de bord)?</li> </ul>',
+          'Opendeurdag': 'Donnez une description enthousiaste de la journée portes ouvertes. Que pouvez-vous <strong>voir</strong> ou <strong>vivre</strong>?',
+          'Beurs': 'Donnez une description enthousiaste de la foire. Que pouvez-vous <strong>voir</strong>, <strong>vivre</strong> ou <strong>acheter</strong>?',
+          'Tentoonstelling': 'Donnez une description enthousiaste de l\'exposition. <ul> <li>Quels sont les <strong>artistes</strong> qui exposent?</li> <li>Quelles <strong>collections</strong> pouvez-vous consulter?</li> <li>Existe-t-il un <strong>guide (audio)</strong> ou une <strong>brochure</strong>?</li> </ul>',
+          'Begeleide rondleiding': 'Donnez une description enthousiaste de la visite guidée. <ul> <li>Qu\'y a-t-il à <strong>voir</strong> ou à <strong>vivre</strong> le long du parcours?</li> <li>Y a-t-il un <strong>nombre</strong> maximum de <strong>participants</strong>?</li> <li>La visite guidée est-elle organisée en continu ou à des moments précis?</li> <li>Y a-t-il des <strong>points d\'attention</strong> particuliers (par exemple, des bottes indiquées)?</li> </ul>',
+          'Lessenreeks': 'Donnez une description enthousiaste de la série de cours. <ul> <li>Qu\'y apprenez-vous exactement?</li> <li>Des <strong>connaissances préalables</strong> sont-elles nécessaires pour participer?</li> <li>Quel est le <strong>niveau</strong> des cours?</li> <li>Recevez-vous un <strong>diplôme</strong> ou un certificat à la fin?</li> </ul>',
+          'Cursus met open sessies': 'Donnez une description enthousiaste du cours avec sessions ouvertes ou workshop. <ul> <li>Qu\'y apprenez-vous exactement?</li> <li>Des <strong>connaissances préalables</strong> sont-elles nécessaires pour participer?</li> <li>Quel est le <strong>niveau</strong> des cours?</li> <li>Recevez-vous un <strong>diplôme</strong> ou un certificat à la fin?</li> </ul>',
+          'Kamp of vakantie': 'Donnez une description enthousiaste du camp de vacances <ul> <li>Quelles <strong>activités</strong> pouvez-vous y faire?</li> <li>Y a-t-il un <strong>thème</strong>?</li> <li>Est-il <strong>avec ou sans nuitées</strong>?</li> <li>Quelle est <strong>l\'heure de début</strong> <strong>et de fin</strong> des camps de jour et les soins sont-ils <strong>fournis</strong> avant et après?</li> </ul>',
+          'Festiviteit': 'Donnez une description enthousiaste de la festivité <ul> <li>Quelles sont les <strong>attractions</strong>?</li> <li>Y a-t-il des <strong>activités (périphériques)</strong>: quiz, concerts, food trucks, marché,...?</li> </ul>',
+          'Route': 'Donnez une description enthousiaste de l\'itinéraire. <ul> <li>Faites-vous le <strong>trajet à pied, en vélo, en bateau</strong>,..?</li> <li>Quels sont les <strong>arrêts possibles</strong>?</li> <li>Quelle est la <strong>distance</strong> ou la <strong>durée</strong> de l\'itinéraire?</li> <li>L\'itinéraire est-il <strong>accompagné</strong>, avec un guide, une brochure ou des panneaux indicateurs?</li> </ul>',
+          'Party of fuif': 'Donnez une description enthousiaste de la soirée. Quels <strong>deejays</strong> ou <strong>groupes</strong> se produisent?',
+          'Eet of drankfestijn': 'Donnez une description enthousiaste du festin de nourriture ou de boisson. <ul> <li>Qu\'y a-t-il au <strong>menu</strong>?</li> <li>Les <strong>recettes</strong> seront-elles versées à une <strong>organisation caritative</strong>?</li> <li>Y a-t-il une <strong>animation (périphérique)</strong>?</li> </ul>',
+          'Spel of quiz': 'Donnez une description enthousiaste du quiz ou du jeu. <ul> <li>Sur quels <strong>sujets</strong> porte le quiz?</li> <li>Le jeu a-t-il un <strong>thème</strong>?</li> <li>Y a-t-il quelque chose à <strong>gagner</strong>?</li> <li>Y a-t-il un <strong>nombre maximum de participants</strong>?</li> </ul>',
+          'Sport en beweging': 'Donnez une description enthousiaste de l\'activité sportive. <ul> <li>Quel(s) <strong>sport(s)</strong> pouvez-vous pratiquer?</li> <li>Quel <strong>matériel</strong> est (non) fourni?</li> </ul>',
+          'Monument': 'Donnez ici une description saillante du monument. Indiquez également si l\'ouverture du monument est limitée (p.ex. seulement des salons).'
+        },
         'description_error': 'Il y a eu une erreur dans l\'enregistrement de la description.',
         'organizer': 'Organisation',
         'add_organizer': 'Ajouter l\'organisation',
@@ -4779,7 +4821,7 @@ angular.module('udb.core')
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
       'Cursus met open sessies': 'Cours avec sessions ouvertes',
       'Lessenreeks': 'Série de cours',
-      'Sportactiviteit': 'Activité sportive',
+      'Sport en beweging': 'Sport et mouvement',
       'Kamp of vakantie': 'Camp de vacances',
       'Begeleide rondleiding': 'Visite guidé',
       'Route': 'Itinéraire',
@@ -28818,10 +28860,29 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                       ng-click=\"saveDescription(true)\">\n" +
     "                    </a>\n" +
     "                  </p>\n" +
-    "                  <div class=\"alert alert-info\" ng-switch=\"eventFormData.type.id\">\n" +
-    "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tip_route\"></p>\n" +
-    "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tip_rondleiding\"></p>\n" +
-    "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tip_monument\"></p>\n" +
+    "                  <div class=\"alert alert-info description-tips\" ng-switch=\"eventFormData.type.id\">\n" +
+    "                    <p ng-switch-when=\"0.50.4.0.0\" translate-once=\"eventForm.step5.tips.Concert\"></p>\n" +
+    "                    <p ng-switch-when=\"0.54.0.0.0\" translate-once=\"eventForm.step5.tips.Dansvoorstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.5.0.0.0\" translate-once=\"eventForm.step5.tips.Festival\"></p>\n" +
+    "                    <p ng-switch-when=\"0.50.6.0.0\" translate-once=\"eventForm.step5.tips.Film\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.2.0.0\" translate-once=\"eventForm.step5.tips.Lezing of congres\"></p>\n" +
+    "                    <p ng-switch-when=\"0.55.0.0.0\" translate-once=\"eventForm.step5.tips.Theatervoorstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.19.0.0.0\" translate-once=\"eventForm.step5.tips.Sportwedstrijd bekijken\"></p>\n" +
+    "                    <p ng-switch-when=\"0.37.0.0.0\" translate-once=\"eventForm.step5.tips.Markt of braderie\"></p>\n" +
+    "                    <p ng-switch-when=\"0.12.0.0.0\" translate-once=\"eventForm.step5.tips.Opendeurdag\"></p>\n" +
+    "                    <p ng-switch-when=\"0.6.0.0.0\" translate-once=\"eventForm.step5.tips.Beurs\"></p>\n" +
+    "                    <p ng-switch-when=\"0.0.0.0.0\" translate-once=\"eventForm.step5.tips.Tentoonstelling\"></p>\n" +
+    "                    <p ng-switch-when=\"0.7.0.0.0\" translate-once=\"eventForm.step5.tips.Begeleide rondleiding\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.1.0.0\" translate-once=\"eventForm.step5.tips.Lessenreeks\"></p>\n" +
+    "                    <p ng-switch-when=\"0.3.1.0.1\" translate-once=\"eventForm.step5.tips.Cursus met open sessies\"></p>\n" +
+    "                    <p ng-switch-when=\"0.57.0.0.0\" translate-once=\"eventForm.step5.tips.Kamp of vakantie\"></p>\n" +
+    "                    <p ng-switch-when=\"0.28.0.0.0\" translate-once=\"eventForm.step5.tips.Festiviteit\"></p>                    \n" +
+    "                    <p ng-switch-when=\"0.17.0.0.0\" translate-once=\"eventForm.step5.tips.Route\"></p>\n" +
+    "                    <p ng-switch-when=\"0.49.0.0.0\" translate-once=\"eventForm.step5.tips.Party of fuif\"></p>\n" +
+    "                    <p ng-switch-when=\"1.50.0.0.0\" translate-once=\"eventForm.step5.tips.Eet of drankfestijn\"></p>\n" +
+    "                    <p ng-switch-when=\"0.50.21.0.0\" translate-once=\"eventForm.step5.tips.Spel of quiz\"></p>\n" +
+    "                    <p ng-switch-when=\"0.59.0.0.0\" translate-once=\"eventForm.step5.tips.Sport en beweging\"></p>\n" +
+    "                    <p ng-switch-when=\"0.14.0.0.0\" translate-once=\"eventForm.step5.tips.Monument\"></p>\n" +
     "                  </div>\n" +
     "                </div>\n" +
     "                <div ng-show=\"descriptionError\"\n" +
