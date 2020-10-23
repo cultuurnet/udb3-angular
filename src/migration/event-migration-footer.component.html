@@ -3,5 +3,6 @@
        ng-click="migration.completeMigration()"
        role="button"
        ng-class="{disabled: !migration.migrationReady()}"
-       ng-bind="::migration.destination.description">Doorgaan</a>
+       ng-bind="::migration.destination.description"
+       translate-once="eventForm.step4.continue"></a>
 </div>
