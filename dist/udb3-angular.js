@@ -19557,11 +19557,12 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData, $stateParams, $state) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state, $translate) {
   var controller = this;
 
   controller.completeMigration = completeMigration;
-  controller.destination = $stateParams.destination;
+  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue')};
+  controller.destination = $stateParams.destination || fallbackDestination;
   controller.migrationReady = migrationReady;
 
   function completeMigration () {
@@ -19574,7 +19575,7 @@ function EventMigrationFooterController(EventFormData, $stateParams, $state) {
     return !!_.get(EventFormData, 'location.id');
   }
 }
-EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state"];
+EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state", "$translate"];
 })();
 
 // Source: src/migration/event-migration.service.js
@@ -30253,8 +30254,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "       ng-click=\"migration.completeMigration()\"\n" +
     "       role=\"button\"\n" +
     "       ng-class=\"{disabled: !migration.migrationReady()}\"\n" +
-    "       ng-bind=\"::migration.destination.description\"\n" +
-    "       translate-once=\"eventForm.step4.continue\"></a>\n" +
+    "       ng-bind=\"::migration.destination.description\"></a>\n" +
     "</div>\n"
   );
 
