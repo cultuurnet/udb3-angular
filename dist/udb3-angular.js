@@ -30253,8 +30253,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "       ng-click=\"migration.completeMigration()\"\n" +
     "       role=\"button\"\n" +
     "       ng-class=\"{disabled: !migration.migrationReady()}\"\n" +
-    "       ng-bind=\"::migration.destination.description\"></a>\n" +
-    "</div>"
+    "       ng-bind=\"::migration.destination.description\">Doorgaan</a>\n" +
+    "</div>\n"
   );
 
 
