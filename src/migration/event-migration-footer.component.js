@@ -16,11 +16,12 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData, $stateParams, $state) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state, $translate) {
   var controller = this;
 
   controller.completeMigration = completeMigration;
-  controller.destination = $stateParams.destination;
+  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue')};
+  controller.destination = $stateParams.destination || fallbackDestination;
   controller.migrationReady = migrationReady;
 
   function completeMigration () {
