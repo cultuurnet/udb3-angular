@@ -19557,11 +19557,11 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData, $state, $stateParams, $translate) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state, $translate) {
   var controller = this;
 
   controller.completeMigration = completeMigration;
-  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue'), state: 'split.eventEdit'};
+  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue')};
   controller.destination = $stateParams.destination || fallbackDestination;
   controller.migrationReady = migrationReady;
 
@@ -19575,7 +19575,7 @@ function EventMigrationFooterController(EventFormData, $state, $stateParams, $tr
     return !!_.get(EventFormData, 'location.id');
   }
 }
-EventMigrationFooterController.$inject = ["EventFormData", "$state", "$stateParams", "$translate"];
+EventMigrationFooterController.$inject = ["EventFormData", "$stateParams", "$state", "$translate"];
 })();
 
 // Source: src/migration/event-migration.service.js
