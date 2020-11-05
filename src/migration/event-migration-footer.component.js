@@ -20,7 +20,7 @@ function EventMigrationFooterController(EventFormData, $stateParams, $state, $tr
   var controller = this;
 
   controller.completeMigration = completeMigration;
-  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue')};
+  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue'), state: 'split.eventEdit'};
   controller.destination = $stateParams.destination || fallbackDestination;
   controller.migrationReady = migrationReady;
 
