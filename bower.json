@@ -60,7 +60,8 @@
     "angular-scenario": "~1.5.5"
   },
   "resolutions": {
-    "angular": "~1.5.5"
+    "angular": "~1.5.5",
+    "bootstrap": "~3.3.7"
   },
   "overrides": {
     "angular-i18n":{
