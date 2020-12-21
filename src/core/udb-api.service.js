@@ -505,11 +505,23 @@ function UdbApi(
         $http
           .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
           .success(storeAndResolvePermissions)
-          .error(deferredPermissions.reject);
+          .error(function (error) {
+            window.parent.postMessage({
+              source: 'UDB',
+              type: 'HTTP_STATUS_CODE',
+              code: error ? error.code : 403
+            }, '*');
+            deferredPermissions.reject();
+          });
       } else {
         deferredPermissions.resolve(permissions);
       }
     } else {
+      window.parent.postMessage({
+        source: 'UDB',
+        type: 'HTTP_STATUS_CODE',
+        code: 401
+      }, '*');
       deferredPermissions.reject();
     }
 
