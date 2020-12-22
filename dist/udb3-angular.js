@@ -5496,7 +5496,7 @@ function UdbApi(
           .error(function (error) {
             window.parent.postMessage({
               source: 'UDB',
-              type: 'HTTP_STATUS_CODE',
+              type: 'HTTP_ERROR_CODE',
               code: error ? error.code : 403
             }, '*');
             deferredPermissions.reject();
@@ -5507,7 +5507,7 @@ function UdbApi(
     } else {
       window.parent.postMessage({
         source: 'UDB',
-        type: 'HTTP_STATUS_CODE',
+        type: 'HTTP_ERROR_CODE',
         code: 401
       }, '*');
       deferredPermissions.reject();
