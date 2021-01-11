@@ -19579,7 +19579,7 @@ function EventMigrationFooterController(EventFormData, $stateParams, $state, $tr
 
   function completeMigration () {
     if (migrationReady()) {
-      $state.go($stateParams.destination.state, {id: EventFormData.id});
+      $state.go(controller.destination.state, {id: EventFormData.id});
     }
   }
 
