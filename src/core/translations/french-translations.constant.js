@@ -471,7 +471,7 @@ angular.module('udb.core')
         'or': 'ou',
         'location_label': 'Un lieu',
         'change': 'Modifier',
-        'refine': 'Raffiner'
+        'refine': 'Affiner'
       },
       step2: {
         'date_help_event': 'L\'événement ou l\'activité a lieu quand?',
@@ -978,7 +978,7 @@ angular.module('udb.core')
       'Beeldhouwkunst': 'Sculpture',
       'Fotografie': 'Photographie',
       'Grafiek': 'Art grafique',
-      'Installatiekunst': 'Art d\'installation',
+      'Installatiekunst': 'Installation',
       'Schilderkunst': 'Peinture',
       'Decoratieve kunst': 'Arts décoratifs',
       'Design': 'Design',
@@ -1007,7 +1007,7 @@ angular.module('udb.core')
       'Cinefiel': 'Cinéphile',
       'Thriller': 'Films à suspense',
       'Meerdere filmgenres': 'Films de tous genres',
-      'Geschiedenis': 'Histoire',
+      'Geschiedenis': 'Histoire et archéologie',
       'Gezondheid en wellness': 'Santé et bien-être',
       'Landbouw en platteland': 'Agriculture et campagne',
       'Milieu en natuur': 'Environnement et nature',
@@ -1046,7 +1046,7 @@ angular.module('udb.core')
       'Figuren en poppentheater': 'Théâtre de marionnettes',
       'Opera en operette': 'Opéra et opérette',
       'Mime en bewegingstheater': 'Mime et theéâtre de mouvements',
-      'Wetenschap': 'Science',
+      'Wetenschap': 'Sciences',
       'Zingeving, filosofie en religie': 'Sens de la vie, philosophie et religion',
       'Thema onbepaald': 'Thème non défini',
       'Circus': 'Cirque',
