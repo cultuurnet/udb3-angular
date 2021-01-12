@@ -689,9 +689,9 @@ angular.module('udb.core')
       'entrance': 'Accès',
       'everyone': 'Pour tout le monde',
       'members': 'Seulement pour des membres',
-      'members_help': 'Ton item est seulement publié sur des chaînes pour des associations et leurs membres.',
+      'members_help': 'Votre article est seulement publié sur des chaînes pour des associations et leurs membres.',
       'education': 'Spécifiquement pour des écoles',
-      'education_help': 'Ton item est seulement publié sur des chaînes d\'éducation culturelle. Après la publication tu peux encore ajouter de l\'information spécifique pour des écoles.'
+      'education_help': 'Votre article est seulement publié sur des chaînes d\'éducation culturelle. Après la publication Vous pouvez encore ajouter de l\'information spécifique pour des écoles.'
     },
     workflowStatus: {
       'label': 'État de publication',
