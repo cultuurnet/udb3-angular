@@ -478,7 +478,7 @@ angular.module('udb.core')
         'date_help_place': 'Cet endroit ou ce lieu est ouvert(e) quand?',
       },
       step3: {
-        'title_event': 'Où L\'événement ou l\'activité a-t-elle lieu?',
+        'title_event': 'Ou l\'événement ou l\'activité a-t-il/elle lieu?',
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
@@ -489,7 +489,7 @@ angular.module('udb.core')
         'change': 'Modifier',
         'choose_location': 'Choisissez un lieu',
         'placeholder_location': 'Nom ou adresse',
-        'location_not_found': 'Le lieu n\'a pas été trouvée?',
+        'location_not_found': 'Lieu non trouvé?',
         'add_location': 'Ajouter un lieu',
         'location_error': 'Il y a eu un problème dans la collection des lieux',
         'street': 'Rue et numéro',
