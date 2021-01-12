@@ -649,9 +649,9 @@ angular.module('udb.core')
       }
     },
     calendar: {
-      'one_more_days': 'Une ou plusieurs journées',
+      'one_more_days': 'Jours récurrents ou variables',
       'or': 'ou',
-      'default_days': 'Schéma fixe',
+      'default_days': 'Période continue',
       'start_label': 'Début',
       'end_label': 'Fin',
       'whole_day_label': 'Toute la journée',
