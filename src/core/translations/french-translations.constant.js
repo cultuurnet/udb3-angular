@@ -507,8 +507,8 @@ angular.module('udb.core')
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
           'Toddlers': 'Tout-petits',
-          'Preschoolers': 'Enfants d\'âge préscolaire',
-          'Kids': 'Enfants',
+          'Preschoolers': 'Jeunes enfants',
+          'Kids': 'Enfants d’âge scolaire',
           'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
@@ -534,8 +534,8 @@ angular.module('udb.core')
         'return_dashboard': 'Non, retourner au tableau de bord',
         'yes_continue': 'Oui, procéder l\'importation',
         suggestions: {
-          'from': 'Du',
-          'till': 'au',
+          'from': 'De',
+          'till': 'à',
           'permanent': 'Permanent'
         }
       },
