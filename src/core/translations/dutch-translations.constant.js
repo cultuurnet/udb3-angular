@@ -1116,6 +1116,7 @@ angular.module('udb.core')
       where: 'Waar',
       when: 'Wanneer',
       inputInformation: 'Invoer-informatie',
+      noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
