@@ -1098,6 +1098,7 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Zoeken',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
