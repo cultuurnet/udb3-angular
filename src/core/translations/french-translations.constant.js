@@ -898,7 +898,7 @@ angular.module('udb.core')
     },
     dashboard: {
       'welcome': 'Bienvenue,',
-      'no_items': 'Vous n\'avez pas encore ajouté des items.',
+      'no_items': 'Vous n\'avez pas encore ajouté d\'éléments.',
       'add_activity': 'Ajouter une activité ou une location?',
       'my_activities': 'Mes activitées et lieux',
       'my_organizers': 'Mes organisations',
