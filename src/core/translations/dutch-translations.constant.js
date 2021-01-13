@@ -1109,6 +1109,9 @@ angular.module('udb.core')
       manage: 'Beheren',
       oneResult: '1 resultaat',
       multipleResults: '{{count}} resultaten',
+      description: 'Beschrijving',
+      labels: 'Labels',
+      picture: 'Afbeelding',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
