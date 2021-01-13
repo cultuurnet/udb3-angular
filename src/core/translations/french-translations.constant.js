@@ -361,7 +361,7 @@ angular.module('udb.core')
       'organizer': 'Organisation',
       'no_organizer': 'Pas d\'information de l\'organisation',
       'price': 'Prix',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
@@ -898,7 +898,7 @@ angular.module('udb.core')
     },
     dashboard: {
       'welcome': 'Bienvenue,',
-      'no_items': 'Vous n\'avez pas encore ajouté des items.',
+      'no_items': 'Vous n\'avez pas encore ajouté d\'éléments.',
       'add_activity': 'Ajouter une activité ou une location?',
       'my_activities': 'Mes activitées et lieux',
       'my_organizers': 'Mes organisations',

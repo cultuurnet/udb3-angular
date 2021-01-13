@@ -4264,7 +4264,7 @@ angular.module('udb.core')
       'organizer': 'Organisation',
       'no_organizer': 'Pas d\'information de l\'organisation',
       'price': 'Prix',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
@@ -4801,7 +4801,7 @@ angular.module('udb.core')
     },
     dashboard: {
       'welcome': 'Bienvenue,',
-      'no_items': 'Vous n\'avez pas encore ajouté des items.',
+      'no_items': 'Vous n\'avez pas encore ajouté d\'éléments.',
       'add_activity': 'Ajouter une activité ou une location?',
       'my_activities': 'Mes activitées et lieux',
       'my_organizers': 'Mes organisations',
@@ -30609,7 +30609,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-6\">\n" +
-    "        <label>Adres</label>\n" +
+    "        <label translate-once=\"organizer.manage.address\"></label>\n" +
     "      </div>\n" +
     "      <div class=\"col-xs-6\">\n" +
     "        <select ng-change=\"oac.changeCountrySelection()\"\n" +
