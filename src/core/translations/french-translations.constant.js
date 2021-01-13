@@ -1107,6 +1107,10 @@ angular.module('udb.core')
       description: 'Description',
       labels: 'Labels',
       picture: 'Image',
+      what: 'Quoi',
+      where: 'Où',
+      when: 'Quand',
+      inputInformation: 'Information encodage',
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }

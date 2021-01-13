@@ -53,7 +53,7 @@ function SearchResultViewerFactory($translate) {
       image: {name: $translate.instant('search.picture'), visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'}
+      {id: 'input', name: $translate.instant('search.inputInformation')}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];

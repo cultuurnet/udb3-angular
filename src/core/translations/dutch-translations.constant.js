@@ -1112,6 +1112,10 @@ angular.module('udb.core')
       description: 'Beschrijving',
       labels: 'Labels',
       picture: 'Afbeelding',
+      what: 'Wat',
+      where: 'Waar',
+      when: 'Wanneer',
+      inputInformation: 'Invoer-informatie',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
