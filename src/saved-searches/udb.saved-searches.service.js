@@ -12,7 +12,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, $translate) {
   var savedSearches = [];
   var ss = this;
 
@@ -27,8 +27,16 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
 
   ss.getSavedSearches = function () {
     return udbApi.getSavedSearches().then(function (data) {
-      savedSearches = data;
-      return $q.resolve(data);
+      var withTranslation = data.map(function (savedSearch) {
+        var key = 'search.savedSearches.items.' + savedSearch.name.toString();
+        var translated = $translate.instant(key);
+        if (translated !== key) {
+          savedSearch.name = translated;
+        }
+        return savedSearch;
+      });
+      savedSearches = withTranslation;
+      return $q.resolve(withTranslation);
     });
   };
 

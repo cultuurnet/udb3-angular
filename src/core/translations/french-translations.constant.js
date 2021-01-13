@@ -1096,7 +1096,10 @@ angular.module('udb.core')
       search: 'Chercher',
       advanced: 'Avancé',
       savedSearches: {
-        title: 'Recherches conservées'
+        title: 'Recherches conservées',
+        items: {
+          'Door mij ingevoerd': 'Encodé par moi'
+        }
       },
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'

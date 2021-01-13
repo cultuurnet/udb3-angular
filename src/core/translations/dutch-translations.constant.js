@@ -1101,7 +1101,10 @@ angular.module('udb.core')
       search: 'Zoeken',
       advanced: 'Geavanceerd',
       savedSearches: {
-        title: 'Bewaarde zoekopdrachten'
+        title: 'Bewaarde zoekopdrachten',
+        items: {
+          'Door mij ingevoerd': 'Door mij ingevoerd'
+        }
       },
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
