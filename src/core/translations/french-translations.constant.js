@@ -361,7 +361,7 @@ angular.module('udb.core')
       'organizer': 'Organisation',
       'no_organizer': 'Pas d\'information de l\'organisation',
       'price': 'Prix',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
