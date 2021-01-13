@@ -3873,6 +3873,25 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Zoeken',
+      advanced: 'Geavanceerd',
+      savedSearches: {
+        title: 'Bewaarde zoekopdrachten',
+        items: {
+          'Door mij ingevoerd': 'Door mij ingevoerd'
+        }
+      },
+      manage: 'Beheren',
+      oneResult: '1 resultaat',
+      multipleResults: '{{count}} resultaten',
+      description: 'Beschrijving',
+      labels: 'Labels',
+      picture: 'Afbeelding',
+      what: 'Wat',
+      where: 'Waar',
+      when: 'Wanneer',
+      inputInformation: 'Invoer-informatie',
+      noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
@@ -4977,6 +4996,25 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Chercher',
+      advanced: 'Avancé',
+      savedSearches: {
+        title: 'Recherches conservées',
+        items: {
+          'Door mij ingevoerd': 'Encodé par moi'
+        }
+      },
+      manage: 'Gérer',
+      oneResult: '1 résultat',
+      multipleResults: '{{count}} résultats',
+      description: 'Description',
+      labels: 'Labels',
+      picture: 'Image',
+      what: 'Quoi',
+      where: 'Où',
+      when: 'Quand',
+      inputInformation: 'Information encodage',
+      noEventsFound: 'Aucun événements trouvés, essayez une autre recherche.',
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
@@ -21625,7 +21663,7 @@ angular
   .service('savedSearchesService', SavedSearchesService);
 
 /* @ngInject */
-function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi) {
+function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi, $translate) {
   var savedSearches = [];
   var ss = this;
 
@@ -21640,8 +21678,16 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
 
   ss.getSavedSearches = function () {
     return udbApi.getSavedSearches().then(function (data) {
-      savedSearches = data;
-      return $q.resolve(data);
+      var withTranslation = data.map(function (savedSearch) {
+        var key = 'search.savedSearches.items.' + savedSearch.name.toString();
+        var translated = $translate.instant(key);
+        if (translated !== key) {
+          savedSearch.name = translated;
+        }
+        return savedSearch;
+      });
+      savedSearches = withTranslation;
+      return $q.resolve(withTranslation);
     });
   };
 
@@ -21658,7 +21704,7 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
 }
-SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi"];
+SavedSearchesService.$inject = ["$q", "$http", "$cookies", "appConfig", "$rootScope", "udbApi", "$translate"];
 
 })();
 
@@ -24608,7 +24654,8 @@ angular
   .module('udb.search')
   .factory('SearchResultViewer', SearchResultViewerFactory);
 
-function SearchResultViewerFactory() {
+/* @ngInject */
+function SearchResultViewerFactory($translate) {
 
   var SelectionState = {
     ALL: {'name': 'all', 'icon': 'fa-check-square'},
@@ -24644,12 +24691,12 @@ function SearchResultViewerFactory() {
     this.loading = true;
     this.lastQuery = null;
     this.eventProperties = {
-      description: {name: 'Beschrijving', visible: false},
-      labels: {name: 'Labels', visible: false},
-      image: {name: 'Afbeelding', visible: false}
+      description: {name: $translate.instant('search.description'), visible: false},
+      labels: {name: $translate.instant('search.labels'), visible: false},
+      image: {name: $translate.instant('search.picture'), visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'}
+      {id: 'input', name: $translate.instant('search.inputInformation')}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -24797,6 +24844,7 @@ function SearchResultViewerFactory() {
 
   return (SearchResultViewer);
 }
+SearchResultViewerFactory.$inject = ["$translate"];
 })();
 
 // Source: src/search/ui/event-translation-state.constant.js
@@ -31438,7 +31486,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
     "            Annuleren\n" +
     "          </a>\n" +
-    "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
+    "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\" translate-once=\"search.search\">\n" +
     "            Zoeken\n" +
     "          </button>\n" +
     "        </div>\n" +
@@ -31499,7 +31547,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
     "      Annuleren\n" +
     "    </a>\n" +
-    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\">\n" +
+    "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\" translate-once=\"search.search\">\n" +
     "      Zoeken\n" +
     "    </button>\n" +
     "  </div>\n" +
@@ -31508,7 +31556,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/search-bar.directive.html',
-    "<h1 class=\"title\">Zoeken</h1>\n" +
+    "<h1 class=\"title\" translate-once=\"search.search\">Zoeken</h1>\n" +
     "<form class=\"navbar-form navbar-left udb-header-search\" role=\"search\"\n" +
     "      ng-class=\"{'has-errors': sb.hasErrors, 'is-editing': sb.isEditing}\">\n" +
     "  <div class=\"form-group has-warning has-feedback\">\n" +
@@ -31516,14 +31564,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <span class=\"dropdown saved-search-icon\" uib-dropdown>\n" +
     "      <i class=\"fa fa-bookmark\" class=\"dropdown-toggle\" uib-dropdown-toggle></i>\n" +
     "      <ul class=\"dropdown-menu\" uib-dropdown-menu role=\"menu\">\n" +
-    "        <li role=\"presentation\" class=\"dropdown-header\">Bewaarde zoekopdrachten</li>\n" +
+    "        <li role=\"presentation\" class=\"dropdown-header\" translate-once=\"search.savedSearches.title\">Bewaarde zoekopdrachten</li>\n" +
     "        <li ng-repeat=\"savedSearch in sb.savedSearches\">\n" +
     "          <a ng-bind=\"::savedSearch.name\"\n" +
     "             ng-click=\"sb.find(savedSearch.query)\">\n" +
     "          </a>\n" +
     "        </li>\n" +
     "        <li class=\"divider\"></li>\n" +
-    "        <li><a href=\"saved-searches\">Beheren</a></li>\n" +
+    "        <li><a href=\"saved-searches\" translate-once=\"search.manage\">Beheren</a></li>\n" +
     "      </ul>\n" +
     "    </span>\n" +
     "    <i ng-show=\"sb.hasErrors\" class=\"fa fa-warning warning-icon\" tooltip-append-to-body=\"true\"\n" +
@@ -31536,7 +31584,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"nav navbar-nav\">\n" +
     "  <li>\n" +
-    "    <a href=\"#\" ng-click=\"sb.editQuery()\" class=\"advanced-search\" ng-class=\"{'is-editing': sb.isEditing}\">Geavanceerd</a>\n" +
+    "    <a href=\"#\" ng-click=\"sb.editQuery()\" class=\"advanced-search\" ng-class=\"{'is-editing': sb.isEditing}\" translate-once=\"search.advanced\">Geavanceerd</a>\n" +
     "  </li>\n" +
     "</ul>\n"
   );
@@ -31931,10 +31979,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                      </li>\n" +
     "                      <li>\n" +
     "                          <p class=\"rv-item-counter\">\n" +
-    "                              <ng-pluralize count=\"resultViewer.totalItems\"\n" +
-    "                                            when=\"{'1': '1 resultaat',\n" +
-    "                                                    'other': '{} resultaten'}\">\n" +
-    "                              </ng-pluralize>\n" +
+    "                              <span ng-if=\"resultViewer.totalItems === 1\" translate-once=\"search.oneResult\"></span>\n" +
+    "                              <span ng-if=\"resultViewer.totalItems > 1\" translate=\"search.multipleResults\" translate-values=\"{count: resultViewer.totalItems}\"></span>\n" +
     "                          </p>\n" +
     "                      </li>\n" +
     "                      <li>\n" +
@@ -31951,7 +31997,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "      </div>\n" +
     "\n" +
-    "    <p class=\"rv-no-result-notice\" ng-show=\"!resultViewer.loading && resultViewer.totalItems === 0\" ng-cloak>\n" +
+    "    <p class=\"rv-no-result-notice\" ng-show=\"!resultViewer.loading && resultViewer.totalItems === 0\" ng-cloak translate-once=\"search.noEventsFound\">\n" +
     "        Geen evenementen gevonden, probeer een andere zoekopdracht.\n" +
     "    </p>\n" +
     "\n" +
@@ -31959,11 +32005,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div class=\"rv-item-info\">\n" +
     "\n" +
     "            <div class=\"row\" ng-hide=\"resultViewer.selectedOffers.length\">\n" +
-    "                <div class=\"col-sm-5 rv-first-column\">\n" +
-    "                    Wat\n" +
-    "                </div>\n" +
-    "                <div class=\"col-sm-2\">  Waar   </div>\n" +
-    "                <div class=\"col-sm-2\">  Wanneer   </div>\n" +
+    "                <div class=\"col-sm-5 rv-first-column\" translate-once=\"search.what\">Wat</div>\n" +
+    "                <div class=\"col-sm-2\" translate-once=\"search.where\">Waar</div>\n" +
+    "                <div class=\"col-sm-2\" translate-once=\"search.when\">Wanneer</div>\n" +
     "                <div class=\"col-sm-3\">\n" +
     "                    <div role=\"presentation\" class=\"dropdown\">\n" +
     "                        <span class=\"dropdown-toggle\" data-toggle=\"dropdown\" role=\"button\" aria-expanded=\"false\">\n" +
@@ -32040,7 +32084,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "  </div>\n" +
     "    <div class=\"rv-loading-overlay\" ng-show=\"resultViewer.loading\">\n" +
-    "        <i class=\"fa fa-circle-o-notch fa-spin\"></i> Zoeken…\n" +
+    "        <i class=\"fa fa-circle-o-notch fa-spin\"></i> <span translate-once=\"search.search\">Zoeken</span>…\n" +
     "    </div>\n" +
     "</div>\n"
   );
