@@ -1095,6 +1095,9 @@ angular.module('udb.core')
     search: {
       search: 'Chercher',
       advanced: 'Avancé',
+      savedSearches: {
+        title: 'Recherches conservées'
+      },
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
