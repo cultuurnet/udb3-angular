@@ -30561,7 +30561,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<form name=\"oac.organizerAddressForm\" class=\"organizer-address-form\">\n" +
     "    <div class=\"row\">\n" +
     "      <div class=\"col-xs-6\">\n" +
-    "        <label>Adres</label>\n" +
+    "        <label translate-once=\"organizer.manage.address\"></label>\n" +
     "      </div>\n" +
     "      <div class=\"col-xs-6\">\n" +
     "        <select ng-change=\"oac.changeCountrySelection()\"\n" +
