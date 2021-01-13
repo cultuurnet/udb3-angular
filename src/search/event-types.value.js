@@ -10,7 +10,7 @@
 angular
   .module('udb.search')
   .value('eventTypes', [
-    {label: 'Begeleide rondleiding', id: '0.7.0.0.0'},
+    {label: 'Begeleide uitstap of rondleiding', id: '0.7.0.0.0'},
     {label: 'Beurs', id: '0.6.0.0.0'},
     {label: 'Concert', id: '0.50.4.0.0'},
     {label: 'Lessenreeks', id: '0.3.1.0.0'},
