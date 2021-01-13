@@ -1106,6 +1106,7 @@ angular.module('udb.core')
           'Door mij ingevoerd': 'Door mij ingevoerd'
         }
       },
+      manage: 'Beheren',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }

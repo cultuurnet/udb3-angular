@@ -1101,6 +1101,7 @@ angular.module('udb.core')
           'Door mij ingevoerd': 'Encodé par moi'
         }
       },
+      manage: 'Gérer',
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
