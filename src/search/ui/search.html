@@ -10,10 +10,8 @@
                       </li>
                       <li>
                           <p class="rv-item-counter">
-                              <ng-pluralize count="resultViewer.totalItems"
-                                            when="{'1': '1 resultaat',
-                                                    'other': '{} resultaten'}">
-                              </ng-pluralize>
+                              <span ng-if="resultViewer.totalItems === 1" translate-once="search.oneResult"></span>
+                              <span ng-if="resultViewer.totalItems > 1" translate="search.multipleResults" translate-values="{count: resultViewer.totalItems}"></span>
                           </p>
                       </li>
                       <li>

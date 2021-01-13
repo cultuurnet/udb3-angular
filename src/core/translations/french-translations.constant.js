@@ -1102,6 +1102,8 @@ angular.module('udb.core')
         }
       },
       manage: 'Gérer',
+      oneResult: '1 résultat',
+      multipleResults: '{{count}} résultats',
       exportButton: 'Activités d\'exportation',
       modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
     }
