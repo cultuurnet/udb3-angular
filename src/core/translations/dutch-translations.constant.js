@@ -1106,7 +1106,8 @@ angular.module('udb.core')
           'Door mij ingevoerd': 'Door mij ingevoerd'
         },
         mySearches: 'Mijn zoekopdrachten',
-        title: 'Titel'
+        title: 'Titel',
+        viewResults: 'Resultaten bekijken'
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',

@@ -16,7 +16,11 @@
                 <p>
                   <i class="fa fa-bookmark"></i>
                   <span ng-bind="::savedSearch.name"></span></p>
-                <p><a ng-href="search?query={{::encodeURI(savedSearch.query)}}" class="small">Resultaten bekijken</a></p>
+                <p><a 
+                    ng-href="search?query={{::encodeURI(savedSearch.query)}}" 
+                    class="small"
+                    translate-once="search.savedSearches.viewResults"
+                    >Resultaten bekijken</a></p>
             </td>
             <td class="saved-search-query">
                 <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ng-model="::savedSearch.query" class="query form-control" rows="3"
