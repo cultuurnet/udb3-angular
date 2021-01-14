@@ -3893,7 +3893,20 @@ angular.module('udb.core')
       inputInformation: 'Invoer-informatie',
       noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
+      advancedQueryBuilder: {
+        title: 'Geavanceerde zoekopdracht bouwer',
+        header: {
+          info: 'Hier kan je complexe zoekopdrachten bouwen. Hulp nodig? Lees ',
+          link: 'onze handleiding'
+        },
+        group: 'Groep ',
+        include: 'Insluiten',
+        exclude: 'Uitsluiten',
+        addGroup: 'Groep toeovegen',
+        cancel: 'Annuleren',
+        search: 'Zoeken',
+      }
     }
   }
 );
@@ -5016,7 +5029,20 @@ angular.module('udb.core')
       inputInformation: 'Information encodage',
       noEventsFound: 'Aucun événements trouvés, essayez une autre recherche.',
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
+      advancedQueryBuilder: {
+        title: 'Moteur de recherche avancée',
+        header: {
+          info: 'Ici vous pouvez effectuer des recherches avancées. Besoin d\'aide? Lisez ',
+          link: 'le mode d\'emploi'
+        },
+        group: 'Groupe ',
+        include: 'Inclure',
+        exclude: 'Exclure',
+        addGroup: 'Ajour groupe',
+        cancel: 'Annuler',
+        search: 'Zoeken',
+      }
     }
   }
 );
@@ -31422,13 +31448,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/query-editor-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h2 class=\"modal-title\">Geavanceerde zoekopdracht bouwer</h2>\n" +
+    "  <h2 class=\"modal-title\" translate-once=\"search.advancedQueryBuilder.title\">Geavanceerde zoekopdracht bouwer</h2>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
     "  <div class=\"udb-query-editor-header\">\n" +
-    "    <!-- udb-query-editor-header -->\n" +
+    "    <p><span translate-once=\"search.advancedQueryBuilder.header.info\"></span>\n" +
+    "      <a \n" +
+    "        href='https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters' \n" +
+    "        target='_blank'>\n" +
+    "        <span translate-once=\"search.advancedQueryBuilder.header.link\"></span>\n" +
+    "      </a>.\n" +
+    "    </p>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"udb-query-editor\">\n" +
@@ -31437,17 +31469,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"panel-heading\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-sm-3\">\n" +
-    "            <h3 class=\"panel-title\">Groep <span ng-bind=\"$index + 1\"></span></h3>\n" +
+    "            <h3 class=\"panel-title\"><span translate-once=\"search.advancedQueryBuilder.group\">Groep </span><span ng-bind=\"$index + 1\"></span></h3>\n" +
     "          </div>\n" +
     "          <div class=\"col-sm-7\">\n" +
     "            <div class=\"btn-group control-in-uitsluiten\" role=\"group\" aria-label=\"...\">\n" +
     "              <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "                <span ng-hide=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "                Insluiten\n" +
+    "                <span translate-once=\"search.advancedQueryBuilder.include\">Insluiten</span>\n" +
     "              </button>\n" +
     "              <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "                <span ng-show=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "                Uitsluiten\n" +
+    "                <span translate-once=\"search.advancedQueryBuilder.exclude\">Uitsluiten</span>\n" +
     "              </button>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -31475,7 +31507,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <p>\n" +
     "      <a type=\"button\" class=\"btn btn-link\" ng-click=\"qe.addGroup()\">\n" +
-    "        <i class=\"fa fa-plus-circle\"></i> Groep toevoegen\n" +
+    "        <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.advancedQueryBuilder.addGroup\">Groep toevoegen</span>\n" +
     "      </a>\n" +
     "    </p>\n" +
     "\n" +
@@ -31484,10 +31516,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"pull-right\">\n" +
     "          <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
-    "            Annuleren\n" +
+    "            <span translate-once=\"search.advancedQueryBuilder.cancel\">Annuleren</span>\n" +
     "          </a>\n" +
     "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\" translate-once=\"search.search\">\n" +
-    "            Zoeken\n" +
+    "            <span translate-once=\"search.advancedQueryBuilder.search\">Zoeken</span>        \n" +
     "          </button>\n" +
     "        </div>\n" +
     "      </div>\n" +
