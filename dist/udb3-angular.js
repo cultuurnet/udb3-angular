@@ -31542,11 +31542,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <div class=\"btn-group control-in-uitsluiten\" role=\"group\" aria-label=\"...\">\n" +
     "            <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "              <span ng-hide=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "              <span translate-once=\"search.advancedQueryBuilder.include\">Insluiten</span>\n" +
+    "              <span translate-once=\"search.advancedQueryBuilder.include\"></span>\n" +
     "            </button>\n" +
     "            <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "              <span ng-show=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "              <span translate-once=\"search.advancedQueryBuilder.exclude\">Uitsluiten</span>\n" +
+    "              <span translate-once=\"search.advancedQueryBuilder.exclude\"></span>\n" +
     "            </button>\n" +
     "          </div>\n" +
     "        </div>\n" +
