@@ -5039,7 +5039,7 @@ angular.module('udb.core')
         group: 'Groupe ',
         include: 'Inclure',
         exclude: 'Exclure',
-        addGroup: 'Ajour groupe',
+        addGroup: 'Ajouter groupe',
         cancel: 'Annuler',
         search: 'Zoeken',
       }
