@@ -26,11 +26,11 @@
             <div class="btn-group control-in-uitsluiten" role="group" aria-label="...">
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-hide="rootGroup.excluded" class="fa fa-check-circle"></span>
-                Insluiten
+                <span translate-once="search.advancedQueryBuilder.include">Insluiten</span>
               </button>
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-show="rootGroup.excluded" class="fa fa-check-circle"></span>
-                Uitsluiten
+                <span translate-once="search.advancedQueryBuilder.exclude">Uitsluiten</span>
               </button>
             </div>
           </div>

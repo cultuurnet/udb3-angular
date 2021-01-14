@@ -1125,7 +1125,9 @@ angular.module('udb.core')
           info: 'Hier kan je complexe zoekopdrachten bouwen. Hulp nodig? Lees ',
           link: 'onze handleiding'
         },
-        group: 'Groep '
+        group: 'Groep ',
+        include: 'Insluiten',
+        exclude: 'Uitsluiten',
       }
     }
   }

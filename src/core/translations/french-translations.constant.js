@@ -1120,7 +1120,9 @@ angular.module('udb.core')
           info: 'Ici vous pouvez effectuer des recherches avancées. Besoin d\'aide? Lisez ',
           link: 'le mode d\'emploi'
         },
-        group: 'Groupe '
+        group: 'Groupe ',
+        include: 'Inclure',
+        exclude: 'Exclure',
       }
     }
   }
