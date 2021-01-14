@@ -1113,7 +1113,10 @@ angular.module('udb.core')
       inputInformation: 'Information encodage',
       noEventsFound: 'Aucun événements trouvés, essayez une autre recherche.',
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
+      advancedSearchBuilder: {
+        title: 'Moteur de recherche avancée'
+      }
     }
   }
 );
