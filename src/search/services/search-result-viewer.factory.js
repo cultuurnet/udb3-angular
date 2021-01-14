@@ -11,7 +11,8 @@ angular
   .module('udb.search')
   .factory('SearchResultViewer', SearchResultViewerFactory);
 
-function SearchResultViewerFactory() {
+/* @ngInject */
+function SearchResultViewerFactory($translate) {
 
   var SelectionState = {
     ALL: {'name': 'all', 'icon': 'fa-check-square'},
@@ -47,12 +48,12 @@ function SearchResultViewerFactory() {
     this.loading = true;
     this.lastQuery = null;
     this.eventProperties = {
-      description: {name: 'Beschrijving', visible: false},
-      labels: {name: 'Labels', visible: false},
-      image: {name: 'Afbeelding', visible: false}
+      description: {name: $translate.instant('search.description'), visible: false},
+      labels: {name: $translate.instant('search.labels'), visible: false},
+      image: {name: $translate.instant('search.picture'), visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'}
+      {id: 'input', name: $translate.instant('search.inputInformation')}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
