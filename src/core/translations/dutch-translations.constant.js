@@ -1104,7 +1104,8 @@ angular.module('udb.core')
         title: 'Bewaarde zoekopdrachten',
         items: {
           'Door mij ingevoerd': 'Door mij ingevoerd'
-        }
+        },
+        mySearches: 'Mijn zoekopdrachten'
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',

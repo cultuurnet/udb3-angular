@@ -1099,7 +1099,8 @@ angular.module('udb.core')
         title: 'Recherches conservées',
         items: {
           'Door mij ingevoerd': 'Encodé par moi'
-        }
+        },
+        mySearches: 'Mes recherches'
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
