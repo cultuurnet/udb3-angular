@@ -1,5 +1,5 @@
 <div class="modal-header">
-  <h2 class="modal-title" translate-once="search.advancedQueryBuilder.title">Geavanceerde zoekopdracht bouwer</h2>
+  <h2 class="modal-title" translate-once="search.advancedQueryBuilder.title"></h2>
 </div>
 
 <div class="modal-body">
@@ -20,17 +20,17 @@
       <div class="panel-heading">
         <div class="row">
           <div class="col-sm-3">
-            <h3 class="panel-title"><span translate-once="search.advancedQueryBuilder.group">Groep </span><span ng-bind="$index + 1"></span></h3>
+            <h3 class="panel-title"><span translate-once="search.advancedQueryBuilder.group"></span><span ng-bind="$index + 1"></span></h3>
           </div>
           <div class="col-sm-7">
             <div class="btn-group control-in-uitsluiten" role="group" aria-label="...">
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-hide="rootGroup.excluded" class="fa fa-check-circle"></span>
-                <span translate-once="search.advancedQueryBuilder.include">Insluiten</span>
+                <span translate-once="search.advancedQueryBuilder.include"></span>
               </button>
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-show="rootGroup.excluded" class="fa fa-check-circle"></span>
-                <span translate-once="search.advancedQueryBuilder.exclude">Uitsluiten</span>
+                <span translate-once="search.advancedQueryBuilder.exclude"></span>
               </button>
             </div>
           </div>
@@ -58,7 +58,7 @@
 
     <p>
       <a type="button" class="btn btn-link" ng-click="qe.addGroup()">
-        <i class="fa fa-plus-circle"></i> <span translate-once="search.advancedQueryBuilder.addGroup">Groep toevoegen</span>
+        <i class="fa fa-plus-circle"></i> <span translate-once="search.advancedQueryBuilder.addGroup"></span>
       </a>
     </p>
 
@@ -67,10 +67,10 @@
 
         <div class="pull-right">
           <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
-            <span translate-once="search.advancedQueryBuilder.cancel">Annuleren</span>
+            <span translate-once="search.advancedQueryBuilder.cancel"></span>
           </a>
           <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()" translate-once="search.search">
-            <span translate-once="search.advancedQueryBuilder.search">Zoeken</span>        
+            <span translate-once="search.advancedQueryBuilder.search"></span>    
           </button>
         </div>
       </div>
