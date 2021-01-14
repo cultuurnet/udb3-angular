@@ -31195,11 +31195,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/saved-searches-list.html',
     "<div class=\"container-fluid\">\n" +
-    "    <h1 translate-once=\"search.savedSearches.mySearches\">Mijn zoekopdrachten</h1>\n" +
+    "    <h1 translate-once=\"search.savedSearches.mySearches\"></h1>\n" +
     "    <table class=\"table\">\n" +
     "        <tr>\n" +
     "            <th class=\"saved-search-title-column\">\n" +
-    "                <strong translate-once=\"search.\">Titel</strong>\n" +
+    "                <strong translate-once=\"search.savedSearches.title\"></strong>\n" +
     "            </th>\n" +
     "            <th>\n" +
     "                Query\n" +
@@ -31216,14 +31216,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    ng-href=\"search?query={{::encodeURI(savedSearch.query)}}\" \n" +
     "                    class=\"small\"\n" +
     "                    translate-once=\"search.savedSearches.viewResults\"\n" +
-    "                    >Resultaten bekijken</a></p>\n" +
+    "                    ></a></p>\n" +
     "            </td>\n" +
     "            <td class=\"saved-search-query\">\n" +
     "                <textarea ui-codemirror=\"{ onLoad : codemirrorLoaded }\" ng-model=\"::savedSearch.query\" class=\"query form-control\" rows=\"3\"\n" +
     "                          ui-codemirror-opts=\"editorOptions\"></textarea>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\">Verwijderen</a>\n" +
+    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\"></a>\n" +
     "            </td>\n" +
     "        </tr>\n" +
     "    </table>\n" +

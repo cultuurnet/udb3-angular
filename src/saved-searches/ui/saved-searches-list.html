@@ -1,9 +1,9 @@
 <div class="container-fluid">
-    <h1 translate-once="search.savedSearches.mySearches">Mijn zoekopdrachten</h1>
+    <h1 translate-once="search.savedSearches.mySearches"></h1>
     <table class="table">
         <tr>
             <th class="saved-search-title-column">
-                <strong translate-once="search.">Titel</strong>
+                <strong translate-once="search.savedSearches.title"></strong>
             </th>
             <th>
                 Query
@@ -20,14 +20,14 @@
                     ng-href="search?query={{::encodeURI(savedSearch.query)}}" 
                     class="small"
                     translate-once="search.savedSearches.viewResults"
-                    >Resultaten bekijken</a></p>
+                    ></a></p>
             </td>
             <td class="saved-search-query">
                 <textarea ui-codemirror="{ onLoad : codemirrorLoaded }" ng-model="::savedSearch.query" class="query form-control" rows="3"
                           ui-codemirror-opts="editorOptions"></textarea>
             </td>
             <td>
-                <a class="btn btn-default" ng-if="::savedSearch.id" ng-click="::deleteSavedSearch(savedSearch.id)">Verwijderen</a>
+                <a class="btn btn-default" ng-if="::savedSearch.id" ng-click="::deleteSavedSearch(savedSearch.id)"></a>
             </td>
         </tr>
     </table>
