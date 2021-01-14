@@ -1119,8 +1119,12 @@ angular.module('udb.core')
       noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
-      advancedSearchBuilder: {
-        title: 'Geavanceerde zoekopdracht bouwer'
+      advancedQueryBuilder: {
+        title: 'Geavanceerde zoekopdracht bouwer',
+        header: {
+          info: 'Hier kan je complexe zoekopdrachten bouwen. Hulp nodig? Lees ',
+          link: 'onze handleiding'
+        }
       }
     }
   }
