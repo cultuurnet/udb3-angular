@@ -1098,6 +1098,25 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Zoeken',
+      advanced: 'Geavanceerd',
+      savedSearches: {
+        title: 'Bewaarde zoekopdrachten',
+        items: {
+          'Door mij ingevoerd': 'Door mij ingevoerd'
+        }
+      },
+      manage: 'Beheren',
+      oneResult: '1 resultaat',
+      multipleResults: '{{count}} resultaten',
+      description: 'Beschrijving',
+      labels: 'Labels',
+      picture: 'Afbeelding',
+      what: 'Wat',
+      where: 'Waar',
+      when: 'Wanneer',
+      inputInformation: 'Invoer-informatie',
+      noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
       modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
     }
