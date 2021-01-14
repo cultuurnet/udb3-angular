@@ -151,10 +151,10 @@ describe('Service: SearchResultViewer', function () {
   it('should be able to enable additional specifics after initialisation', function () {
     var viewer = new SearchResultViewer(10);
     var defaultSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'}
+      {id: 'input', name: 'search.inputInformation'}
     ];
     var expectedSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'},
+      {id: 'input', name: 'search.inputInformation'},
       {id: 'accessibility', name: 'Toegankelijkheidsinfo'}
     ];
 
