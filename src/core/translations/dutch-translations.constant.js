@@ -1101,11 +1101,12 @@ angular.module('udb.core')
       search: 'Zoeken',
       advanced: 'Geavanceerd',
       savedSearches: {
-        title: 'Bewaarde zoekopdrachten',
+        savedSearches: 'Bewaarde zoekopdrachten',
         items: {
           'Door mij ingevoerd': 'Door mij ingevoerd'
         },
-        mySearches: 'Mijn zoekopdrachten'
+        mySearches: 'Mijn zoekopdrachten',
+        title: 'Titel'
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',
