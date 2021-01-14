@@ -31448,7 +31448,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/query-editor-modal.html',
     "<div class=\"modal-header\">\n" +
-    "  <h2 class=\"modal-title\" translate-once=\"search.advancedQueryBuilder.title\">Geavanceerde zoekopdracht bouwer</h2>\n" +
+    "  <h2 class=\"modal-title\" translate-once=\"search.advancedQueryBuilder.title\"></h2>\n" +
     "</div>\n" +
     "\n" +
     "<div class=\"modal-body\">\n" +
@@ -31469,17 +31469,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <div class=\"panel-heading\">\n" +
     "        <div class=\"row\">\n" +
     "          <div class=\"col-sm-3\">\n" +
-    "            <h3 class=\"panel-title\"><span translate-once=\"search.advancedQueryBuilder.group\">Groep </span><span ng-bind=\"$index + 1\"></span></h3>\n" +
+    "            <h3 class=\"panel-title\"><span translate-once=\"search.advancedQueryBuilder.group\"></span><span ng-bind=\"$index + 1\"></span></h3>\n" +
     "          </div>\n" +
     "          <div class=\"col-sm-7\">\n" +
     "            <div class=\"btn-group control-in-uitsluiten\" role=\"group\" aria-label=\"...\">\n" +
     "              <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "                <span ng-hide=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "                <span translate-once=\"search.advancedQueryBuilder.include\">Insluiten</span>\n" +
+    "                <span translate-once=\"search.advancedQueryBuilder.include\"></span>\n" +
     "              </button>\n" +
     "              <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "                <span ng-show=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "                <span translate-once=\"search.advancedQueryBuilder.exclude\">Uitsluiten</span>\n" +
+    "                <span translate-once=\"search.advancedQueryBuilder.exclude\"></span>\n" +
     "              </button>\n" +
     "            </div>\n" +
     "          </div>\n" +
@@ -31507,7 +31507,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <p>\n" +
     "      <a type=\"button\" class=\"btn btn-link\" ng-click=\"qe.addGroup()\">\n" +
-    "        <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.advancedQueryBuilder.addGroup\">Groep toevoegen</span>\n" +
+    "        <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.advancedQueryBuilder.addGroup\"></span>\n" +
     "      </a>\n" +
     "    </p>\n" +
     "\n" +
@@ -31516,10 +31516,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"pull-right\">\n" +
     "          <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
-    "            <span translate-once=\"search.advancedQueryBuilder.cancel\">Annuleren</span>\n" +
+    "            <span translate-once=\"search.advancedQueryBuilder.cancel\"></span>\n" +
     "          </a>\n" +
     "          <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\" translate-once=\"search.search\">\n" +
-    "            <span translate-once=\"search.advancedQueryBuilder.search\">Zoeken</span>        \n" +
+    "            <span translate-once=\"search.advancedQueryBuilder.search\"></span>    \n" +
     "          </button>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -31536,17 +31536,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel-heading\">\n" +
     "      <div class=\"row\">\n" +
     "        <div class=\"col-sm-3\">\n" +
-    "          <h3 class=\"panel-title\">Groep <span ng-bind=\"$index + 1\"></span></h3>\n" +
+    "          <h3 class=\"panel-title\"><span translate-once=\"search.advancedQueryBuilder.group\"></span><span ng-bind=\"$index + 1\"></span></h3>\n" +
     "        </div>\n" +
     "        <div class=\"col-sm-7\">\n" +
     "          <div class=\"btn-group control-in-uitsluiten\" role=\"group\" aria-label=\"...\">\n" +
     "            <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "              <span ng-hide=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "              Insluiten\n" +
+    "              <span translate-once=\"search.advancedQueryBuilder.include\">Insluiten</span>\n" +
     "            </button>\n" +
     "            <button type=\"button\" class=\"btn btn-default btn-sm\" ng-click=\"qe.toggleExcludeGroup(rootGroup)\">\n" +
     "              <span ng-show=\"rootGroup.excluded\" class=\"fa fa-check-circle\"></span>\n" +
-    "              Uitsluiten\n" +
+    "              <span translate-once=\"search.advancedQueryBuilder.exclude\">Uitsluiten</span>\n" +
     "            </button>\n" +
     "          </div>\n" +
     "        </div>\n" +
@@ -31573,14 +31573,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </div>\n" +
     "\n" +
     "  <button type=\"button\" class=\"btn btn-default\" ng-click=\"qe.addGroup()\">\n" +
-    "    Groep toevoegen\n" +
+    "    <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.advancedQueryBuilder.addGroup\"></span>\n" +
     "  </button>\n" +
     "  <div class=\"pull-right\">\n" +
     "    <a type=\"button\" class=\"btn btn-default\" ng-click=\"qe.stopEditing()\">\n" +
-    "      Annuleren\n" +
+    "      <span translate-once=\"search.advancedQueryBuilder.cancel\"></span>\n" +
     "    </a>\n" +
     "    <button type=\"button\" class=\"btn btn-primary\" ng-click=\"qe.updateQueryString()\" translate-once=\"search.search\">\n" +
-    "      Zoeken\n" +
+    "      <span translate-once=\"search.advancedQueryBuilder.search\"></span>\n" +
     "    </button>\n" +
     "  </div>\n" +
     "</div>\n"
