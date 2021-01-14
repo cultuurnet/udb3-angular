@@ -1119,7 +1119,8 @@ angular.module('udb.core')
         header: {
           info: 'Ici vous pouvez effectuer des recherches avancées. Besoin d\'aide? Lisez ',
           link: 'le mode d\'emploi'
-        }
+        },
+        group: 'Groupe '
       }
     }
   }
