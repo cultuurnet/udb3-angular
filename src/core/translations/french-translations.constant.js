@@ -1123,6 +1123,9 @@ angular.module('udb.core')
         group: 'Groupe ',
         include: 'Inclure',
         exclude: 'Exclure',
+        addGroup: 'Ajour groupe',
+        cancel: 'Annuleren',
+        search: 'Zoeken',
       }
     }
   }

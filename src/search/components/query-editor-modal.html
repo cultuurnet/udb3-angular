@@ -58,7 +58,7 @@
 
     <p>
       <a type="button" class="btn btn-link" ng-click="qe.addGroup()">
-        <i class="fa fa-plus-circle"></i> Groep toevoegen
+        <i class="fa fa-plus-circle"></i> <span translate-once="search.advancedQueryBuilder.addGroup">Groep toevoegen</span>
       </a>
     </p>
 
@@ -67,10 +67,10 @@
 
         <div class="pull-right">
           <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
-            Annuleren
+            <span translate-once="search.advancedQueryBuilder.cancel">Annuleren</span>
           </a>
           <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()" translate-once="search.search">
-            Zoeken
+            <span translate-once="search.advancedQueryBuilder.search">Zoeken</span>        
           </button>
         </div>
       </div>
