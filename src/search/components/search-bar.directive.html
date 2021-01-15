@@ -6,7 +6,7 @@
     <span class="dropdown saved-search-icon" uib-dropdown>
       <i class="fa fa-bookmark" class="dropdown-toggle" uib-dropdown-toggle></i>
       <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-        <li role="presentation" class="dropdown-header" translate-once="search.savedSearches.savedSearches">Bewaarde zoekopdrachten</li>
+        <li role="presentation" class="dropdown-header" translate-once="search.savedSearches.savedSearches"></li>
         <li ng-repeat="savedSearch in sb.savedSearches">
           <a ng-bind="::savedSearch.name"
              ng-click="sb.find(savedSearch.query)">
