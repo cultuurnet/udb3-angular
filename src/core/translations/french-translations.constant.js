@@ -1096,10 +1096,13 @@ angular.module('udb.core')
       search: 'Chercher',
       advanced: 'Avancé',
       savedSearches: {
-        title: 'Recherches conservées',
+        savedSearches: 'Recherches conservées',
         items: {
           'Door mij ingevoerd': 'Encodé par moi'
-        }
+        },
+        mySearches: 'Mes recherches',
+        title: 'Titre',
+        viewResults: 'Consulter résultats'
       },
       manage: 'Gérer',
       oneResult: '1 résultat',

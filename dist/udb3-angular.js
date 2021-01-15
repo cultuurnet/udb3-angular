@@ -3876,10 +3876,13 @@ angular.module('udb.core')
       search: 'Zoeken',
       advanced: 'Geavanceerd',
       savedSearches: {
-        title: 'Bewaarde zoekopdrachten',
+        savedSearches: 'Bewaarde zoekopdrachten',
         items: {
           'Door mij ingevoerd': 'Door mij ingevoerd'
-        }
+        },
+        mySearches: 'Mijn zoekopdrachten',
+        title: 'Titel',
+        viewResults: 'Resultaten bekijken'
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',
@@ -5012,10 +5015,13 @@ angular.module('udb.core')
       search: 'Chercher',
       advanced: 'Avancé',
       savedSearches: {
-        title: 'Recherches conservées',
+        savedSearches: 'Recherches conservées',
         items: {
           'Door mij ingevoerd': 'Encodé par moi'
-        }
+        },
+        mySearches: 'Mes recherches',
+        title: 'Titre',
+        viewResults: 'Consulter résultats'
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
@@ -31215,11 +31221,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/saved-searches-list.html',
     "<div class=\"container-fluid\">\n" +
-    "    <h1>Mijn zoekopdrachten</h1>\n" +
+    "    <h1 translate-once=\"search.savedSearches.mySearches\"></h1>\n" +
     "    <table class=\"table\">\n" +
     "        <tr>\n" +
     "            <th class=\"saved-search-title-column\">\n" +
-    "                <strong>Titel</strong>\n" +
+    "                <strong translate-once=\"search.savedSearches.title\"></strong>\n" +
     "            </th>\n" +
     "            <th>\n" +
     "                Query\n" +
@@ -31232,14 +31238,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <p>\n" +
     "                  <i class=\"fa fa-bookmark\"></i>\n" +
     "                  <span ng-bind=\"::savedSearch.name\"></span></p>\n" +
-    "                <p><a ng-href=\"search?query={{::encodeURI(savedSearch.query)}}\" class=\"small\">Resultaten bekijken</a></p>\n" +
+    "                <p><a \n" +
+    "                    ng-href=\"search?query={{::encodeURI(savedSearch.query)}}\" \n" +
+    "                    class=\"small\"\n" +
+    "                    translate-once=\"search.savedSearches.viewResults\"\n" +
+    "                    ></a></p>\n" +
     "            </td>\n" +
     "            <td class=\"saved-search-query\">\n" +
     "                <textarea ui-codemirror=\"{ onLoad : codemirrorLoaded }\" ng-model=\"::savedSearch.query\" class=\"query form-control\" rows=\"3\"\n" +
     "                          ui-codemirror-opts=\"editorOptions\"></textarea>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\">Verwijderen</a>\n" +
+    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\"></a>\n" +
     "            </td>\n" +
     "        </tr>\n" +
     "    </table>\n" +
@@ -31596,7 +31606,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <span class=\"dropdown saved-search-icon\" uib-dropdown>\n" +
     "      <i class=\"fa fa-bookmark\" class=\"dropdown-toggle\" uib-dropdown-toggle></i>\n" +
     "      <ul class=\"dropdown-menu\" uib-dropdown-menu role=\"menu\">\n" +
-    "        <li role=\"presentation\" class=\"dropdown-header\" translate-once=\"search.savedSearches.title\">Bewaarde zoekopdrachten</li>\n" +
+    "        <li role=\"presentation\" class=\"dropdown-header\" translate-once=\"search.savedSearches.savedSearches\"></li>\n" +
     "        <li ng-repeat=\"savedSearch in sb.savedSearches\">\n" +
     "          <a ng-bind=\"::savedSearch.name\"\n" +
     "             ng-click=\"sb.find(savedSearch.query)\">\n" +
