@@ -1121,7 +1121,20 @@ angular.module('udb.core')
       inputInformation: 'Invoer-informatie',
       noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
+      advancedQueryBuilder: {
+        title: 'Geavanceerde zoekopdracht bouwer',
+        header: {
+          info: 'Hier kan je complexe zoekopdrachten bouwen. Hulp nodig? Lees ',
+          link: 'onze handleiding'
+        },
+        group: 'Groep ',
+        include: 'Insluiten',
+        exclude: 'Uitsluiten',
+        addGroup: 'Groep toeovegen',
+        cancel: 'Annuleren',
+        search: 'Zoeken',
+      }
     }
   }
 );

@@ -1116,7 +1116,20 @@ angular.module('udb.core')
       inputInformation: 'Information encodage',
       noEventsFound: 'Aucun événements trouvés, essayez une autre recherche.',
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
+      advancedQueryBuilder: {
+        title: 'Moteur de recherche avancée',
+        header: {
+          info: 'Ici vous pouvez effectuer des recherches avancées. Besoin d\'aide? Lisez ',
+          link: 'le mode d\'emploi'
+        },
+        group: 'Groupe ',
+        include: 'Inclure',
+        exclude: 'Exclure',
+        addGroup: 'Ajouter groupe',
+        cancel: 'Annuler',
+        search: 'Zoeken',
+      }
     }
   }
 );
