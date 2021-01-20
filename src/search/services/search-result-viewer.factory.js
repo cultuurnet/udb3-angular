@@ -148,12 +148,9 @@ function SearchResultViewerFactory($translate) {
       this.selectionState = SelectionState.ALL;
     },
     isOfferSelected: function (offer) {
-      // get the right offer object from the events list
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      return _.contains(this.selectedOffers, theOffer);
+      return !!this.selectedOffers.find(function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
     },
     /**
      * @param {PagedCollection} pagedResults
