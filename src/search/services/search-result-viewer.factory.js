@@ -103,21 +103,20 @@ function SearchResultViewerFactory($translate) {
         return;
       }
 
-      // select the offer from the result viewer events
-      // it's this "event" that will get stored
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      var selectedOffers = this.selectedOffers,
-          isSelected = _.contains(selectedOffers, theOffer);
-
-      if (isSelected) {
-        _.remove(selectedOffers, function (selectedOffer) {
-          return selectedOffer['@id'] === theOffer['@id'];
+      var foundOffer = this.selectedOffers.find(function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
+      if (foundOffer) {
+        // remove offer from selectedOffers
+        this.selectedOffers = this.selectedOffers.filter(function (selectedOffer) {
+          return selectedOffer['@id'] !== offer['@id'];
         });
       } else {
-        selectedOffers.push(theOffer);
+        // add event to selectedOffers
+        var foundEvent = this.events.find(function (event) {
+          return event['@id'] === offer['@id'];
+        });
+        this.selectedOffers.push(foundEvent);
       }
 
       this.updateSelectionState();
