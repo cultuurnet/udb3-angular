@@ -24778,17 +24778,17 @@ function SearchResultViewerFactory($translate) {
         return;
       }
 
-      var foundOffer = this.selectedOffers.find(function (selectedOffer) {
+      var foundOffer = _.find(this.selectedOffers, function (selectedOffer) {
         return selectedOffer['@id'] === offer['@id'];
       });
       if (!!foundOffer) {
         // remove offer from selectedOffers
-        this.selectedOffers = this.selectedOffers.filter(function (selectedOffer) {
+        this.selectedOffers = _.filter(this.selectedOffers, function (selectedOffer) {
           return selectedOffer['@id'] !== offer['@id'];
         });
       } else {
         // add event to selectedOffers
-        var foundEvent = this.events.find(function (event) {
+        var foundEvent = _.find(this.events, function (event) {
           return event['@id'] === offer['@id'];
         });
         this.selectedOffers.push(foundEvent);
@@ -24822,7 +24822,7 @@ function SearchResultViewerFactory($translate) {
       this.selectionState = SelectionState.ALL;
     },
     isOfferSelected: function (offer) {
-      return !!this.selectedOffers.find(function (selectedOffer) {
+      return !!_.find(this.selectedOffers, function (selectedOffer) {
         return selectedOffer['@id'] === offer['@id'];
       });
     },
