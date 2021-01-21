@@ -24778,21 +24778,20 @@ function SearchResultViewerFactory($translate) {
         return;
       }
 
-      // select the offer from the result viewer events
-      // it's this "event" that will get stored
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      var selectedOffers = this.selectedOffers,
-          isSelected = _.contains(selectedOffers, theOffer);
-
-      if (isSelected) {
-        _.remove(selectedOffers, function (selectedOffer) {
-          return selectedOffer['@id'] === theOffer['@id'];
+      var foundOffer = _.find(this.selectedOffers, function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
+      if (!!foundOffer) {
+        // remove offer from selectedOffers
+        this.selectedOffers = _.filter(this.selectedOffers, function (selectedOffer) {
+          return selectedOffer['@id'] !== offer['@id'];
         });
       } else {
-        selectedOffers.push(theOffer);
+        // add event to selectedOffers
+        var foundEvent = _.find(this.events, function (event) {
+          return event['@id'] === offer['@id'];
+        });
+        this.selectedOffers.push(foundEvent);
       }
 
       this.updateSelectionState();
@@ -24823,12 +24822,9 @@ function SearchResultViewerFactory($translate) {
       this.selectionState = SelectionState.ALL;
     },
     isOfferSelected: function (offer) {
-      // get the right offer object from the events list
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      return _.contains(this.selectedOffers, theOffer);
+      return !!_.find(this.selectedOffers, function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
     },
     /**
      * @param {PagedCollection} pagedResults
