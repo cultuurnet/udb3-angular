@@ -24781,7 +24781,7 @@ function SearchResultViewerFactory($translate) {
       var foundOffer = this.selectedOffers.find(function (selectedOffer) {
         return selectedOffer['@id'] === offer['@id'];
       });
-      if (foundOffer) {
+      if (!!foundOffer) {
         // remove offer from selectedOffers
         this.selectedOffers = this.selectedOffers.filter(function (selectedOffer) {
           return selectedOffer['@id'] !== offer['@id'];
