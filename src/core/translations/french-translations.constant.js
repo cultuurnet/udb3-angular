@@ -547,8 +547,8 @@ angular.module('udb.core')
         'add_text': 'Ajouter texte',
         'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants.',
         'required_still': 'Encore',
-        'required_signs': 'symboles.',
-        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
+        'required_signs': 'caractères.',
+        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers caractères. Vous pouvez ensuite ajouter des informations générales.',
         'empty': 'Vider',
         'tips': {
           'Concert': 'Donnez une description enthousiaste du concert. <ul> <li>Quel(s) <strong>artiste(s)</strong> se produisent?</li> <li>De quel <strong>genre</strong> s\'agit-il?</li> <li>Quel <strong>album ou œuvre</strong> sera présenté?</li> </ul>',
