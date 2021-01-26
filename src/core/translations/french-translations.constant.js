@@ -391,8 +391,8 @@ angular.module('udb.core')
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
-      'from': 'Du',
-      'till': 'au',
+      'from': 'De',
+      'till': 'à',
       'permanent': 'Permanent'
     },
     moderate: {
@@ -514,8 +514,8 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Seniors',
           'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'Au',
+          'from': 'De',
+          'till': 'à',
           'age': 'ans',
           'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
@@ -545,10 +545,10 @@ angular.module('udb.core')
         'title': 'Titre',
         'description': 'Description',
         'add_text': 'Ajouter texte',
-        'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants. Encore 199 caractères.',
+        'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants.',
         'required_still': 'Encore',
-        'required_signs': 'symboles.',
-        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
+        'required_signs': 'caractères.',
+        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers caractères. Vous pouvez ensuite ajouter des informations générales.',
         'empty': 'Vider',
         'tips': {
           'Concert': 'Donnez une description enthousiaste du concert. <ul> <li>Quel(s) <strong>artiste(s)</strong> se produisent?</li> <li>De quel <strong>genre</strong> s\'agit-il?</li> <li>Quel <strong>album ou œuvre</strong> sera présenté?</li> </ul>',
@@ -616,7 +616,7 @@ angular.module('udb.core')
           'add_reservation_period': 'Ajouter une période de réservation',
           'reservation_period': 'Période de réservation',
           'from': 'De',
-          'till': 'À'
+          'till': 'à'
         }
       },
       publish: {
@@ -660,8 +660,8 @@ angular.module('udb.core')
       'add_days': 'Ajouter des jours',
       period: {
         'title': 'Date de début et de fin',
-        'from': 'Du',
-        'till': 'au',
+        'from': 'De',
+        'till': 'à',
         'alert': 'Introduisez la date de début ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de début.'
       },
       openingHours: {
@@ -672,7 +672,7 @@ angular.module('udb.core')
         'change': 'Modifier',
         'days': 'Jours',
         'from': 'De',
-        'till': 'À',
+        'till': 'à',
         'more_hours': 'Ajouter plus d\'heures d\'ouverture',
         'cancel': 'Annuler',
         'save': 'Sauver'
@@ -691,7 +691,7 @@ angular.module('udb.core')
       'members': 'Seulement pour des membres',
       'members_help': 'Votre article est seulement publié sur des chaînes pour des associations et leurs membres.',
       'education': 'Spécifiquement pour des écoles',
-      'education_help': 'Votre article est seulement publié sur des chaînes d\'éducation culturelle. Après la publication Vous pouvez encore ajouter de l\'information spécifique pour des écoles.'
+      'education_help': 'Votre article est seulement publié sur des chaînes d\'éducation culturelle. Après la publication vous pouvez encore ajouter de l\'information spécifique pour des écoles.'
     },
     workflowStatus: {
       'label': 'État de publication',
