@@ -391,8 +391,8 @@ angular.module('udb.core')
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
-      'from': 'Du',
-      'till': 'au',
+      'from': 'De',
+      'till': 'à',
       'permanent': 'Permanent'
     },
     moderate: {
@@ -514,8 +514,8 @@ angular.module('udb.core')
           'Adults': 'Adultes',
           'Seniors': 'Seniors',
           'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'Au',
+          'from': 'De',
+          'till': 'à',
           'age': 'ans',
           'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
@@ -616,7 +616,7 @@ angular.module('udb.core')
           'add_reservation_period': 'Ajouter une période de réservation',
           'reservation_period': 'Période de réservation',
           'from': 'De',
-          'till': 'À'
+          'till': 'à'
         }
       },
       publish: {
@@ -660,8 +660,8 @@ angular.module('udb.core')
       'add_days': 'Ajouter des jours',
       period: {
         'title': 'Date de début et de fin',
-        'from': 'Du',
-        'till': 'au',
+        'from': 'De',
+        'till': 'à',
         'alert': 'Introduisez la date de début ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de début.'
       },
       openingHours: {
@@ -672,7 +672,7 @@ angular.module('udb.core')
         'change': 'Modifier',
         'days': 'Jours',
         'from': 'De',
-        'till': 'À',
+        'till': 'à',
         'more_hours': 'Ajouter plus d\'heures d\'ouverture',
         'cancel': 'Annuler',
         'save': 'Sauver'
