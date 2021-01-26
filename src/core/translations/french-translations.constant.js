@@ -545,7 +545,7 @@ angular.module('udb.core')
         'title': 'Titre',
         'description': 'Description',
         'add_text': 'Ajouter texte',
-        'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants. Encore 199 caractères.',
+        'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants.',
         'required_still': 'Encore',
         'required_signs': 'symboles.',
         'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
