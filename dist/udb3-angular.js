@@ -5570,7 +5570,7 @@ function UdbApi(
             window.parent.postMessage({
               source: 'UDB',
               type: 'HTTP_ERROR_CODE',
-              code: status ? status : 403
+              code: status || 403
             }, '*');
             deferredPermissions.reject();
           });
