@@ -506,6 +506,9 @@ function UdbApi(
           .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
           .success(storeAndResolvePermissions)
           .error(function (error) {
+            if (!error) {
+              return;
+            }
             window.parent.postMessage({
               source: 'UDB',
               type: 'HTTP_ERROR_CODE',
