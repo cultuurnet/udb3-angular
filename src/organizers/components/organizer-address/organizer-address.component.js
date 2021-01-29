@@ -20,9 +20,19 @@ angular
     });
 
 /* @ngInject */
-function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appConfig, $stateParams, OrganizerManager) {
+function OrganizerAddressComponent(
+  $scope,
+  Levenshtein,
+  citiesBE,
+  citiesNL,
+  appConfig,
+  $stateParams,
+  OrganizerManager,
+  $translate
+) {
   var controller = this;
   var organizerId = $stateParams.id;
+  var language = $translate.use() || 'nl';
 
   function init () {
     controller.availableCountries = appConfig.offerEditor.countries;
@@ -154,7 +164,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
       var length = value.length;
       var words = value.match(/\w+/g);
       var labelMatches = words.filter(function (word) {
-        return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        return city.label[language].toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
       return labelMatches.length >= words.length;
@@ -163,7 +173,7 @@ function OrganizerAddressComponent($scope, Levenshtein, citiesBE, citiesNL, appC
 
   function orderByLevenshteinDistance(value) {
     return function (city) {
-      return new Levenshtein(value, city.label);
+      return new Levenshtein(value, city.label[language]);
     };
   }
 

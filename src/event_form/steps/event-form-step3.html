@@ -63,7 +63,7 @@
                    class="form-control uib-typeahead"
                    ng-model="cityAutocompleteTextField"
                    udb-auto-scroll
-                   uib-typeahead="city as city.label for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
+                   uib-typeahead="city as city.label[language] for city in cities | filter:filterCities($viewValue) | orderBy:orderByLevenshteinDistance($viewValue)"
                    typeahead-on-select="selectCity($item, $label)"
                    typeahead-min-length="2"
                    typeahead-template-url="templates/city-suggestion.html"
