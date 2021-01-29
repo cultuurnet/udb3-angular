@@ -31462,7 +31462,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
-    "  <div class=\"udb-query-editor-header\">\n" +
+    "  <div>\n" +
     "    <p><span translate-once=\"search.advancedQueryBuilder.header.info\"></span>\n" +
     "      <a \n" +
     "        href='https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters' \n" +
