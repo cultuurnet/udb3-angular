@@ -26932,13 +26932,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ui-sref='duplication.event(::{id: event.id})'><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "           class=\"list-group-item\"\n" +
+    "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
-    "        <a ng-if=\"::permissions.editing\"\n" +
-    "                class=\"list-group-item\"\n" +
-    "                ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -31058,13 +31058,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "           class=\"list-group-item\"\n" +
+    "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
-    "        <a ng-if=\"::permissions.editing\"\n" +
-    "           class=\"list-group-item\"\n" +
-    "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
