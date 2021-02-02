@@ -38,7 +38,7 @@
                 ng-click="deleteEvent()"><i class="fa fa-trash" aria-hidden="true"></i>  <span translate-once="preview.delete"></span></button>
         <a ng-if="::permissions.editing"
                 class="list-group-item"
-                ng-href="{{ '/event/' + event.id + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_status"></span></a>
+                ng-href="{{ event.url + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_status"></span></a>
         <udb-moderation-offer ng-if="::moderationPermission" class="list-group-item moderation-detail" offer-id="{{::event['@id']}}" continue="true"></udb-moderation-offer>
       </div>
     </div>
