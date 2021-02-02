@@ -33,6 +33,9 @@
                 class="list-group-item"
                 href="#"
                 ng-click="deletePlace()"><i class="fa fa-trash" aria-hidden="true"></i>  <span translate-once="preview.delete"></span></button>
+        <a ng-if="::permissions.editing"
+           class="list-group-item"
+           ng-href="{{ place.url + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_status"></span></a>
       </div>
     </div>
 
