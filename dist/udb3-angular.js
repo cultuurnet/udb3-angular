@@ -3122,6 +3122,7 @@ angular.module('udb.core')
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
       'duplicate': 'Kopiëren en aanpassen',
+      'change_status': 'Status wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
       'type': 'Type',
@@ -4266,6 +4267,7 @@ angular.module('udb.core')
       'loading': 'Chargement...',
       'edit': 'Modifier',
       'duplicate': 'Copier et modifier',
+      'change_status': 'Modifier l\'état',
       'delete': 'Supprimer',
       'title': 'Titre',
       'type': 'Type',
@@ -26934,6 +26936,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                ng-href=\"{{ '/event/' + event.id + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
