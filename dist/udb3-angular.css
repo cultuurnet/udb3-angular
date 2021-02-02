@@ -6038,6 +6038,7 @@ input + .alert {
   position: absolute;
   left: -1em;
   top: 6px;
+  font-weight: bold;
 }
 .event-type-choser-label {
   background-repeat: no-repeat;
