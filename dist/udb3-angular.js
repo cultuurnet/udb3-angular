@@ -17310,7 +17310,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 1,
       sref: 'management.moderation.list',
-      icon: 'fa-flag'
+      icon: 'fa fa-flag'
     },
     {
       name: 'Gebruikers',
@@ -17318,7 +17318,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 2,
       sref: 'management.users.list',
-      icon: 'fa-user'
+      icon: 'fa fa-user'
     },
     {
       name: 'Rollen',
@@ -17326,7 +17326,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 3,
       sref: 'split.manageRoles.list',
-      icon: 'fa-users'
+      icon: 'fa fa-users'
     },
     {
       name: 'Labels',
@@ -17334,7 +17334,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 4,
       sref: 'split.manageLabels.list',
-      icon: 'fa-tag'
+      icon: 'fa fa-tag'
     },
     {
       name: 'Organisaties',
@@ -17342,7 +17342,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 5,
       sref: 'management.organizers.search',
-      icon: 'fa-slideshare'
+      icon: 'fab fa-slideshare'
     }
   ];
 }
@@ -24695,9 +24695,9 @@ angular
 function SearchResultViewerFactory($translate) {
 
   var SelectionState = {
-    ALL: {'name': 'all', 'icon': 'fa-check-square'},
-    NONE: {'name': 'none', 'icon': 'fa-square-o'},
-    SOME: {'name': 'some', 'icon': 'fa-minus-square'}
+    ALL: {'name': 'all', 'icon': 'fas fa-check-square'},
+    NONE: {'name': 'none', 'icon': 'far fa-square'},
+    SOME: {'name': 'some', 'icon': 'fas fa-minus-square'}
   };
 
   var identifyItem = function (event) {
@@ -26923,7 +26923,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
@@ -26931,14 +26931,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"fa fa-files-o\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
+    "                ui-sref='duplication.event(::{id: event.id})'><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "        <a ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
-    "                ng-href=\"{{ '/event/' + event.id + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
+    "                ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -28239,7 +28239,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <tr>\n" +
     "        <td>\n" +
     "          <strong class=\"hidden-xs hidden-sm\">Organisatie</strong>\n" +
-    "          <i class=\"fa fa-building-o hidden-md hidden-lg\"></i>\n" +
+    "          <i class=\"far fa-building hidden-md hidden-lg\"></i>\n" +
     "        </td>\n" +
     "        <td ng-bind=\"::event.organizer.name\"></td>\n" +
     "      </tr>\n" +
@@ -30849,7 +30849,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      <button class=\"list-group-item\"\n" +
     "              type=\"button\"\n" +
     "              ui-sref=\"split.organizerEdit({id: odc.organizer.id})\">\n" +
-    "        <i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>\n" +
+    "        <i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>\n" +
     "        <span translate-once=\"organizer.manage.edit\"></span>\n" +
     "      </button>\n" +
     "      <span ng-if=\"odc.isManageState()\">\n" +
@@ -31053,7 +31053,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"openEditPage()\"><i class=\"fa fa-pencil\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span ng-if=\"place.mainLanguage !== language\" ng-bind=\"'(' + place.mainLanguage + ')'\"></span></button>\n" +
+    "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span ng-if=\"place.mainLanguage !== language\" ng-bind=\"'(' + place.mainLanguage + ')'\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
@@ -31062,6 +31062,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "           class=\"list-group-item\"\n" +
+    "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -31642,7 +31645,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"rv-item-sidebar\">\n" +
     "      <div class=\"rv-selection-state\" ng-class=\"{'disabled': resultViewer.querySelected}\"\n" +
     "           ng-click=\"resultViewer.toggleSelect(event)\">\n" +
-    "        <span class=\"fa\" ng-class=\"resultViewer.isOfferSelected(event) ? 'fa-check-square' : 'fa-square-o'\"></span>\n" +
+    "        <span ng-class=\"resultViewer.isOfferSelected(event) ? 'fas fa-check-square' : 'far fa-square'\"></span>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -31682,7 +31685,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"rv-event-info-input udb-organizer\"\n" +
     "         ng-show=\"resultViewer.activeSpecific.id === 'input'\">\n" +
     "      <div>\n" +
-    "        <span class=\"fa fa-clock-o\"></span>&nbsp;\n" +
+    "        <span class=\"far fa-clock\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.modified | date : 'dd/MM/yyyy • HH:mm'\"></span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
@@ -31695,7 +31698,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
-    "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
+    "        <span class=\"far fa-building\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.organizer ? event.organizer.name : '-'\"></span>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -31810,7 +31813,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"rv-item-sidebar\">\n" +
     "      <div class=\"rv-selection-state\" ng-class=\"{'disabled': resultViewer.querySelected}\"\n" +
     "           ng-click=\"resultViewer.toggleSelect(event)\">\n" +
-    "        <span class=\"fa\" ng-class=\"resultViewer.isOfferSelected(event) ? 'fa-check-square' : 'fa-square-o'\"></span>\n" +
+    "        <span ng-class=\"resultViewer.isOfferSelected(event) ? 'fas fa-check-square' : ' far fa-square'\"></span>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -31841,7 +31844,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"rv-event-info-input udb-organizer\"\n" +
     "         ng-show=\"resultViewer.activeSpecific.id === 'input'\">\n" +
     "      <div>\n" +
-    "        <span class=\"fa fa-clock-o\"></span>&nbsp;\n" +
+    "        <span class=\"far fa-clock\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.modified | date : 'dd/MM/yyyy • HH:mm'\"></span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-email\">\n" +
@@ -31854,7 +31857,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </span>\n" +
     "      </div>\n" +
     "      <div class=\"udb-organizer-name\">\n" +
-    "        <span class=\"fa fa-building-o\"></span>&nbsp;\n" +
+    "        <span class=\"far fa-building\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.organizer ? event.organizer.name : '-'\"></span>\n" +
     "      </div>\n" +
     "    </div>\n" +
@@ -32089,7 +32092,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <div class=\"rv-item-sidebar\">\n" +
     "                <div class=\"rv-selection-state\">\n" +
     "                    <span class=\"dropdown\" uib-dropdown ng-hide=\"resultViewer.selectedOffers.length\">\n" +
-    "                      <span class=\"dropdown-toggle fa {{resultViewer.selectionState.icon}}\" uib-dropdown-toggle>\n" +
+    "                      <span class=\"dropdown-toggle {{resultViewer.selectionState.icon}}\" uib-dropdown-toggle>\n" +
     "                      </span>\n" +
     "                      <ul class=\"dropdown-menu\">\n" +
     "                          <li role=\"presentation\" class=\"dropdown-header\">Selecteer</li>\n" +

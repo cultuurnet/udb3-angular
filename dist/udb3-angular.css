@@ -5078,11 +5078,12 @@ input + .alert {
   width: 18px;
   display: inline-block;
   text-align: center;
-  content: "\f096";
-  font-family: "FontAwesome";
+  content: "\f0c8";
+  font-family: "Font Awesome 5 Free";
 }
 .rv-control-toggle.active:before {
   content: "\f14a";
+  font-weight: 900;
 }
 .rv-first-column {
   padding-left: 30px;
@@ -5501,12 +5502,13 @@ input + .alert {
   font-style: italic;
 }
 .offer-form .btn-chosen:before {
-  content: "\f058 ";
-  font-family: "FontAwesome";
+  content: "\f058";
+  font-family: "Font Awesome 5 Free";
   color: #5cb85c;
   margin-right: 6px;
   font-style: normal;
-  font-size: 17px;
+  font-size: 15px;
+  font-weight: 900;
 }
 .offer-form .number {
   background-color: #555555;
@@ -5615,7 +5617,7 @@ input + .alert {
   border-bottom: 1px solid #dddddd;
 }
 .offer-form .datepicker_icon:after {
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   color: #777777;
   content: "\f073";
   position: absolute;
@@ -5665,13 +5667,13 @@ input + .alert {
 .offer-form .state-complete .extra-task-label:before {
   content: "\f058";
   color: #5cb85c;
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   transition: opacity 0.5s ease;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: auto;
   font-style: normal;
   line-height: 30px;
-  font-size: 17px;
+  font-size: 15px;
   margin-right: 6px;
 }
 .offer-form .btn-nvt {
@@ -5763,7 +5765,7 @@ input + .alert {
 .offer-form .image-upload-icon:before {
   color: #777777;
   text-align: center;
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   content: "\f03e";
   font-size: 50px;
 }
@@ -5829,14 +5831,14 @@ input + .alert {
   position: absolute;
   left: 0;
   color: #5cb85c;
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   opacity: 0;
   transition: opacity 0.5s ease;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-osx-font-smoothing: auto;
   font-style: normal;
   line-height: 30px;
-  font-size: 17px;
+  font-size: 15px;
 }
 .offer-form .recently-added td {
   -webkit-transition: background-color 500ms linear;
@@ -6028,7 +6030,8 @@ input + .alert {
 }
 .btn-plus:before {
   content: "\f055";
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
+  font-size: 15px;
   color: #cccccc;
   margin-right: 0.5em;
   text-decoration: none;
@@ -13157,22 +13160,24 @@ button.close {
   background-color: #c7e6c7;
 }
 .calendar-type-options .selected:after {
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   color: #5cb85c;
   content: "\f058";
   position: absolute;
   top: -6px;
   left: -6px;
-  font-size: 17px;
+  font-size: 15px;
+  font-weight: 900;
 }
 .calendar-type-options .selected:before {
-  font-family: "FontAwesome";
+  font-family: "Font Awesome 5 Free";
   color: white;
   content: "\f111";
   position: absolute;
   top: -6px;
   left: -6px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 900;
 }
 .calendar-timing-info {
   margin-top: 10px;
