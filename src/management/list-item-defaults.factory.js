@@ -33,7 +33,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 1,
       sref: 'management.moderation.list',
-      icon: 'fa-flag'
+      icon: 'fa fa-flag'
     },
     {
       name: 'Gebruikers',
@@ -41,7 +41,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 2,
       sref: 'management.users.list',
-      icon: 'fa-user'
+      icon: 'fa fa-user'
     },
     {
       name: 'Rollen',
@@ -49,7 +49,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 3,
       sref: 'split.manageRoles.list',
-      icon: 'fa-users'
+      icon: 'fa fa-users'
     },
     {
       name: 'Labels',
@@ -57,7 +57,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 4,
       sref: 'split.manageLabels.list',
-      icon: 'fa-tag'
+      icon: 'fa fa-tag'
     },
     {
       name: 'Organisaties',
@@ -65,7 +65,7 @@ function listItemDefaults(RolePermission) {
       notificationCount: 0,
       index: 5,
       sref: 'management.organizers.search',
-      icon: 'fa-slideshare'
+      icon: 'fab fa-slideshare'
     }
   ];
 }
