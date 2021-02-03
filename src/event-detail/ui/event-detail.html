@@ -32,9 +32,6 @@
                 class="list-group-item"
                 type="button"
                 ui-sref='duplication.event(::{id: event.id})'><i class="far fa-copy" aria-hidden="true"></i>  <span translate-once="preview.duplicate"></span></button>
-        <a ng-if="::permissions.editing"
-           class="list-group-item"
-           ng-href="{{ event.url + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_status"></span></a>
         <button ng-if="::permissions.editing"
                 class="list-group-item"
                 href="#"
