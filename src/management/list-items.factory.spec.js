@@ -116,7 +116,7 @@ describe('Factory: List Items', function () {
           notificationCount: 0,
           index: 5,
           sref: 'management.organizers.search',
-          icon: 'fa-slideshare'
+          icon: 'fab fa-slideshare'
         },
         {
           name: 'Valideren',
@@ -124,7 +124,7 @@ describe('Factory: List Items', function () {
           notificationCount: 387380,
           index: 1,
           sref: 'management.moderation.list',
-          icon: 'fa-flag'
+          icon: 'fa fa-flag'
         }
       ]);
       done();
@@ -230,7 +230,7 @@ describe('Factory: List Items', function () {
           notificationCount: 0,
           index: 5,
           sref: 'management.organizers.search',
-          icon: 'fa-slideshare'
+          icon: 'fab fa-slideshare'
         }
       ]);
       done();
