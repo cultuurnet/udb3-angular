@@ -1131,7 +1131,7 @@ angular.module('udb.core')
         group: 'Groep ',
         include: 'Insluiten',
         exclude: 'Uitsluiten',
-        addGroup: 'Groep toeovegen',
+        addGroup: 'Groep toevoegen',
         cancel: 'Annuleren',
         search: 'Zoeken',
       }
