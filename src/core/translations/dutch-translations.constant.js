@@ -651,6 +651,14 @@ angular.module('udb.core')
         'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
+    offerStatus: {
+        'scheduled': 'Gaat door',
+        'cancelled': 'Geannuleerd',
+        'postponed': 'Uitgesteld',
+        'open': 'Open',
+        'temporarilyClosed': 'Tijdelijk gesloten',
+        'permanentlyClosed': 'Permanent gesloten',
+    },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
       'or': 'of',
