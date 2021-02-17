@@ -8,6 +8,9 @@ angular
     require: {
       ngModel: '^ngModel'
     },
+    bindings: {
+      disabled: '=ngDisabled'
+    },
     controllerAs: 'timepicker'
   });
 
