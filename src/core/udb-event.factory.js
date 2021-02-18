@@ -107,6 +107,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
     this.type = {};
     this.theme = {};
     this.status = {};
+    this.subEvent = [];
     /** @type {OpeningHoursData[]} **/
     this.openingHours = [];
 
