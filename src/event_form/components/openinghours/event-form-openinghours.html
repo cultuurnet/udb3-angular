@@ -5,7 +5,7 @@
           <span class="permanent-title" translate-once="calendar.openingHours.permanent_title"></span>
           <span class="permanent-subtitle" translate-once="calendar.openingHours.permanent_subtitle"></span>
         </p>
-        <button type="button" class="btn btn-primary" ng-click="cm.edit()" translate-once="calendar.openingHours.add_hours"></button>
+        <button type="button" class="btn btn-primary" ng-disabled="cm.disabled" ng-click="cm.edit()" translate-once="calendar.openingHours.add_hours"></button>
     </div>
   </div>
   <div class="time-table">
@@ -13,7 +13,7 @@
       <thead>
       <th translate-once="calendar.openingHours.opening_hours"></th>
       <th>
-        <a href="#" ng-click="cm.edit()" class="btn btn-default" translate-once="calendar.openingHours.change"></a>
+        <a href="#" ng-disabled="cm.disabled" ng-click="cm.edit()" class="btn btn-default" translate-once="calendar.openingHours.change"></a>
       </th>
       </thead>
       <tbody>
