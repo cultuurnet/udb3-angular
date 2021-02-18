@@ -12827,8 +12827,6 @@ button.close {
 .modal-footer:after,
 .calendar-type-picker:before,
 .calendar-type-picker:after,
-.calendar-time-span:before,
-.calendar-time-span:after,
 .opening-hours .opening-hours-labels:before,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:before,
@@ -12853,7 +12851,6 @@ button.close {
 .modal-header:after,
 .modal-footer:after,
 .calendar-type-picker:after,
-.calendar-time-span:after,
 .opening-hours .opening-hours-labels:after,
 .opening-hours .opening-hours-set:after {
   clear: both;
@@ -13184,10 +13181,7 @@ button.close {
   margin-top: 10px;
 }
 .calendar-time-span {
-  margin-left: -15px;
-  margin-right: -15px;
   position: relative;
-  padding-right: 30px;
 }
 .calendar-time-span .date {
   position: relative;
@@ -13260,6 +13254,10 @@ button.close {
 }
 .calendar-time-span .timing-control .all-day {
   margin-top: 2.2em;
+}
+.calendar-time-span .status.alert {
+  margin-left: 0px;
+  margin-right: 0px;
 }
 .opening-hours .opening-hours-labels,
 .opening-hours .opening-hours-set {
