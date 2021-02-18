@@ -34,7 +34,7 @@ function EventCrud(
       majorInfo.location = majorInfo.location.id;
     }
 
-    var majorInfoWithStatus = Object.assign({}, majorInfo);
+    var majorInfoWithStatus = _.cloneDeep(majorInfo);
     majorInfoWithStatus.calendar.status = majorInfo.status;
 
     if (formData.isPlace) {
