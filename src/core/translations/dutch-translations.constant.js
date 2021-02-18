@@ -652,12 +652,12 @@ angular.module('udb.core')
       }
     },
     offerStatus: {
-        'scheduled': 'Gaat door',
-        'cancelled': 'Geannuleerd',
-        'postponed': 'Uitgesteld',
-        'open': 'Open',
-        'temporarilyClosed': 'Tijdelijk gesloten',
-        'permanentlyClosed': 'Permanent gesloten',
+      'scheduled': 'Gaat door',
+      'cancelled': 'Geannuleerd',
+      'postponed': 'Uitgesteld',
+      'open': 'Open',
+      'temporarilyClosed': 'Tijdelijk gesloten',
+      'permanentlyClosed': 'Permanent gesloten',
     },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
