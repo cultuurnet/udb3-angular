@@ -41,6 +41,7 @@ function BaseCalendarController(calendar, $scope, appConfig) {
     calendar.isEvent = formData.isEvent;
     calendar.isPlace = formData.isPlace;
     calendar.offerStatus = formData.status;
+    calendar.subEvent = formData.subEvent;
     calendar.timeSpans = !_.isEmpty(formData.calendar.timeSpans) ? formData.calendar.timeSpans : [];
     calendar.setType(formData.calendar.calendarType ? formData.calendar.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
