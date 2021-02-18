@@ -34,7 +34,18 @@ function EventCrud(
       majorInfo.location = majorInfo.location.id;
     }
 
-    return majorInfo;
+    var majorInfoWithStatus = Object.assign({}, majorInfo);
+    majorInfoWithStatus.calendar.status = majorInfo.status;
+
+    if (formData.subEvent) {
+      majorInfoWithStatus.calendar.timeSpans = _.map(majorInfo.calendar.timeSpans, function (timeSpan, index) {
+        var subEventStatus = majorInfo.subEvent[index].status;
+        timeSpan.status = subEventStatus;
+        return timeSpan;
+      });
+    }
+
+    return majorInfoWithStatus;
   }
 
   /**
