@@ -27452,11 +27452,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
-    "                <udb-form-calendar-period ng-disabled=\"calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <udb-form-calendar-period ng-disabled=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours ng-disabled=\"calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                <udb-event-form-opening-hours ng-disabled=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
     "                </udb-event-form-opening-hours>\n" +
-    "                <div ng-if=\"calendar.offerStatus.type !== 'Available'\" class=\"status alert alert-info\">\n" +
+    "                <div ng-if=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" class=\"status alert alert-info\">\n" +
     "                    <div ng-switch=\"calendar.offerStatus.type\">\n" +
     "                        <span ng-switch-when=\"TemporarilyUnavailable\" translate-once=\"offerStatus.temporarilyClosed\"></span>\n" +
     "                        <span ng-switch-when=\"Unavailable\" translate-once=\"offerStatus.permanentlyClosed\"></span>\n" +
@@ -27474,11 +27474,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"panel panel-default\">\n" +
     "        <div class=\"panel-body\">\n" +
     "            <div class=\"calendar-recurrence\" ng-if=\"calendar.weeklyRecurring\">\n" +
-    "                <udb-form-calendar-period ng-disabled=\"calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
+    "                <udb-form-calendar-period ng-disabled=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\"></udb-form-calendar-period>\n" +
     "                <hr>\n" +
-    "                <udb-event-form-opening-hours ng-disabled=\"calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
+    "                <udb-event-form-opening-hours ng-disabled=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" form-data=\"calendar.formData\" opening-hours=\"calendar.openingHoursCollection\">\n" +
     "                </udb-event-form-opening-hours>\n" +
-    "                <div ng-if=\"calendar.offerStatus.type !== 'Available'\" class=\"status alert alert-info\">\n" +
+    "                <div ng-if=\"calendar.offerStatus && calendar.offerStatus.type !== 'Available'\" class=\"status alert alert-info\">\n" +
     "                    <div ng-switch=\"calendar.offerStatus.type\">\n" +
     "                        <span ng-switch-when=\"TemporarilyUnavailable\" translate-once=\"offerStatus.temporarilyClosed\"></span>\n" +
     "                        <span ng-switch-when=\"Unavailable\" translate-once=\"offerStatus.permanentlyClosed\"></span>\n" +

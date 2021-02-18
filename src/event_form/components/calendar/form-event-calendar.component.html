@@ -74,11 +74,11 @@
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
-                <udb-form-calendar-period ng-disabled="calendar.offerStatus.type !== 'Available'" form-data="calendar.formData"></udb-form-calendar-period>
+                <udb-form-calendar-period ng-disabled="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" form-data="calendar.formData"></udb-form-calendar-period>
                 <hr>
-                <udb-event-form-opening-hours ng-disabled="calendar.offerStatus.type !== 'Available'" form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
+                <udb-event-form-opening-hours ng-disabled="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
                 </udb-event-form-opening-hours>
-                <div ng-if="calendar.offerStatus.type !== 'Available'" class="status alert alert-info">
+                <div ng-if="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" class="status alert alert-info">
                     <div ng-switch="calendar.offerStatus.type">
                         <span ng-switch-when="TemporarilyUnavailable" translate-once="offerStatus.temporarilyClosed"></span>
                         <span ng-switch-when="Unavailable" translate-once="offerStatus.permanentlyClosed"></span>
