@@ -83,6 +83,9 @@ function EventFormController(
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
+
+      EventFormData.subEvent = offer.subEvent;
+
       copyItemDataToFormData(offer);
 
       // Copy location.
