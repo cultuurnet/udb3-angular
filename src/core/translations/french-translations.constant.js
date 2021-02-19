@@ -648,6 +648,14 @@ angular.module('udb.core')
         'sizeError': 'Le fichier téléchargé est trop grand.'
       }
     },
+    offerStatus: {
+      'scheduled': 'A lieu',
+      'cancelled': 'Annulé',
+      'postponed': 'Reporté',
+      'open': 'Ouvert',
+      'temporarilyClosed': 'Fermé temporairement',
+      'permanentlyClosed': 'Fermé définitivement',
+    },
     calendar: {
       'one_more_days': 'Jours récurrents ou variables',
       'or': 'ou',

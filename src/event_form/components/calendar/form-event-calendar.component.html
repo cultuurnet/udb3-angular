@@ -16,58 +16,75 @@
         <div class="panel-body">
             <div class="calendar-time-spans" ng-if="!calendar.weeklyRecurring">
                 <div class="calendar-time-span" ng-repeat="timeSpan in calendar.timeSpans track by $index">
-                    <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
-                    <div class="dates">
-                        <div class="date form-group">
-                            <label for="time-span-{{$index}}-start-date" translate-once="calendar.start_label"></label>
-                            <udb-form-calendar-datepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')">
-                            </udb-form-calendar-datepicker>
-                        </div>
-                        <div class="date form-group">
-                            <label for="time-span-{{$index}}-end-date" translate-once="calendar.end_label"></label>
-                            <udb-form-calendar-datepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')">
-                            </udb-form-calendar-datepicker>
-                        </div>
-                    </div>
-                    <div class="timing-control">
-                        <div class="checkbox all-day">
-                            <label for="time-span-{{$index}}-has-timing-info">
-                                <input type="checkbox"
-                                       id="time-span-{{$index}}-has-timing-info"
-                                       ng-model="timeSpan.allDay"
-                                       ng-change="calendar.toggleAllDay(timeSpan)"
-                                       class="all-day-check"> <span translate-once="calendar.whole_day_label"></span>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="timing" ng-if="!timeSpan.allDay">
-                        <div class="time form-group">
-                            <label translate-once="calendar.start_hour_label"></label>
-                            <udb-form-calendar-timepicker ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')"></udb-form-calendar-timepicker>
-                        </div>
+                    <div class="column">
+                        <div class="row">
+                            <span ng-show="calendar.timeSpans.length > 1" aria-hidden="true" ng-click="calendar.removeTimeSpan(timeSpan)" class="close">×</span>
+                            <div class="dates">
+                                <div class="date form-group">
+                                    <label for="time-span-{{$index}}-start-date" translate-once="calendar.start_label"></label>
+                                    <udb-form-calendar-datepicker ng-disabled="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'" ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')">
+                                    </udb-form-calendar-datepicker>
+                                </div>
+                                <div class="date form-group">
+                                    <label for="time-span-{{$index}}-end-date" translate-once="calendar.end_label"></label>
+                                    <udb-form-calendar-datepicker ng-disabled="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'" ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')">
+                                    </udb-form-calendar-datepicker>
+                                </div>
+                            </div>
+                            <div class="timing-control">
+                                <div class="checkbox all-day">
+                                    <label for="time-span-{{$index}}-has-timing-info">
+                                        <input type="checkbox"
+                                            id="time-span-{{$index}}-has-timing-info"
+                                            ng-disabled="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'"
+                                            ng-model="timeSpan.allDay"
+                                            ng-change="calendar.toggleAllDay(timeSpan)"
+                                            class="all-day-check"> <span translate-once="calendar.whole_day_label"></span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="timing" ng-if="!timeSpan.allDay">
+                                <div class="time form-group">
+                                    <label translate-once="calendar.start_hour_label"></label>
+                                    <udb-form-calendar-timepicker ng-disabled="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'" ng-model="timeSpan.start" ng-change="calendar.delayedTimeSpanChanged('start')"></udb-form-calendar-timepicker>
+                                </div>
 
-                        <div class="time form-group">
-                            <label translate-once="calendar.end_hour_label"></label>
-                            <udb-form-calendar-timepicker ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')"></udb-form-calendar-timepicker>
+                                <div class="time form-group">
+                                    <label translate-once="calendar.end_hour_label"></label>
+                                    <udb-form-calendar-timepicker ng-disabled="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'" ng-model="timeSpan.end" ng-change="calendar.delayedTimeSpanChanged('end')"></udb-form-calendar-timepicker>
+                                </div>
+                            </div>
+                            <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">
+                                <div class="error alert alert-danger">
+                                    <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]"
+                                    ng-bind="'TIME_SPAN_REQUIREMENTS.' + requirement | translate"></p>
+                                </div>
+                            </div>
                         </div>
+                        <div ng-if="calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'" class="status row alert alert-info">
+                            <div ng-switch="calendar.subEvent[$index].status.type">
+                                <span ng-switch-when="TemporarilyUnavailable" translate-once="offerStatus.postponed"></span>
+                                <span ng-switch-when="Unavailable" translate-once="offerStatus.cancelled"></span>
+                            </div>
+                        </div>                        
                     </div>
-                    <div class="requirements" ng-show="calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length">
-                        <div class="error alert alert-danger">
-                            <p ng-repeat="requirement in calendar.timeSpanRequirements[$index]"
-                               ng-bind="'TIME_SPAN_REQUIREMENTS.' + requirement | translate"></p>
-                        </div>
-                    </div>
+
+                    <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link" translate-once="calendar.add_days"></a>
                 </div>
-
-                <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link" translate-once="calendar.add_days"></a>
             </div>
 
             <div class="calendar-recurrence" ng-if="calendar.weeklyRecurring">
-                <udb-form-calendar-period form-data="calendar.formData"></udb-form-calendar-period>
+                <udb-form-calendar-period ng-disabled="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" form-data="calendar.formData"></udb-form-calendar-period>
                 <hr>
-                <udb-event-form-opening-hours form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
+                <udb-event-form-opening-hours ng-disabled="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" form-data="calendar.formData" opening-hours="calendar.openingHoursCollection">
                 </udb-event-form-opening-hours>
-            </div>
+                <div ng-if="calendar.offerStatus && calendar.offerStatus.type !== 'Available'" class="status alert alert-info">
+                    <div ng-switch="calendar.offerStatus.type">
+                        <span ng-switch-when="TemporarilyUnavailable" translate-once="offerStatus.temporarilyClosed"></span>
+                        <span ng-switch-when="Unavailable" translate-once="offerStatus.permanentlyClosed"></span>
+                    </div>
+                </div>
+            </div>            
         </div>
     </div>
 </div>

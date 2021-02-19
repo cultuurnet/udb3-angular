@@ -100,6 +100,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
     this.name = {};
     this.type = '';
     this.theme = {};
+    this.status = {};
     this.calendar = {};
     this.address = {};
     /*this.address = {
@@ -127,6 +128,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       //this.address = (jsonPlace.address && jsonPlace.address.nl) || jsonPlace.address || this.address;
       this.address = jsonPlace.address || {};
       this.theme = getCategoryByType(jsonPlace, 'theme') || {};
+      this.status = jsonPlace.status;
       this.description = angular.copy(jsonPlace.description) || {};
       this.calendarType = jsonPlace.calendarType || '';
       this.startDate = jsonPlace.startDate;

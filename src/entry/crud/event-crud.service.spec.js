@@ -146,7 +146,15 @@ describe('Service: Event crud', function () {
     var formData = {
       calendarType: 'periodic',
       startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      endDate: new Date('2013-03-03T00:00:00Z'),
+      isPlace: false,
+      isEvent: true,
+      status: {
+        type: 'Available'
+      },
+      calendar: {
+        timeSpans: []
+      }
     };
 
     var expectedInfo = {
@@ -193,13 +201,30 @@ describe('Service: Event crud', function () {
       apiUrl: offerLocation,
       calendarType: 'periodic',
       startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      endDate: new Date('2013-03-03T00:00:00Z'),
+      isPlace: false,
+      isEvent: true,
+      status: {
+        type: 'Available'
+      },
+      calendar: {
+        timeSpans: []
+      }
     };
 
     var expectedInfo = {
       calendarType: 'periodic',
       startDate: new Date('2013-03-01T00:00:00Z'),
-      endDate: new Date('2013-03-03T00:00:00Z')
+      endDate: new Date('2013-03-03T00:00:00Z'),
+      status: {
+        type: 'Available'
+      },   
+      calendar: {
+        status: {
+          type: 'Available'
+        },
+        timeSpans: []
+      }
     };
 
 

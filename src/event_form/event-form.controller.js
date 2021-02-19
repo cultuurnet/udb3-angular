@@ -78,9 +78,14 @@ function EventFormController(
   function startEditing(offer) {
     var offerType = offer.url.split('/').shift();
 
+    EventFormData.status = offer.status;
+
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
+
+      EventFormData.subEvent = offer.subEvent;
+
       copyItemDataToFormData(offer);
 
       // Copy location.
