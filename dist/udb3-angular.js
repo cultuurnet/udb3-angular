@@ -25223,6 +25223,10 @@ function OfferController(
   };
 
   controller.showButtonConfirmed = function () {
+    if (_.get(appConfig, 'hideButtonConfirmed') === true) {
+      return false;
+    }
+
     return (
       $scope.offerType === 'event' &&
       ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
