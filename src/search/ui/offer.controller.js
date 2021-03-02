@@ -254,9 +254,18 @@ function OfferController(
   };
 
   controller.showConcludedButton = function () {
+    var shouldShowConcludeButton = _.get(appConfig, 'concludedButton.toggle', false);
+
+    if (!shouldShowConcludeButton) {
+      return false;
+    }
+
+    var omdDate = _.get(appConfig, 'calendarHighlight.date');
+    var endofOmdDay = moment(omdDate).endOf('day');
+
     return (
       $scope.offerType === 'event' &&
-      _.get(appConfig, 'concludedButton.toggle', false)
+      (endofOmdDay < new Date())
     );
   };
 
