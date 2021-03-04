@@ -106,6 +106,7 @@ describe('Controller: Event Form', function() {
         allDay: false,
         start: moment('2017-09-10T10:00').toISOString(),
         end: moment('2017-09-10T18:00').toISOString(),
+        status: undefined
       }
     ];
 

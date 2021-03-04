@@ -205,11 +205,11 @@ function EventFormController(
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate);
+        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate, subEvent.status || item.status);
       }
     }
     else if (item.calendarType === 'single') {
-      EventFormData.addTimeSpan(item.startDate, item.endDate);
+      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status);
     }
 
     if (EventFormData.calendar.calendarType) {
