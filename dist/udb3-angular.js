@@ -3122,6 +3122,7 @@ angular.module('udb.core')
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
       'duplicate': 'Kopiëren en aanpassen',
+      'change_status': 'Status wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
       'type': 'Type',
@@ -4274,6 +4275,7 @@ angular.module('udb.core')
       'loading': 'Chargement...',
       'edit': 'Modifier',
       'duplicate': 'Copier et modifier',
+      'change_status': 'Modifier l\'état',
       'delete': 'Supprimer',
       'title': 'Titre',
       'type': 'Type',
@@ -26985,6 +26987,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ui-sref='duplication.event(::{id: event.id})'><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "           class=\"list-group-item\"\n" +
+    "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
@@ -31133,6 +31138,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
+    "        <a ng-if=\"::permissions.editing\"\n" +
+    "           class=\"list-group-item\"\n" +
+    "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_status\"></span></a>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
