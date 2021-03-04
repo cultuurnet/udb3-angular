@@ -216,7 +216,7 @@ function EventFormController(
       EventFormData.initCalendar();
     }
 
-    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
+    EventFormData.initOpeningHours(_.get(EventFormData, 'calendar.openingHours', []));
 
     $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
