@@ -70,7 +70,10 @@ function BaseCalendarController(calendar, $scope, appConfig) {
         allDay: true,
         start: moment().startOf('day').toDate(),
         end: moment().endOf('day').toDate(),
-        endTouched: false
+        endTouched: false,
+        status: {
+          type: 'Available'
+        }
       }
     ];
   }
