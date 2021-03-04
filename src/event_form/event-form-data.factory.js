@@ -301,12 +301,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * @param {Date|string} end
      *  An empty string when not set.
      */
-    addTimeSpan: function(start, end) {
+    addTimeSpan: function(start, end, status) {
       var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
-        'allDay': allDay
+        'allDay': allDay,
+        'status': status
       });
     },
 

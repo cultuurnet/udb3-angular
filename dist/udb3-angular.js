@@ -8824,18 +8824,6 @@ function EventCrud(
     var majorInfoWithStatus = _.cloneDeep(majorInfo);
     majorInfoWithStatus.calendar.status = majorInfo.status;
 
-    if (formData.isPlace) {
-      return majorInfoWithStatus;
-    }
-
-    if (formData.subEvent) {
-      majorInfoWithStatus.calendar.timeSpans = _.map(majorInfo.calendar.timeSpans, function (timeSpan, index) {
-        var subEventStatus = majorInfo.subEvent[index].status;
-        timeSpan.status = subEventStatus;
-        return timeSpan;
-      });
-    }
-
     return majorInfoWithStatus;
   }
 
@@ -11004,7 +10992,10 @@ function BaseCalendarController(calendar, $scope, appConfig) {
         allDay: true,
         start: moment().startOf('day').toDate(),
         end: moment().endOf('day').toDate(),
-        endTouched: false
+        endTouched: false,
+        status: {
+          type: 'Available'
+        }
       }
     ];
   }
@@ -13510,12 +13501,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
      * @param {Date|string} end
      *  An empty string when not set.
      */
-    addTimeSpan: function(start, end) {
+    addTimeSpan: function(start, end, status) {
       var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
-        'allDay': allDay
+        'allDay': allDay,
+        'status': status
       });
     },
 
@@ -14114,11 +14106,11 @@ function EventFormController(
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate);
+        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate, subEvent.status || item.status);
       }
     }
     else if (item.calendarType === 'single') {
-      EventFormData.addTimeSpan(item.startDate, item.endDate);
+      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status);
     }
 
     if (EventFormData.calendar.calendarType) {
@@ -27418,12 +27410,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            <div class=\"dates\">\n" +
     "                                <div class=\"date form-group\">\n" +
     "                                    <label for=\"time-span-{{$index}}-start-date\" translate-once=\"calendar.start_label\"></label>\n" +
-    "                                    <udb-form-calendar-datepicker ng-disabled=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\" ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\">\n" +
+    "                                    <udb-form-calendar-datepicker ng-disabled=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\">\n" +
     "                                    </udb-form-calendar-datepicker>\n" +
     "                                </div>\n" +
     "                                <div class=\"date form-group\">\n" +
     "                                    <label for=\"time-span-{{$index}}-end-date\" translate-once=\"calendar.end_label\"></label>\n" +
-    "                                    <udb-form-calendar-datepicker ng-disabled=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\" ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\">\n" +
+    "                                    <udb-form-calendar-datepicker ng-disabled=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\">\n" +
     "                                    </udb-form-calendar-datepicker>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
@@ -27432,7 +27424,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                    <label for=\"time-span-{{$index}}-has-timing-info\">\n" +
     "                                        <input type=\"checkbox\"\n" +
     "                                            id=\"time-span-{{$index}}-has-timing-info\"\n" +
-    "                                            ng-disabled=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\"\n" +
+    "                                            ng-disabled=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\"\n" +
     "                                            ng-model=\"timeSpan.allDay\"\n" +
     "                                            ng-change=\"calendar.toggleAllDay(timeSpan)\"\n" +
     "                                            class=\"all-day-check\"> <span translate-once=\"calendar.whole_day_label\"></span>\n" +
@@ -27442,12 +27434,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                            <div class=\"timing\" ng-if=\"!timeSpan.allDay\">\n" +
     "                                <div class=\"time form-group\">\n" +
     "                                    <label translate-once=\"calendar.start_hour_label\"></label>\n" +
-    "                                    <udb-form-calendar-timepicker ng-disabled=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\" ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\"></udb-form-calendar-timepicker>\n" +
+    "                                    <udb-form-calendar-timepicker ng-disabled=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" ng-model=\"timeSpan.start\" ng-change=\"calendar.delayedTimeSpanChanged('start')\"></udb-form-calendar-timepicker>\n" +
     "                                </div>\n" +
     "\n" +
     "                                <div class=\"time form-group\">\n" +
     "                                    <label translate-once=\"calendar.end_hour_label\"></label>\n" +
-    "                                    <udb-form-calendar-timepicker ng-disabled=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\" ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\"></udb-form-calendar-timepicker>\n" +
+    "                                    <udb-form-calendar-timepicker ng-disabled=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" ng-model=\"timeSpan.end\" ng-change=\"calendar.delayedTimeSpanChanged('end')\"></udb-form-calendar-timepicker>\n" +
     "                                </div>\n" +
     "                            </div>\n" +
     "                            <div class=\"requirements\" ng-show=\"calendar.timeSpanRequirements[$index] && calendar.timeSpanRequirements[$index].length\">\n" +
@@ -27457,8 +27449,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
-    "                        <div ng-if=\"calendar.subEvent && calendar.subEvent[$index].status.type !== 'Available'\" class=\"status row alert alert-info\">\n" +
-    "                            <div ng-switch=\"calendar.subEvent[$index].status.type\">\n" +
+    "                        <div ng-if=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" class=\"status row alert alert-info\">\n" +
+    "                            <div ng-switch=\"calendar.timeSpans[$index].status.type\">\n" +
     "                                <span ng-switch-when=\"TemporarilyUnavailable\" translate-once=\"offerStatus.postponed\"></span>\n" +
     "                                <span ng-switch-when=\"Unavailable\" translate-once=\"offerStatus.cancelled\"></span>\n" +
     "                            </div>\n" +
