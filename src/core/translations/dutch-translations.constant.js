@@ -347,6 +347,7 @@ angular.module('udb.core')
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
       'duplicate': 'Kopiëren en aanpassen',
+      'change_status': 'Status wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
       'type': 'Type',
