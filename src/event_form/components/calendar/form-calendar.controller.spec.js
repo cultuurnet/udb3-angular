@@ -57,7 +57,8 @@ describe('Controller: Form Calendar', function () {
         allDay: true,
         start: moment(today).startOf('day').toDate(),
         end: moment(today).endOf('day').toDate(),
-        endTouched: false
+        endTouched: false,
+        status: { type: 'Available' }
     }];
     expect(controller.timeSpans).toEqual(expectedTimeSpans);
   });
@@ -117,7 +118,8 @@ describe('Controller: Form Calendar', function () {
         allDay: true,
         start: moment(today).startOf('day').toDate(),
         end: moment(today).endOf('day').toDate(),
-        endTouched: false
+        endTouched: false,
+        status: { type: 'Available' }
       }
     ];
     spyOn(controller, 'instantTimeSpanChanged');
