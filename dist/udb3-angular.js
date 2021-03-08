@@ -8821,10 +8821,10 @@ function EventCrud(
       majorInfo.location = majorInfo.location.id;
     }
 
-    var majorInfoWithStatus = _.cloneDeep(majorInfo);
-    majorInfoWithStatus.calendar.status = majorInfo.status;
+    majorInfo.calendar.status = majorInfo.status;
+    majorInfo.calendar.openingHours = majorInfo.openingHours;
 
-    return majorInfoWithStatus;
+    return majorInfo;
   }
 
   /**
@@ -14117,7 +14117,7 @@ function EventFormController(
       EventFormData.initCalendar();
     }
 
-    EventFormData.initOpeningHours(_.get(EventFormData, 'calendar.openingHours', []));
+    EventFormData.initOpeningHours(_.get(EventFormData, 'openingHours', []));
 
     $scope.language = EventFormData.mainLanguage;
     $scope.loaded = true;
