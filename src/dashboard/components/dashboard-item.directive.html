@@ -18,7 +18,6 @@
 <td ng-if="!offerCtrl.fetching" ng-class="{past: offerCtrl.offerExpired}">
   <span ng-if="::!offerCtrl.offerExpired">
     <div class="pull-right btn-group" uib-dropdown>
-      <a class="btn btn-default btn-confirmed" ng-if="offerCtrl.showButtonConfirmed()" ng-click="offerCtrl.confirmEvent()" translate-once="dashboard.directive.confirm_event"></a>
       <div class="tag-confirmed" ng-if="offerCtrl.showConfirmedTag()">
         <i class="fa fa-check-circle" aria-hidden="true"></i>
         <span>Gaat door</span>
