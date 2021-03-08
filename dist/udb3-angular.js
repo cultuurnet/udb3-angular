@@ -25199,21 +25199,6 @@ function OfferController(
     }
   };
 
-  controller.containsConfirmedTag = function () {
-    var found = _.find(cachedOffer.labels, function (label) {
-      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
-    });
-    return !!found;
-  };
-
-  controller.showConfirmedTag = function () {
-    return (
-      $scope.offerType === 'event' &&
-      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
-      controller.containsConfirmedTag()
-    );
-  };
-
   controller.showConcludedButton = function () {
     var shouldShowConcludeButton = _.get(appConfig, 'concludedButton.toggle', false);
 
@@ -26464,10 +26449,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <div class=\"tag-confirmed\" ng-if=\"offerCtrl.showConfirmedTag()\">\n" +
-    "        <i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i>\n" +
-    "        <span>Gaat door</span>\n" +
-    "      </div>\n" +
     "      <a class=\"btn btn-default\" ng-href=\"{{ event.url + '/edit' }}\" translate-once=\"dashboard.directive.edit\"></a>\n" +
     "      <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
     "      <ul uib-dropdown-menu role=\"menu\">\n" +
