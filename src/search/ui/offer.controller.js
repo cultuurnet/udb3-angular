@@ -215,21 +215,6 @@ function OfferController(
     }
   };
 
-  controller.containsConfirmedTag = function () {
-    var found = _.find(cachedOffer.labels, function (label) {
-      return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
-    });
-    return !!found;
-  };
-
-  controller.showConfirmedTag = function () {
-    return (
-      $scope.offerType === 'event' &&
-      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
-      controller.containsConfirmedTag()
-    );
-  };
-
   controller.showConcludedButton = function () {
     var shouldShowConcludeButton = _.get(appConfig, 'concludedButton.toggle', false);
 
