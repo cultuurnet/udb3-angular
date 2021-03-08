@@ -8822,7 +8822,10 @@ function EventCrud(
     }
 
     majorInfo.calendar.status = majorInfo.status;
-    majorInfo.calendar.openingHours = majorInfo.openingHours;
+
+    if (majorInfo.openingHours) {
+      majorInfo.calendar.openingHours = majorInfo.openingHours;
+    }
 
     return majorInfo;
   }
