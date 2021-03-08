@@ -3699,7 +3699,6 @@ angular.module('udb.core')
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
         'edit': 'Bewerken',
-        'confirm_event': 'Bevestig dat het aanbod doorgaat',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
         'expired_event': 'Afgelopen evenement'
@@ -4845,7 +4844,6 @@ angular.module('udb.core')
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
         'edit': 'Modifier',
-        'confirm_event': 'Confirmez que l\'offre continue',
         'example': 'Exemple',
         'delete': 'Supprimer',
         'expired_event': 'Événement terminé'
@@ -25029,13 +25027,6 @@ function OfferController(
       controller.isGodUser = permission;
     });
   controller.init = function () {
-    var confirmEventDate = _.get(appConfig, 'confirmEventDate');
-    $scope.preCovidDate = new Date(
-      confirmEventDate ? confirmEventDate.toString() : '04/15/2020'
-    );
-    var currentYear = new Date().getFullYear();
-    $scope.labelConfirmed = {name: 'bevestigd' + currentYear};
-
     if (!$scope.event.title) {
       controller.fetching = true;
 
@@ -25208,27 +25199,11 @@ function OfferController(
     }
   };
 
-  controller.confirmEvent = function () {
-    controller.labelAdded($scope.labelConfirmed);
-  };
-
   controller.containsConfirmedTag = function () {
     var found = _.find(cachedOffer.labels, function (label) {
       return $scope.labelConfirmed.name.toUpperCase() === label.toUpperCase();
     });
     return !!found;
-  };
-
-  controller.showButtonConfirmed = function () {
-    if (_.get(appConfig, 'hideButtonConfirmed') === true) {
-      return false;
-    }
-
-    return (
-      $scope.offerType === 'event' &&
-      ($scope.event.created.getTime() < $scope.preCovidDate.getTime()) &&
-      !controller.containsConfirmedTag()
-    );
   };
 
   controller.showConfirmedTag = function () {
@@ -26489,7 +26464,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<td ng-if=\"!offerCtrl.fetching\" ng-class=\"{past: offerCtrl.offerExpired}\">\n" +
     "  <span ng-if=\"::!offerCtrl.offerExpired\">\n" +
     "    <div class=\"pull-right btn-group\" uib-dropdown>\n" +
-    "      <a class=\"btn btn-default btn-confirmed\" ng-if=\"offerCtrl.showButtonConfirmed()\" ng-click=\"offerCtrl.confirmEvent()\" translate-once=\"dashboard.directive.confirm_event\"></a>\n" +
     "      <div class=\"tag-confirmed\" ng-if=\"offerCtrl.showConfirmedTag()\">\n" +
     "        <i class=\"fa fa-check-circle\" aria-hidden=\"true\"></i>\n" +
     "        <span>Gaat door</span>\n" +
