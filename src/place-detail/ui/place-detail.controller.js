@@ -31,6 +31,7 @@ function PlaceDetail(
   var activeTabId = 'data';
   var controller = this;
   var language = $translate.use() || 'nl';
+  $scope.isOmdApp = _.get(appConfig, 'omdSpecific');
 
   $q.when(placeId, function (offerLocation) {
     $scope.placeId = offerLocation;
