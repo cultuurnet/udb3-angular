@@ -52,7 +52,8 @@ function EventFormController(
     EventFormData.calendar.calendarType = 'single';
     EventFormData.addTimeSpan(
       calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
-      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : '',
+      {type: 'Available'}
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
