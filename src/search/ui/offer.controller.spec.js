@@ -134,12 +134,7 @@ describe('Controller: Offer', function() {
 
   var deferredEvent;
   
-  beforeEach(module('udb.search', function ($provide) {
-    var appConfig = {
-      confirmEventDate: '04/15/2020'
-    };
-    $provide.constant('appConfig', appConfig);
-  }));
+  beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
 
   beforeEach(inject(function($injector, $rootScope, $controller, _$q_) {
