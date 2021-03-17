@@ -26,7 +26,7 @@
              class="form-control"/>
     </div>
     <div ng-switch-when="term">
-      <select ng-options="term.label as term.label for term in qe.termOptions[field.name] | orderBy:'label'"
+      <select ng-options="term.id as term.label for term in qe.termOptions[field.name] | orderBy:'label'"
               ng-model="field.term" class="form-control">
         <option value="">-- maak een keuze --</option>
       </select>
