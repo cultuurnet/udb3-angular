@@ -45,7 +45,7 @@ module.exports = function (grunt) {
     parser.parseString(xmlBuffer, function (err, result) {
       let filteredCities = result.cdbxml.cities.city.filter(function (city) {
         return city.submunicipality;
-      })
+      });
 
       cities = filteredCities.map(
         function (city) {
