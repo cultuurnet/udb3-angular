@@ -49,6 +49,7 @@ angular
     {name: 'organiser_id', field: 'organizer.id', type: 'string', group: 'other', editable: true},
     {name: 'agefrom', field:'typicalAgeRange', type: 'number', group: 'other', editable: true},
     {name: 'price', field: 'price', type: 'number' , group: 'other', editable: true},
+    {name: 'status', field: 'status', type: 'choice', group: 'other', editable: true, options: ['Available', 'Unavailable', 'TemporarilyUnavailable']},
     {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
     {name: 'category_facility_name', field:'terms.label', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
