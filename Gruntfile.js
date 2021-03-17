@@ -45,15 +45,18 @@ module.exports = function (grunt) {
     parser.parseString(xmlBuffer, function (err, result) {
       // Limit cities data to Dutch name and zip code. That's all we currently
       // need in the application.
-      cities = result.cdbxml.cities.city.map(
-        function (city) {
-          return {
-            'label': city.zip + ' ' + city.labelnl,
-            'name': city.labelnl,
-            'zip': city.zip
-          };
-        }
-      );
+      cities = result.cdbxml.cities.city.reduce(
+        function (filteredCities, city) {
+          if (city.submunicipality && city.submunicipality === 'true') {
+            filteredCities.push({
+              'label': city.zip + ' ' + city.labelnl,
+              'name': city.labelnl,
+              'zip': city.zip
+            });
+            return filteredCities;
+          }
+          return filteredCities;
+        }, []);
     });
 
     return cities;
