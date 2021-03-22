@@ -3598,7 +3598,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
-      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 2 karakters).',
       'cancel': 'Annuleren',
       'agree': 'Akkoord',
       upload: {
@@ -4750,7 +4750,7 @@ angular.module('udb.core')
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
-      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 3 caractères).',
+      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 2 caractères).',
       'cancel': 'Annuler',
       'agree': 'Accepter',
       upload: {
@@ -11394,7 +11394,7 @@ function EventFormImageEditController(
 
   function allFieldsValid() {
     return $scope.description && $scope.copyrightHolder &&
-        $scope.description.length <= 250 && $scope.copyrightHolder.length >= 3;
+        $scope.description.length <= 250 && $scope.copyrightHolder.length >= 2;
   }
 }
 EventFormImageEditController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "mediaObject"];
@@ -11602,7 +11602,7 @@ function EventFormImageUploadController(
 
   function allFieldsValid() {
     return $scope.description && $scope.copyright && $scope.selectedFile &&
-        $scope.description.length <= 250 && $scope.copyright.length >= 3;
+        $scope.description.length <= 250 && $scope.copyright.length >= 2;
   }
 }
 EventFormImageUploadController.$inject = ["$scope", "$uibModalInstance", "EventFormData", "eventCrud", "appConfig", "MediaManager", "$q", "copyrightNegotiator", "$translate", "$filter"];

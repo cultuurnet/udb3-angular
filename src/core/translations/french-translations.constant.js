@@ -819,7 +819,7 @@ angular.module('udb.core')
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
-      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 3 caractères).',
+      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 2 caractères).',
       'cancel': 'Annuler',
       'agree': 'Accepter',
       upload: {

@@ -823,7 +823,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
-      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 2 karakters).',
       'cancel': 'Annuleren',
       'agree': 'Akkoord',
       upload: {
