@@ -951,7 +951,7 @@ angular.module('udb.core')
       'Lessenreeks': 'Série de cours',
       'Sport en beweging': 'Activité sportive',
       'Kamp of vakantie': 'Camp de vacances',
-      'Begeleide uitstap of rondleiding': 'Tour ou excursion guidé',
+      'Begeleide uitstap of rondleiding': 'Tour ou excursion guidée',
       'Route': 'Itinéraire',
       'Spel of quiz': 'Jeu ou quiz',
       'Party of fuif': 'Soirée',
