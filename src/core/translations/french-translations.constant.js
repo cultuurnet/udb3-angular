@@ -482,7 +482,7 @@ angular.module('udb.core')
         'date_help_place': 'Cet endroit ou ce lieu est ouvert(e) quand?',
       },
       step3: {
-        'title_event': 'Ou l\'événement ou l\'activité a-t-il/elle lieu?',
+        'title_event': 'Où l\'événement ou l\'activité a-t-il/elle lieu?',
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
