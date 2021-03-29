@@ -4413,7 +4413,7 @@ angular.module('udb.core')
         'date_help_place': 'Cet endroit ou ce lieu est ouvert(e) quand?',
       },
       step3: {
-        'title_event': 'Ou l\'événement ou l\'activité a-t-il/elle lieu?',
+        'title_event': 'Où l\'événement ou l\'activité a-t-il/elle lieu?',
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
@@ -4882,7 +4882,7 @@ angular.module('udb.core')
       'Lessenreeks': 'Série de cours',
       'Sport en beweging': 'Activité sportive',
       'Kamp of vakantie': 'Camp de vacances',
-      'Begeleide uitstap of rondleiding': 'Tour ou excursion guidé',
+      'Begeleide uitstap of rondleiding': 'Tour ou excursion guidée',
       'Route': 'Itinéraire',
       'Spel of quiz': 'Jeu ou quiz',
       'Party of fuif': 'Soirée',
