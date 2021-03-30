@@ -324,6 +324,7 @@ angular.module('udb.core')
       'kansentarief': 'Allocataires sociaux',
       'bookingInfo': 'Info réservation',
       'contactPoint': 'Info contact',
+      'status': 'État',
       'creator': 'Auteur',
       'terms.theme': 'Thème',
       'terms.eventtype': 'Type',

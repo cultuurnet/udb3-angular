@@ -324,6 +324,7 @@ angular.module('udb.core')
       'kansentarief': 'Kansentarief',
       'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinfo',
+      'status': 'Status',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
