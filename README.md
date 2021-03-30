@@ -20,7 +20,7 @@ The .css you get out of the box is based on Bootstrap and uses the default varia
 ### Configuration
 
 Inject the `udb.core` module into your app module like this:
- 
+
 ```javascript
 angular
   .module('myUdbApp', [
