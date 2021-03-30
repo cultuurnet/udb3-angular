@@ -38,6 +38,9 @@ angular.module('udb.core')
       'everyone': 'iedereen',
       'members': 'leden',
       'education': 'onderwijs',
+      'Available': 'Gaat door',
+      'Unavailable': 'Geannuleerd',
+      'TemporarilyUnavailable': 'Uitgesteld',
       'asc': 'oplopend',
       'desc': 'aflopend',
       'today': 'vandaag',
@@ -321,6 +324,7 @@ angular.module('udb.core')
       'kansentarief': 'Kansentarief',
       'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinfo',
+      'status': 'Status',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
@@ -347,6 +351,7 @@ angular.module('udb.core')
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
       'duplicate': 'Kopiëren en aanpassen',
+      'change_status': 'Status wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
       'type': 'Type',
@@ -565,7 +570,7 @@ angular.module('udb.core')
           'Opendeurdag': 'Geef een enthousiaste omschrijving van de opendeurdag. Wat kan je <strong>bekijken </strong>of <strong>beleven?</strong>',
           'Beurs': 'Geef een enthousiaste omschrijving van de beurs. Wat kan je kan <strong>bekijken</strong>, <strong>beleven</strong> of <strong>kopen</strong>?',
           'Tentoonstelling': 'Geef een enthousiaste omschrijving van de tentoonstelling. <ul> <li>Welke <strong>kunstenaars</strong> stellen tentoon?</li> <li>Welke<strong> collecties</strong> kan je bekijken? </li> <li>Is er een <strong>(audio)gids</strong> of <strong>brochure</strong> beschikbaar?</li></ul>',
-          'Begeleide rondleiding': 'Geef een enthousiaste omschrijving van de rondleiding. <ul> <li>Wat valt er langs de route te <strong>bekijken of beleven</strong>? </li> <li>Is er een maximaal <strong>aantal deelnemers</strong>? </li> <li>Wordt de rondleiding doorlopend of op <strong>bepaalde tijdstippen</strong> georganiseerd? </li> <li>Zijn er <strong>speciale aandachtspunten</strong> (bv. laarzen aangewezen)?</li> </ul>',
+          'Begeleide uitstap of rondleiding': 'Geef een enthousiaste omschrijving van de rondleiding. <ul> <li>Wat valt er langs de route te <strong>bekijken of beleven</strong>? </li> <li>Is er een maximaal <strong>aantal deelnemers</strong>? </li> <li>Wordt de rondleiding doorlopend of op <strong>bepaalde tijdstippen</strong> georganiseerd? </li> <li>Zijn er <strong>speciale aandachtspunten</strong> (bv. laarzen aangewezen)?</li> </ul>',
           'Lessenreeks': 'Geef een enthousiaste omschrijving van de lessenreeks. <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li><li>Krijg je op het einde een <strong>diploma</strong> of certificaat?</li></ul>',
           'Cursus met open sessies': 'Geef een enthousiaste omschrijving van de workshop of cursus met open sessies.  <ul> <li>Wat leer je er precies? </li> <li>Is er <strong>voorkennis</strong> nodig om deel te nemen? </li> <li>Wat is het <strong>niveau</strong> van de lessen? </li> <li>Krijg je op het einde een <strong>diploma</strong> of certificaat?</li> </ul>',
           'Kamp of vakantie': 'Geef een enthousiaste omschrijving van het kamp of de vakantie.  <ul> <li>Welke <strong>activiteiten</strong> kan je er doen? </li> <li>Is er een <strong>thema</strong>? </li> <li>Is het kamp <strong>met of zonder overnachtingen</strong>? </li> <li>Wat is het <strong>start en einduur</strong> voor dagkampen en is er vooraf en nadien <strong>opvang</strong> voorzien?</li> </ul>',
@@ -650,6 +655,14 @@ angular.module('udb.core')
         'extensionsAllowed': 'Enkel bestanden met de extenties .jpeg, .gif of .png zijn toegelaten.',
         'sizeError': 'Het geüpload bestand is te groot.'
       }
+    },
+    offerStatus: {
+      'scheduled': 'Gaat door',
+      'cancelled': 'Geannuleerd',
+      'postponed': 'Uitgesteld',
+      'open': 'Open',
+      'temporarilyClosed': 'Tijdelijk gesloten',
+      'permanentlyClosed': 'Permanent gesloten',
     },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
@@ -744,6 +757,7 @@ angular.module('udb.core')
       'organiser_id': 'organisatie (id)',
       'agefrom': 'leeftijd',
       'price': 'prijs',
+      'status': 'status',
       'organiser_label': 'organisatie (naam)',
       'category_facility_name': 'voorzieningen',
       'category_targetaudience_name': 'doelgroep',
@@ -810,7 +824,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
-      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 2 karakters).',
       'cancel': 'Annuleren',
       'agree': 'Akkoord',
       upload: {
@@ -915,7 +929,6 @@ angular.module('udb.core')
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
         'edit': 'Bewerken',
-        'confirm_event': 'Bevestig dat het aanbod doorgaat',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
         'expired_event': 'Afgelopen evenement'
@@ -945,7 +958,7 @@ angular.module('udb.core')
       'Lessenreeks': 'Lessenreeks',
       'Sport en beweging': 'Sport en beweging',
       'Kamp of vakantie': 'Kamp of vakantie',
-      'Begeleide rondleiding': 'Begeleide  rondleiding',
+      'Begeleide uitstap of rondleiding': 'Begeleide  rondleiding',
       'Route': 'Route',
       'Spel of quiz': 'Spel of quiz',
       'Party of fuif': 'Party of fuif',
@@ -1098,8 +1111,43 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Zoeken',
+      advanced: 'Geavanceerd',
+      savedSearches: {
+        savedSearches: 'Bewaarde zoekopdrachten',
+        items: {
+          'Door mij ingevoerd': 'Door mij ingevoerd'
+        },
+        mySearches: 'Mijn zoekopdrachten',
+        title: 'Titel',
+        viewResults: 'Resultaten bekijken'
+      },
+      manage: 'Beheren',
+      oneResult: '1 resultaat',
+      multipleResults: '{{count}} resultaten',
+      description: 'Beschrijving',
+      labels: 'Labels',
+      picture: 'Afbeelding',
+      what: 'Wat',
+      where: 'Waar',
+      when: 'Wanneer',
+      inputInformation: 'Invoer-informatie',
+      noEventsFound: 'Geen evenementen gevonden, probeer een andere zoekopdracht.',
       exportButton: 'Activiteiten exporteren',
-      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.'
+      modal: 'Je selectie bevat geen activiteiten, probeer een andere zoekopdracht te exporteren.',
+      advancedQueryBuilder: {
+        title: 'Geavanceerde zoekopdracht bouwer',
+        header: {
+          info: 'Hier kan je complexe zoekopdrachten bouwen. Hulp nodig? Lees ',
+          link: 'onze handleiding'
+        },
+        group: 'Groep ',
+        include: 'Insluiten',
+        exclude: 'Uitsluiten',
+        addGroup: 'Groep toevoegen',
+        cancel: 'Annuleren',
+        search: 'Zoeken',
+      }
     }
   }
 );

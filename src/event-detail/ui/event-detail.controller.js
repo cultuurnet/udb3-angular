@@ -31,6 +31,7 @@ function EventDetail(
   var activeTabId = 'data';
   var controller = this;
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
+  $scope.isOmdApp = !!_.get(appConfig, 'omdSpecific', false);
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;

@@ -1,11 +1,17 @@
 <div class="modal-header">
-  <h2 class="modal-title">Geavanceerde zoekopdracht bouwer</h2>
+  <h2 class="modal-title" translate-once="search.advancedQueryBuilder.title"></h2>
 </div>
 
 <div class="modal-body">
 
-  <div class="udb-query-editor-header">
-    <!-- udb-query-editor-header -->
+  <div>
+    <p><span translate-once="search.advancedQueryBuilder.header.info"></span>
+      <a 
+        href='https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters' 
+        target='_blank'>
+        <span translate-once="search.advancedQueryBuilder.header.link"></span>
+      </a>.
+    </p>
   </div>
 
   <div class="udb-query-editor">
@@ -14,17 +20,17 @@
       <div class="panel-heading">
         <div class="row">
           <div class="col-sm-3">
-            <h3 class="panel-title">Groep <span ng-bind="$index + 1"></span></h3>
+            <h3 class="panel-title"><span translate-once="search.advancedQueryBuilder.group"></span><span ng-bind="$index + 1"></span></h3>
           </div>
           <div class="col-sm-7">
             <div class="btn-group control-in-uitsluiten" role="group" aria-label="...">
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-hide="rootGroup.excluded" class="fa fa-check-circle"></span>
-                Insluiten
+                <span translate-once="search.advancedQueryBuilder.include"></span>
               </button>
               <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
                 <span ng-show="rootGroup.excluded" class="fa fa-check-circle"></span>
-                Uitsluiten
+                <span translate-once="search.advancedQueryBuilder.exclude"></span>
               </button>
             </div>
           </div>
@@ -52,7 +58,7 @@
 
     <p>
       <a type="button" class="btn btn-link" ng-click="qe.addGroup()">
-        <i class="fa fa-plus-circle"></i> Groep toevoegen
+        <i class="fa fa-plus-circle"></i> <span translate-once="search.advancedQueryBuilder.addGroup"></span>
       </a>
     </p>
 
@@ -61,10 +67,10 @@
 
         <div class="pull-right">
           <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
-            Annuleren
+            <span translate-once="search.advancedQueryBuilder.cancel"></span>
           </a>
-          <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()">
-            Zoeken
+          <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()" translate-once="search.search">
+            <span translate-once="search.advancedQueryBuilder.search"></span>    
           </button>
         </div>
       </div>

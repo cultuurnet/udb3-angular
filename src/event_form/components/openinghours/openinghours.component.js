@@ -14,7 +14,8 @@ angular
   .component('udbEventFormOpeningHours', {
     bindings: {
       openingHoursCollection: '=openingHours',
-      formData: '='
+      formData: '=',
+      disabled: '=ngDisabled'
     },
     templateUrl: 'templates/event-form-openinghours.html',
     controller: OpeningHourComponentController,

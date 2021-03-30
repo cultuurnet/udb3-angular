@@ -1,6 +1,6 @@
 {
   "event": [{
-      "label": "Begeleide rondleiding",
+      "label": "Begeleide uitstap of rondleiding",
       "id": "0.7.0.0.0",
       "primary": true,
       "themes": [{

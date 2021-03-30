@@ -34,6 +34,12 @@ function EventCrud(
       majorInfo.location = majorInfo.location.id;
     }
 
+    majorInfo.calendar.status = majorInfo.status;
+
+    if (majorInfo.openingHours) {
+      majorInfo.calendar.openingHours = majorInfo.openingHours;
+    }
+
     return majorInfo;
   }
 

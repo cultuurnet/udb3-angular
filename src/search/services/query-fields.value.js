@@ -22,9 +22,9 @@ angular
     {name: 'offertype', field:'_type', type: 'choice', group: 'what', editable: true, options: ['event', 'place']},
     {name: 'keywords', field: 'labels', type: 'string', group: 'what', editable: true},
     {name: 'title', field: 'name.\\*', type: 'tokenized-string', group: 'what', editable: true},
-    {name: 'category_eventtype_name', field:'terms.label', type: 'term', group: 'what', editable: true},
-    {name: 'locationtype', field:'terms.label', type: 'term', group: 'what', editable: true},
-    {name: 'category_theme_name', field:'terms.label', type: 'term', group: 'what', editable: true},
+    {name: 'category_eventtype_name', field:'terms.id', type: 'term', group: 'what', editable: true},
+    {name: 'locationtype', field:'terms.id', type: 'term', group: 'what', editable: true},
+    {name: 'category_theme_name', field:'terms.id', type: 'term', group: 'what', editable: true},
     {name: 'text', field:'<implicit>', type: 'tokenized-string', group: 'what', editable: true},
 
     {name: 'city', field:'address.\\*.addressLocality', type: 'string', group:'where', editable: true},
@@ -49,8 +49,9 @@ angular
     {name: 'organiser_id', field: 'organizer.id', type: 'string', group: 'other', editable: true},
     {name: 'agefrom', field:'typicalAgeRange', type: 'number', group: 'other', editable: true},
     {name: 'price', field: 'price', type: 'number' , group: 'other', editable: true},
+    {name: 'status', field: 'status', type: 'choice', group: 'other', editable: true, options: ['Available', 'Unavailable', 'TemporarilyUnavailable']},
     {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
-    {name: 'category_facility_name', field:'terms.label', type: 'term', group: 'other', editable: true},
+    {name: 'category_facility_name', field:'terms.id', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
 
     // The following fields are supported but not named and do not show up in the builder

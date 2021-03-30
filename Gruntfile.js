@@ -43,9 +43,11 @@ module.exports = function (grunt) {
     var xmlBuffer = grunt.file.read('cities.xml');
     var cities = [];
     parser.parseString(xmlBuffer, function (err, result) {
-      // Limit cities data to Dutch name and zip code. That's all we currently
-      // need in the application.
-      cities = result.cdbxml.cities.city.map(
+      let filteredCities = result.cdbxml.cities.city.filter(function (city) {
+        return city.submunicipality;
+      });
+
+      cities = filteredCities.map(
         function (city) {
           return {
             'label': city.zip + ' ' + city.labelnl,
