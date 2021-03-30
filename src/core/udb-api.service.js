@@ -505,11 +505,26 @@ function UdbApi(
         $http
           .get(appConfig.baseUrl + 'user/permissions/', defaultApiConfig)
           .success(storeAndResolvePermissions)
-          .error(deferredPermissions.reject);
+          .error(function (_, status) {
+            if (status === -1) {
+              return;
+            }
+            window.parent.postMessage({
+              source: 'UDB',
+              type: 'HTTP_ERROR_CODE',
+              code: status || 403
+            }, '*');
+            deferredPermissions.reject();
+          });
       } else {
         deferredPermissions.resolve(permissions);
       }
     } else {
+      window.parent.postMessage({
+        source: 'UDB',
+        type: 'HTTP_ERROR_CODE',
+        code: 401
+      }, '*');
       deferredPermissions.reject();
     }
 
@@ -1149,11 +1164,10 @@ function UdbApi(
   /**
    *
    * @param {uuid}    roleId
-   * @param {string}  version
    * @param {string}  constraint
    * @return {Promise.<Object|ApiProblem>} Object containing created constraint.
    */
-  this.createRoleConstraint = function (roleId, version, constraint) {
+  this.createRoleConstraint = function (roleId, constraint) {
     var requestOptions = _.cloneDeep(defaultApiConfig);
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=addConstraint';
 
@@ -1162,7 +1176,7 @@ function UdbApi(
     };
 
     return $http
-        .post(appConfig.baseUrl + 'roles/' + roleId + /constraints/ + version, constraintData, requestOptions)
+        .post(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', constraintData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 

@@ -16,16 +16,17 @@ angular
   });
 
 /* @ngInject */
-function EventMigrationFooterController(EventFormData, $stateParams, $state) {
+function EventMigrationFooterController(EventFormData, $stateParams, $state, $translate) {
   var controller = this;
 
   controller.completeMigration = completeMigration;
-  controller.destination = $stateParams.destination;
+  var fallbackDestination = {description: $translate.instant('eventForm.step4.continue'), state: 'split.eventEdit'};
+  controller.destination = $stateParams.destination || fallbackDestination;
   controller.migrationReady = migrationReady;
 
   function completeMigration () {
     if (migrationReady()) {
-      $state.go($stateParams.destination.state, {id: EventFormData.id});
+      $state.go(controller.destination.state, {id: EventFormData.id});
     }
   }
 

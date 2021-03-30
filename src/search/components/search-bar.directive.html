@@ -1,4 +1,4 @@
-<h1 class="title">Zoeken</h1>
+<h1 class="title" translate-once="search.search">Zoeken</h1>
 <form class="navbar-form navbar-left udb-header-search" role="search"
       ng-class="{'has-errors': sb.hasErrors, 'is-editing': sb.isEditing}">
   <div class="form-group has-warning has-feedback">
@@ -6,14 +6,14 @@
     <span class="dropdown saved-search-icon" uib-dropdown>
       <i class="fa fa-bookmark" class="dropdown-toggle" uib-dropdown-toggle></i>
       <ul class="dropdown-menu" uib-dropdown-menu role="menu">
-        <li role="presentation" class="dropdown-header">Bewaarde zoekopdrachten</li>
+        <li role="presentation" class="dropdown-header" translate-once="search.savedSearches.savedSearches"></li>
         <li ng-repeat="savedSearch in sb.savedSearches">
           <a ng-bind="::savedSearch.name"
              ng-click="sb.find(savedSearch.query)">
           </a>
         </li>
         <li class="divider"></li>
-        <li><a href="saved-searches">Beheren</a></li>
+        <li><a href="saved-searches" translate-once="search.manage">Beheren</a></li>
       </ul>
     </span>
     <i ng-show="sb.hasErrors" class="fa fa-warning warning-icon" tooltip-append-to-body="true"
@@ -26,6 +26,6 @@
 
 <ul class="nav navbar-nav">
   <li>
-    <a href="#" ng-click="sb.editQuery()" class="advanced-search" ng-class="{'is-editing': sb.isEditing}">Geavanceerd</a>
+    <a href="#" ng-click="sb.editQuery()" class="advanced-search" ng-class="{'is-editing': sb.isEditing}" translate-once="search.advanced">Geavanceerd</a>
   </li>
 </ul>

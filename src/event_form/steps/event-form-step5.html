@@ -77,10 +77,29 @@
                        ng-click="saveDescription(true)">
                     </a>
                   </p>
-                  <div class="alert alert-info" ng-switch="eventFormData.type.id">
-                    <p ng-switch-when="0.17.0.0.0" translate-once="eventForm.step5.tip_route"></p>
-                    <p ng-switch-when="0.7.0.0.0" translate-once="eventForm.step5.tip_rondleiding"></p>
-                    <p ng-switch-when="0.14.0.0.0" translate-once="eventForm.step5.tip_monument"></p>
+                  <div class="alert alert-info description-tips" ng-switch="eventFormData.type.id">
+                    <p ng-switch-when="0.50.4.0.0" translate-once="eventForm.step5.tips.Concert"></p>
+                    <p ng-switch-when="0.54.0.0.0" translate-once="eventForm.step5.tips.Dansvoorstelling"></p>
+                    <p ng-switch-when="0.5.0.0.0" translate-once="eventForm.step5.tips.Festival"></p>
+                    <p ng-switch-when="0.50.6.0.0" translate-once="eventForm.step5.tips.Film"></p>
+                    <p ng-switch-when="0.3.2.0.0" translate-once="eventForm.step5.tips.Lezing of congres"></p>
+                    <p ng-switch-when="0.55.0.0.0" translate-once="eventForm.step5.tips.Theatervoorstelling"></p>
+                    <p ng-switch-when="0.19.0.0.0" translate-once="eventForm.step5.tips.Sportwedstrijd bekijken"></p>
+                    <p ng-switch-when="0.37.0.0.0" translate-once="eventForm.step5.tips.Markt of braderie"></p>
+                    <p ng-switch-when="0.12.0.0.0" translate-once="eventForm.step5.tips.Opendeurdag"></p>
+                    <p ng-switch-when="0.6.0.0.0" translate-once="eventForm.step5.tips.Beurs"></p>
+                    <p ng-switch-when="0.0.0.0.0" translate-once="eventForm.step5.tips.Tentoonstelling"></p>
+                    <p ng-switch-when="0.7.0.0.0" translate-once="eventForm.step5.tips.Begeleide uitstap of rondleiding"></p>
+                    <p ng-switch-when="0.3.1.0.0" translate-once="eventForm.step5.tips.Lessenreeks"></p>
+                    <p ng-switch-when="0.3.1.0.1" translate-once="eventForm.step5.tips.Cursus met open sessies"></p>
+                    <p ng-switch-when="0.57.0.0.0" translate-once="eventForm.step5.tips.Kamp of vakantie"></p>
+                    <p ng-switch-when="0.28.0.0.0" translate-once="eventForm.step5.tips.Festiviteit"></p>                    
+                    <p ng-switch-when="0.17.0.0.0" translate-once="eventForm.step5.tips.Route"></p>
+                    <p ng-switch-when="0.49.0.0.0" translate-once="eventForm.step5.tips.Party of fuif"></p>
+                    <p ng-switch-when="1.50.0.0.0" translate-once="eventForm.step5.tips.Eet of drankfestijn"></p>
+                    <p ng-switch-when="0.50.21.0.0" translate-once="eventForm.step5.tips.Spel of quiz"></p>
+                    <p ng-switch-when="0.59.0.0.0" translate-once="eventForm.step5.tips.Sport en beweging"></p>
+                    <p ng-switch-when="0.14.0.0.0" translate-once="eventForm.step5.tips.Monument"></p>
                   </div>
                 </div>
                 <div ng-show="descriptionError"

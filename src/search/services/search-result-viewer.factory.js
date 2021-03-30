@@ -11,12 +11,13 @@ angular
   .module('udb.search')
   .factory('SearchResultViewer', SearchResultViewerFactory);
 
-function SearchResultViewerFactory() {
+/* @ngInject */
+function SearchResultViewerFactory($translate) {
 
   var SelectionState = {
-    ALL: {'name': 'all', 'icon': 'fa-check-square'},
-    NONE: {'name': 'none', 'icon': 'fa-square-o'},
-    SOME: {'name': 'some', 'icon': 'fa-minus-square'}
+    ALL: {'name': 'all', 'icon': 'fas fa-check-square'},
+    NONE: {'name': 'none', 'icon': 'far fa-square'},
+    SOME: {'name': 'some', 'icon': 'fas fa-minus-square'}
   };
 
   var identifyItem = function (event) {
@@ -47,12 +48,12 @@ function SearchResultViewerFactory() {
     this.loading = true;
     this.lastQuery = null;
     this.eventProperties = {
-      description: {name: 'Beschrijving', visible: false},
-      labels: {name: 'Labels', visible: false},
-      image: {name: 'Afbeelding', visible: false}
+      description: {name: $translate.instant('search.description'), visible: false},
+      labels: {name: $translate.instant('search.labels'), visible: false},
+      image: {name: $translate.instant('search.picture'), visible: false}
     };
     this.eventSpecifics = [
-      {id: 'input', name: 'Invoer-informatie'}
+      {id: 'input', name: $translate.instant('search.inputInformation')}
     ];
     this.activeSpecific = this.eventSpecifics[0];
     this.selectedOffers = [];
@@ -102,21 +103,20 @@ function SearchResultViewerFactory() {
         return;
       }
 
-      // select the offer from the result viewer events
-      // it's this "event" that will get stored
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      var selectedOffers = this.selectedOffers,
-          isSelected = _.contains(selectedOffers, theOffer);
-
-      if (isSelected) {
-        _.remove(selectedOffers, function (selectedOffer) {
-          return selectedOffer['@id'] === theOffer['@id'];
+      var foundOffer = _.find(this.selectedOffers, function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
+      if (!!foundOffer) {
+        // remove offer from selectedOffers
+        this.selectedOffers = _.filter(this.selectedOffers, function (selectedOffer) {
+          return selectedOffer['@id'] !== offer['@id'];
         });
       } else {
-        selectedOffers.push(theOffer);
+        // add event to selectedOffers
+        var foundEvent = _.find(this.events, function (event) {
+          return event['@id'] === offer['@id'];
+        });
+        this.selectedOffers.push(foundEvent);
       }
 
       this.updateSelectionState();
@@ -147,12 +147,9 @@ function SearchResultViewerFactory() {
       this.selectionState = SelectionState.ALL;
     },
     isOfferSelected: function (offer) {
-      // get the right offer object from the events list
-      var theOffer = _.filter(this.events, function (event) {
-            return offer['@id'] === event['@id'];
-          }).pop();
-
-      return _.contains(this.selectedOffers, theOffer);
+      return !!_.find(this.selectedOffers, function (selectedOffer) {
+        return selectedOffer['@id'] === offer['@id'];
+      });
     },
     /**
      * @param {PagedCollection} pagedResults

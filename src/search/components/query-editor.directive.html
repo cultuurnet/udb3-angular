@@ -4,17 +4,17 @@
     <div class="panel-heading">
       <div class="row">
         <div class="col-sm-3">
-          <h3 class="panel-title">Groep <span ng-bind="$index + 1"></span></h3>
+          <h3 class="panel-title"><span translate-once="search.advancedQueryBuilder.group"></span><span ng-bind="$index + 1"></span></h3>
         </div>
         <div class="col-sm-7">
           <div class="btn-group control-in-uitsluiten" role="group" aria-label="...">
             <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
               <span ng-hide="rootGroup.excluded" class="fa fa-check-circle"></span>
-              Insluiten
+              <span translate-once="search.advancedQueryBuilder.include"></span>
             </button>
             <button type="button" class="btn btn-default btn-sm" ng-click="qe.toggleExcludeGroup(rootGroup)">
               <span ng-show="rootGroup.excluded" class="fa fa-check-circle"></span>
-              Uitsluiten
+              <span translate-once="search.advancedQueryBuilder.exclude"></span>
             </button>
           </div>
         </div>
@@ -41,14 +41,14 @@
   </div>
 
   <button type="button" class="btn btn-default" ng-click="qe.addGroup()">
-    Groep toevoegen
+    <i class="fa fa-plus-circle"></i> <span translate-once="search.advancedQueryBuilder.addGroup"></span>
   </button>
   <div class="pull-right">
     <a type="button" class="btn btn-default" ng-click="qe.stopEditing()">
-      Annuleren
+      <span translate-once="search.advancedQueryBuilder.cancel"></span>
     </a>
-    <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()">
-      Zoeken
+    <button type="button" class="btn btn-primary" ng-click="qe.updateQueryString()" translate-once="search.search">
+      <span translate-once="search.advancedQueryBuilder.search"></span>
     </button>
   </div>
 </div>

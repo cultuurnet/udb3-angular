@@ -38,6 +38,9 @@ angular.module('udb.core')
       'everyone': 'tout le monde',
       'members': 'membres',
       'education': 'éducation',
+      'Available': 'A lieu',
+      'Unavailable': 'Annulé',
+      'TemporarilyUnavailable': 'Reporté',
       'asc': 'ascendant',
       'desc': 'descendant',
       'today': 'aujourd\'hui',
@@ -348,6 +351,7 @@ angular.module('udb.core')
       'loading': 'Chargement...',
       'edit': 'Modifier',
       'duplicate': 'Copier et modifier',
+      'change_status': 'Modifier l\'état',
       'delete': 'Supprimer',
       'title': 'Titre',
       'type': 'Type',
@@ -362,7 +366,7 @@ angular.module('udb.core')
       'organizer': 'Organisation',
       'no_organizer': 'Pas d\'information de l\'organisation',
       'price': 'Prix',
-      'free': 'Gratis',
+      'free': 'Gratuit',
       'currency': 'euro',
       'no_price': 'Pas d\'information du prix',
       'age_label': 'Adapté à',
@@ -392,8 +396,8 @@ angular.module('udb.core')
     },
     calendarSummary: {
       'openinghours': 'plusieurs moments',
-      'from': 'Du',
-      'till': 'au',
+      'from': 'De',
+      'till': 'à',
       'permanent': 'Permanent'
     },
     moderate: {
@@ -472,14 +476,14 @@ angular.module('udb.core')
         'or': 'ou',
         'location_label': 'Un lieu',
         'change': 'Modifier',
-        'refine': 'Raffiner'
+        'refine': 'Affiner'
       },
       step2: {
         'date_help_event': 'L\'événement ou l\'activité a lieu quand?',
         'date_help_place': 'Cet endroit ou ce lieu est ouvert(e) quand?',
       },
       step3: {
-        'title_event': 'Où L\'événement ou l\'activité a-t-elle lieu?',
+        'title_event': 'Où l\'événement ou l\'activité a-t-il/elle lieu?',
         'title_place': 'Où se trouve cet endroit ou ce lieu?',
         'choose_city': 'Choisissez une commune',
         'choose_city_helper': 'p. ex Mons ou 7000',
@@ -490,7 +494,7 @@ angular.module('udb.core')
         'change': 'Modifier',
         'choose_location': 'Choisissez un lieu',
         'placeholder_location': 'Nom ou adresse',
-        'location_not_found': 'Le lieu n\'a pas été trouvée?',
+        'location_not_found': 'Lieu non trouvé?',
         'add_location': 'Ajouter un lieu',
         'location_error': 'Il y a eu un problème dans la collection des lieux',
         'street': 'Rue et numéro',
@@ -508,15 +512,15 @@ angular.module('udb.core')
           'age_label': 'Adapté à',
           'All ages': 'De tous âges',
           'Toddlers': 'Tout-petits',
-          'Preschoolers': 'Enfants d\'âge préscolaire',
-          'Kids': 'Enfants',
+          'Preschoolers': 'Jeunes enfants',
+          'Kids': 'Enfants d’âge scolaire',
           'Teenagers': 'Adolescents',
           'Youngsters': 'Jeunes',
           'Adults': 'Adultes',
           'Seniors': 'Seniors',
           'Custom': 'Autres',
-          'from': 'Du',
-          'till': 'Au',
+          'from': 'De',
+          'till': 'à',
           'age': 'ans',
           'error_max_lower_than_min': 'L\'âge maximum ne peut être inférieur à l\'âge minimum.'
         },
@@ -535,8 +539,8 @@ angular.module('udb.core')
         'return_dashboard': 'Non, retourner au tableau de bord',
         'yes_continue': 'Oui, procéder l\'importation',
         suggestions: {
-          'from': 'Du',
-          'till': 'au',
+          'from': 'De',
+          'till': 'à',
           'permanent': 'Permanent'
         }
       },
@@ -546,14 +550,35 @@ angular.module('udb.core')
         'title': 'Titre',
         'description': 'Description',
         'add_text': 'Ajouter texte',
-        'required_200': 'Pour attirer un nouveau public, les 200 premiers symboles sont les plus importants.',
+        'required_200': 'Pour attirer un nouveau public, les 200 premier caractères sont les plus importants.',
         'required_still': 'Encore',
-        'required_signs': 'symboles.',
-        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers symboles. Vous pouvez ensuite ajouter des informations générales.',
+        'required_signs': 'caractères.',
+        'required_200_help': 'Intégrez le message le plus important dans les 200 premiers caractères. Vous pouvez ensuite ajouter des informations générales.',
         'empty': 'Vider',
-        'tip_route': 'Donnez ici une description saillante de la route. Mentionnez dans ce texte <strong>comment</strong> la route est parcourue (à vélo, en bateau, ...), les escales possibles, la <strong>durée</strong>, <strong>distance</strong> et comment la route est <strong>accompagnée</strong> (avec guide, brochure ou panneaux).',
-        'tip_rondleiding': 'Donnez ici une description saillante du tour. Mentionnez le <strong>nombre max. de personnes</strong> par groupe, <strong>comment</strong> le tour est organisé (de manière permanente, avec intervalles ou à des temps fixes) et s\'il y a des <strong>préoccupations spéciales</strong> (p.ex. bottes recommandées).',
-        'tip_monument': 'Donnez ici une description saillante du monument. Indiquez également si l\'ouverture du monument est limitée (p.ex. seulement des salons).',
+        'tips': {
+          'Concert': 'Donnez une description enthousiaste du concert. <ul> <li>Quel(s) <strong>artiste(s)</strong> se produisent?</li> <li>De quel <strong>genre</strong> s\'agit-il?</li> <li>Quel <strong>album ou œuvre</strong> sera présenté?</li> </ul>',
+          'Dansvoorstelling': 'Donnez une description enthousiaste du spectacle de danse. <ul> <li>Qui est le <strong>chorégraphe</strong>?</li> <li>Qui sont les <strong>danseurs</strong>?</li> <li>Dans quel <strong>style</strong> dansent-ils?</li> <li>Quel est le <strong>thème ou le sujet</strong> de la représentation?</li> </ul>',
+          'Festival': 'Donnez une description enthousiaste du festival. <ul> <li>Qui ou quoi est au <strong>programme</strong>?</li> <li>Quelle est l\'<strong>animation</strong> (périphérique)?</li> </ul>',
+          'Film': 'Donnez une description enthousiaste du cinéma. <ul> <li>Faites une brève description de <strong>l\'histoire</strong>.</li> <li>Qui est le <strong>réalisateur</strong>?</li> <li>Qui sont les <strong>protagonistes</strong>?</li> <li>Le film a-t-il remporté des <strong>prix</strong>?</li> </ul>',
+          'Lezing of congres': 'Donnez une description enthousiaste de la conférence où congrès <ul> <li>Quels <strong>thèmes</strong> sont couverts?</li> <li>Quels <strong>orateurs</strong> prennent la parole?</li> </ul>',
+          'Theatervoorstelling': 'Donnez une description enthousiaste du théâtre. <ul> <li>Esquissez brièvement <strong>l\'histoire</strong> ou le <strong>thème</strong>.</li> <li>Quelle<strong> compagnie de théâtre</strong> jouera la pièce?</li> <li>Quels sont les <strong>acteurs</strong> qui jouent?</li> </ul>',
+          'Sportwedstrijd bekijken': 'Donnez une description enthousiaste de la compétition sportive. <ul> <li>Quelles <strong>équipes</strong> ou <strong>quels participants </strong>jouent?</li> <li>Dans quelle <strong>compétition</strong> se déroule la compétition?</li> </ul>',
+          'Markt of braderie': 'Donnez une description enthousiaste du marché, foire ou fête foraine <ul> <li>Dans <strong>quelles rues </strong>a-t-il lieu?</li> <li>Quels seront les <strong>stands</strong> ou les <strong>stands de vente</strong>?</li> <li>Y a-t-il une <strong>animation</strong> (de bord)?</li> </ul>',
+          'Opendeurdag': 'Donnez une description enthousiaste de la journée portes ouvertes. Que pouvez-vous <strong>voir</strong> ou <strong>vivre</strong>?',
+          'Beurs': 'Donnez une description enthousiaste de la foire. Que pouvez-vous <strong>voir</strong>, <strong>vivre</strong> ou <strong>acheter</strong>?',
+          'Tentoonstelling': 'Donnez une description enthousiaste de l\'exposition. <ul> <li>Quels sont les <strong>artistes</strong> qui exposent?</li> <li>Quelles <strong>collections</strong> peuvent être vues?</li> <li>Existe-t-il un <strong>guide (audio)</strong> ou une <strong>brochure</strong>?</li> </ul>',
+          'Begeleide uitstap of rondleiding': 'Donnez une description enthousiaste de la visite guidée. <ul> <li>Qu\'y a-t-il à <strong>voir</strong> ou à <strong>vivre</strong> le long du parcours?</li> <li>Y a-t-il un <strong>nombre</strong> maximum de <strong>participants</strong>?</li> <li>La visite guidée est-elle organisée en continu ou à des moments précis?</li> <li>Y a-t-il des <strong>points d\'attention</strong> particuliers (par exemple, des bottes indiquées)?</li> </ul>',
+          'Lessenreeks': 'Donnez une description enthousiaste de la série de cours. <ul> <li>Qu\'y apprenez-vous exactement?</li> <li>Des <strong>connaissances préalables</strong> sont-elles nécessaires pour participer?</li> <li>Quel est le <strong>niveau</strong> des cours?</li> <li>Recevez-vous un <strong>diplôme</strong> ou un certificat à la fin?</li> </ul>',
+          'Cursus met open sessies': 'Donnez une description enthousiaste du cours avec sessions ouvertes ou workshop. <ul> <li>Qu\'y apprenez-vous exactement?</li> <li>Des <strong>connaissances préalables</strong> sont-elles nécessaires pour participer?</li> <li>Quel est le <strong>niveau</strong> des cours?</li> <li>Recevez-vous un <strong>diplôme</strong> ou un certificat à la fin?</li> </ul>',
+          'Kamp of vakantie': 'Donnez une description enthousiaste du camp de vacances <ul> <li>Quelles <strong>activités</strong> pouvez-vous y faire?</li> <li>Y a-t-il un <strong>thème</strong>?</li> <li>Est-il <strong>avec ou sans nuitées</strong>?</li> <li>Quelle est <strong>l\'heure de début</strong> <strong>et de fin</strong> des camps de jour et les soins sont-ils <strong>fournis</strong> avant et après?</li> </ul>',
+          'Festiviteit': 'Donnez une description enthousiaste de la festivité <ul> <li>Quelles sont les <strong>attractions</strong>?</li> <li>Y a-t-il des <strong>activités (périphériques)</strong>: quiz, concerts, food trucks, marché,...?</li> </ul>',
+          'Route': 'Donnez une description enthousiaste de l\'itinéraire. <ul> <li>Faites-vous le <strong>trajet à pied, en vélo, en bateau</strong>,..?</li> <li>Quels sont les <strong>arrêts possibles</strong>?</li> <li>Quelle est la <strong>distance</strong> ou la <strong>durée</strong> de l\'itinéraire?</li> <li>L\'itinéraire est-il <strong>accompagné</strong>, avec un guide, une brochure ou des panneaux indicateurs?</li> </ul>',
+          'Party of fuif': 'Donnez une description enthousiaste de la soirée. Quels <strong>deejays</strong> ou <strong>groupes</strong> se produisent?',
+          'Eet of drankfestijn': 'Donnez une description enthousiaste du festin de nourriture ou de boisson. <ul> <li>Qu\'y a-t-il au <strong>menu</strong>?</li> <li>Les <strong>recettes</strong> seront-elles versées à une <strong>organisation caritative</strong>?</li> <li>Y a-t-il une <strong>animation (périphérique)</strong>?</li> </ul>',
+          'Spel of quiz': 'Donnez une description enthousiaste du quiz ou du jeu. <ul> <li>Sur quels <strong>sujets</strong> porte le quiz?</li> <li>Le jeu a-t-il un <strong>thème</strong>?</li> <li>Y a-t-il quelque chose à <strong>gagner</strong>?</li> <li>Y a-t-il un <strong>nombre maximum de participants</strong>?</li> </ul>',
+          'Sport en beweging': 'Donnez une description enthousiaste de l\'activité sportive. <ul> <li>Quel(s) <strong>sport(s)</strong> pouvez-vous pratiquer?</li> <li>Quel <strong>matériel</strong> est (non) fourni?</li> </ul>',
+          'Monument': 'Donnez ici une description saillante du monument. Indiquez également si l\'ouverture du monument est limitée (p.ex. seulement des salons).'
+        },
         'description_error': 'Il y a eu une erreur dans l\'enregistrement de la description.',
         'organizer': 'Organisation',
         'add_organizer': 'Ajouter l\'organisation',
@@ -585,7 +610,7 @@ angular.module('udb.core')
         'main_image': 'Créer image principale',
         'add_image': 'Ajouter une image',
         priceInfo: {
-          'price_label': 'Prix',
+          'price_label': 'Tarif',
           'add_prices': 'Ajouter prix',
           'free': 'Gratuit',
           'prices': 'Prix',
@@ -596,7 +621,7 @@ angular.module('udb.core')
           'add_reservation_period': 'Ajouter une période de réservation',
           'reservation_period': 'Période de réservation',
           'from': 'De',
-          'till': 'À'
+          'till': 'à'
         }
       },
       publish: {
@@ -628,10 +653,18 @@ angular.module('udb.core')
         'sizeError': 'Le fichier téléchargé est trop grand.'
       }
     },
+    offerStatus: {
+      'scheduled': 'A lieu',
+      'cancelled': 'Annulé',
+      'postponed': 'Reporté',
+      'open': 'Ouvert',
+      'temporarilyClosed': 'Fermé temporairement',
+      'permanentlyClosed': 'Fermé définitivement',
+    },
     calendar: {
-      'one_more_days': 'Une ou plusieurs journées',
+      'one_more_days': 'Jours récurrents ou variables',
       'or': 'ou',
-      'default_days': 'Schéma fixe',
+      'default_days': 'Période continue',
       'start_label': 'Début',
       'end_label': 'Fin',
       'whole_day_label': 'Toute la journée',
@@ -640,8 +673,8 @@ angular.module('udb.core')
       'add_days': 'Ajouter des jours',
       period: {
         'title': 'Date de début et de fin',
-        'from': 'Du',
-        'till': 'au',
+        'from': 'De',
+        'till': 'à',
         'alert': 'Introduisez la date de début ainsi que la date de fin. La date de fin ne peut pas tomber avant la date de début.'
       },
       openingHours: {
@@ -652,7 +685,7 @@ angular.module('udb.core')
         'change': 'Modifier',
         'days': 'Jours',
         'from': 'De',
-        'till': 'À',
+        'till': 'à',
         'more_hours': 'Ajouter plus d\'heures d\'ouverture',
         'cancel': 'Annuler',
         'save': 'Sauver'
@@ -669,9 +702,9 @@ angular.module('udb.core')
       'entrance': 'Accès',
       'everyone': 'Pour tout le monde',
       'members': 'Seulement pour des membres',
-      'members_help': 'Ton item est seulement publié sur des chaînes pour des associations et leurs membres.',
+      'members_help': 'Votre article est seulement publié sur des chaînes pour des associations et leurs membres.',
       'education': 'Spécifiquement pour des écoles',
-      'education_help': 'Ton item est seulement publié sur des chaînes d\'éducation culturelle. Après la publication tu peux encore ajouter de l\'information spécifique pour des écoles.'
+      'education_help': 'Votre article est seulement publié sur des chaînes d\'éducation culturelle. Après la publication vous pouvez encore ajouter de l\'information spécifique pour des écoles.'
     },
     workflowStatus: {
       'label': 'État de publication',
@@ -720,6 +753,7 @@ angular.module('udb.core')
       'organiser_id': 'organisation (id)',
       'agefrom': 'âge',
       'price': 'prix',
+      'status': 'status',
       'organiser_label': 'organisation (nom)',
       'category_facility_name': 'dispositions',
       'category_targetaudience_name': 'public cible',
@@ -786,7 +820,7 @@ angular.module('udb.core')
       'description': 'Description',
       'description_help': 'Maximum 250 caractères',
       'copyright': 'Copyright',
-      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 3 caractères).',
+      'copyright_help': 'Mentionnez le nom de photographe légitime. Mentionnez le nom de votre association ou organisation uniquement si vous êtes propriétaire des droits (au moins 2 caractères).',
       'cancel': 'Annuler',
       'agree': 'Accepter',
       upload: {
@@ -878,7 +912,7 @@ angular.module('udb.core')
     },
     dashboard: {
       'welcome': 'Bienvenue,',
-      'no_items': 'Vous n\'avez pas encore ajouté des items.',
+      'no_items': 'Vous n\'avez pas encore ajouté d\'éléments.',
       'add_activity': 'Ajouter une activité ou une location?',
       'my_activities': 'Mes activitées et lieux',
       'my_organizers': 'Mes organisations',
@@ -888,7 +922,6 @@ angular.module('udb.core')
         'no_publish': 'Pas publié!',
         'online': 'En ligne le',
         'edit': 'Modifier',
-        'confirm_event': 'Confirmez que l\'offre continue',
         'example': 'Exemple',
         'delete': 'Supprimer',
         'expired_event': 'Événement terminé'
@@ -917,9 +950,9 @@ angular.module('udb.core')
       'Sportwedstrijd bekijken': 'Assister à une compétition sportive',
       'Cursus met open sessies': 'Cours avec sessions ouvertes',
       'Lessenreeks': 'Série de cours',
-      'Sportactiviteit': 'Activité sportive',
+      'Sport en beweging': 'Activité sportive',
       'Kamp of vakantie': 'Camp de vacances',
-      'Begeleide rondleiding': 'Visite guidé',
+      'Begeleide uitstap of rondleiding': 'Tour ou excursion guidée',
       'Route': 'Itinéraire',
       'Spel of quiz': 'Jeu ou quiz',
       'Party of fuif': 'Soirée',
@@ -939,12 +972,12 @@ angular.module('udb.core')
       'Markt, braderie of kermis': 'Marché, foire ou fête foraine',
       'Natuurgebied of park': 'Zone naturelle ou parc',
       'Natuur, park of tuin': 'Zone naturelle ou parc',
-      'Beurs': 'Foire / exposition',
+      'Beurs': 'Foire',
       'Monument': 'Monument',
       'Opendeurdag': 'Journée portes ouvertes',
       'Recreatiedomein of centrum': 'Centre de loisirs ou centre de récréation',
       'Park of tuin': 'Jardin ou parc',
-      'Archeologische Site': 'Site Archéologique',
+      'Archeologische Site': 'Site archéologique',
       'School of onderwijscentrum': 'École ou centre éducatif',
       'Sportcentrum': 'Centre sportif',
       'Winkel': 'Magasin',
@@ -958,7 +991,7 @@ angular.module('udb.core')
       'Beeldhouwkunst': 'Sculpture',
       'Fotografie': 'Photographie',
       'Grafiek': 'Art grafique',
-      'Installatiekunst': 'Art d\'installation',
+      'Installatiekunst': 'Installation',
       'Schilderkunst': 'Peinture',
       'Decoratieve kunst': 'Arts décoratifs',
       'Design': 'Design',
@@ -987,7 +1020,7 @@ angular.module('udb.core')
       'Cinefiel': 'Cinéphile',
       'Thriller': 'Films à suspense',
       'Meerdere filmgenres': 'Films de tous genres',
-      'Geschiedenis': 'Histoire',
+      'Geschiedenis': 'Histoire et archéologie',
       'Gezondheid en wellness': 'Santé et bien-être',
       'Landbouw en platteland': 'Agriculture et campagne',
       'Milieu en natuur': 'Environnement et nature',
@@ -1026,7 +1059,7 @@ angular.module('udb.core')
       'Figuren en poppentheater': 'Théâtre de marionnettes',
       'Opera en operette': 'Opéra et opérette',
       'Mime en bewegingstheater': 'Mime et theéâtre de mouvements',
-      'Wetenschap': 'Science',
+      'Wetenschap': 'Sciences',
       'Zingeving, filosofie en religie': 'Sens de la vie, philosophie et religion',
       'Thema onbepaald': 'Thème non défini',
       'Circus': 'Cirque',
@@ -1073,8 +1106,43 @@ angular.module('udb.core')
       }
     },
     search: {
+      search: 'Chercher',
+      advanced: 'Avancé',
+      savedSearches: {
+        savedSearches: 'Recherches conservées',
+        items: {
+          'Door mij ingevoerd': 'Encodé par moi'
+        },
+        mySearches: 'Mes recherches',
+        title: 'Titre',
+        viewResults: 'Consulter résultats'
+      },
+      manage: 'Gérer',
+      oneResult: '1 résultat',
+      multipleResults: '{{count}} résultats',
+      description: 'Description',
+      labels: 'Labels',
+      picture: 'Image',
+      what: 'Quoi',
+      where: 'Où',
+      when: 'Quand',
+      inputInformation: 'Information encodage',
+      noEventsFound: 'Aucun événements trouvés, essayez une autre recherche.',
       exportButton: 'Activités d\'exportation',
-      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.'
+      modal: 'Votre sélection ne contient aucune activité, veuillez essayer d’exporter une autre recherche.',
+      advancedQueryBuilder: {
+        title: 'Moteur de recherche avancée',
+        header: {
+          info: 'Ici vous pouvez effectuer des recherches avancées. Besoin d\'aide? Lisez ',
+          link: 'le mode d\'emploi'
+        },
+        group: 'Groupe ',
+        include: 'Inclure',
+        exclude: 'Exclure',
+        addGroup: 'Ajouter groupe',
+        cancel: 'Annuler',
+        search: 'Zoeken',
+      }
     }
   }
 );

@@ -38,6 +38,10 @@ function BaseCalendarController(calendar, $scope, appConfig) {
    */
   function init(formData, openingHoursCollection) {
     calendar.formData = formData;
+    calendar.isEvent = formData.isEvent;
+    calendar.isPlace = formData.isPlace;
+    calendar.offerStatus = formData.status;
+    calendar.subEvent = formData.subEvent;
     calendar.timeSpans = !_.isEmpty(formData.calendar.timeSpans) ? formData.calendar.timeSpans : [];
     calendar.setType(formData.calendar.calendarType ? formData.calendar.calendarType : 'single');
     calendar.openingHoursCollection = openingHoursCollection;
@@ -66,7 +70,10 @@ function BaseCalendarController(calendar, $scope, appConfig) {
         allDay: true,
         start: moment().startOf('day').toDate(),
         end: moment().endOf('day').toDate(),
-        endTouched: false
+        endTouched: false,
+        status: {
+          type: 'Available'
+        }
       }
     ];
   }
