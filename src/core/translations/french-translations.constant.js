@@ -351,7 +351,7 @@ angular.module('udb.core')
       'loading': 'Chargement...',
       'edit': 'Modifier',
       'duplicate': 'Copier et modifier',
-      'change_status': 'Modifier l\'état',
+      'change_status': 'Modifier le statut',
       'delete': 'Supprimer',
       'title': 'Titre',
       'type': 'Type',
