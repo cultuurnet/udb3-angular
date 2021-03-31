@@ -79,9 +79,9 @@ function getEventExportDescription (job, state, JobStates) {
   var description = '';
 
   if (state === JobStates.FAILED) {
-    description = 'Exporteren van evenementen mislukt';
+    description = 'Exporteren van items mislukt';
   } else {
-    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' evenementen';
+    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' items';
   }
 
   return description;
