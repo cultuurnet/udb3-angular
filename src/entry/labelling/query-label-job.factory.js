@@ -49,5 +49,5 @@ function QueryLabelJobFactory(BaseJob, JobStates) {
 }
 
 function getQueryLabelJobDescription (job) {
-  return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
+  return 'Label ' + job.eventCount + ' items met label "' + job.label + '".';
 }

@@ -9266,7 +9266,7 @@ function getOfferLabelBatchJobDescription (job, state, JobStates) {
   var description;
 
   if (state === JobStates.FAILED) {
-    description = 'Labelen van evenementen mislukt';
+    description = 'Labelen van items mislukt';
   } else {
     description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
   }
@@ -9536,7 +9536,7 @@ function QueryLabelJobFactory(BaseJob, JobStates) {
 QueryLabelJobFactory.$inject = ["BaseJob", "JobStates"];
 
 function getQueryLabelJobDescription (job) {
-  return 'Label ' + job.eventCount + ' evenementen met label "' + job.label + '".';
+  return 'Label ' + job.eventCount + ' items met label "' + job.label + '".';
 }
 })();
 
@@ -16411,9 +16411,9 @@ function getEventExportDescription (job, state, JobStates) {
   var description = '';
 
   if (state === JobStates.FAILED) {
-    description = 'Exporteren van evenementen mislukt';
+    description = 'Exporteren van items mislukt';
   } else {
-    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' evenementen';
+    description = 'Document .' + job.extension + ' met ' + job.eventCount + ' items';
   }
 
   return description;
