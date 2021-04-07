@@ -66,7 +66,7 @@ angular
     {field: 'description.fr', type: 'tokenized-string'},
     {field: 'description.de', type: 'tokenized-string'},
     {field: 'description.en', type: 'tokenized-string'},
-    {field: 'terms.id', type: 'string'},
+    {field: 'terms.label', type: 'string'},
     {field: 'mediaObjectsCount', type: 'number'},
     {field: 'address.\\*.streetAddress', type: 'string'},
     {field: 'location.id', type: 'string'},
