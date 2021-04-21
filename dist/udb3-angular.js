@@ -7677,6 +7677,9 @@ function UitidAuth($window, $location, appConfig, $cookies, jwtHelper) {
 
   this.setToken = function (token) {
     $cookies.put('token', token);
+    // When setting a new token the stored user cookie, which is used in API calls as a parameter, should be removed.
+    // The next time an API call is made this user cookie will be recreated from the token cookie.
+    $cookies.remove('user');
   };
 
   /**
