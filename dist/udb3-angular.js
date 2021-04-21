@@ -31312,7 +31312,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                          ui-codemirror-opts=\"editorOptions\"></textarea>\n" +
     "            </td>\n" +
     "            <td>\n" +
-    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\"></a>\n" +
+    "                <a class=\"btn btn-default\" ng-if=\"::savedSearch.id\" ng-click=\"::deleteSavedSearch(savedSearch.id)\"><i class=\"fa fa-trash\"></i></a>\n" +
     "            </td>\n" +
     "        </tr>\n" +
     "    </table>\n" +
