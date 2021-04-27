@@ -31679,7 +31679,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <li><a href=\"saved-searches\" translate-once=\"search.manage\">Beheren</a></li>\n" +
     "      </ul>\n" +
     "    </span>\n" +
-    "    <i ng-show=\"sb.hasErrors\" class=\"fa fa-warning warning-icon\" tooltip-append-to-body=\"true\"\n" +
+    "    <i ng-show=\"sb.hasErrors\" class=\"fas fa-exclamation-triangle warning-icon\" tooltip-append-to-body=\"true\"\n" +
     "       tooltip-placement=\"bottom\" uib-tooltip=\"{{sb.errors}}\"></i>\n" +
     "  </div>\n" +
     "  <button type=\"submit\" class=\"btn udb-search-button\" ng-click=\"sb.find()\">\n" +
