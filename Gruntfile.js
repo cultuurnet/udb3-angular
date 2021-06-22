@@ -39,26 +39,37 @@ module.exports = function (grunt) {
   };
 
   var getCitiesBE = function () {
-    var parser = new xml2js.Parser({mergeAttrs: true, explicitArray: false});
-    var xmlBuffer = grunt.file.read('cities.xml');
-    var cities = [];
-    parser.parseString(xmlBuffer, function (err, result) {
-      let filteredCities = result.cdbxml.cities.city.filter(function (city) {
-        return city.submunicipality;
-      });
+    var unprocessedData = require('./src/event_form/GEO-BE-5-STD.json').features;
+    var mappedCities = {};
+    unprocessedData.forEach(function (item) {
+      var city = item.properties;
+      var language = city.Language.toLowerCase();
+      var foundCity = mappedCities[city.ID];
+      var municipality = `${city.Locality} ${city.Locality !== city.Region4 ? ` (${city.Region4}) ` : ''}${!!city.Suburb ? '👽' : ''}`;
+      var label = `${city.PostalCode} ${municipality}`;
+      var name = `${municipality}`;
+      var zip = city.Locality;
 
-      cities = filteredCities.map(
-        function (city) {
-          return {
-            'label': city.zip + ' ' + city.labelnl,
-            'name': city.labelnl,
-            'zip': city.zip
-          };
-        }
-      );
+      if (!!foundCity) {
+        // Alter existing city
+        foundCity.label[language] = label;
+        foundCity.name[language] = name;
+        mappedCities[city.ID] = foundCity;
+        return;
+      }
+
+      // Add new city
+      mappedCities[city.ID] = {
+        label: {
+          [language]: label
+        },
+        name: {
+          [language]: name
+        },
+        zip,
+      };
     });
-
-    return cities;
+    return Object.values(mappedCities);
   };
 
   var getSapi3CitiesBE = function() {

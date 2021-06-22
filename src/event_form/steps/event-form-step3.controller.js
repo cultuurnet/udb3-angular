@@ -111,7 +111,7 @@ function EventFormStep3Controller(
     return function (city) {
       var words = value.match(/.+/g);
       var labelMatches = words.filter(function (word) {
-        return city.label.toLowerCase().indexOf(word.toLowerCase()) !== -1;
+        return city.label[language].toLowerCase().indexOf(word.toLowerCase()) !== -1;
       });
 
       return labelMatches.length >= words.length;
@@ -119,7 +119,7 @@ function EventFormStep3Controller(
   };
   $scope.orderByLevenshteinDistance = function(value) {
     return function (city) {
-      return new Levenshtein(value, city.label);
+      return new Levenshtein(value, city.label[language]);
     };
   };
 
@@ -130,7 +130,7 @@ function EventFormStep3Controller(
   controller.selectCity = function (city, $label) {
 
     var zipcode = city.zip,
-        name = city.name;
+        name = city.name[language];
 
     var newAddressInfo = {
       postalCode: zipcode,
