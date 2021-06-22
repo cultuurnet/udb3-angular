@@ -63,12 +63,13 @@
   width: 18px;
   display: inline-block;
   text-align: center;
-  content: "\f096";
-  font-family: "FontAwesome";
+  content: "\f0c8";
+  font-family: "Font Awesome 5 Free";
 }
 
 .rv-control-toggle.active:before {
   content: "\f14a";
+  font-weight: 900;
 }
 
 .rv-first-column {
@@ -183,10 +184,12 @@
     position: relative;
     &:before {
       .fa-icon();
-      content: @fa-var-map-marker;
+      content: @fa-var-map-marker-alt;
       position: absolute;
       top: 3px;
       left: 0;
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
     }
     @media (min-width: @grid-float-breakpoint) {
       padding-left: 0;
@@ -214,10 +217,12 @@
     position: relative;
     &:before {
       .fa-icon();
-      content: @fa-var-calendar;
+      content: @fa-var-calendar-alt;
       position: absolute;
       top: 0;
       left: 0;
+      font-family: "Font Awesome 5 Free";
+      font-weight: 900;
     }
     @media (min-width: @grid-float-breakpoint) {
       padding-left: 0;

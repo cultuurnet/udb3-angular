@@ -37,7 +37,7 @@
     "bootstrap": "~3.3.7",
     "lodash": "~3.10.1",
     "socket.io-client": "~1.2.0",
-    "components-font-awesome": "~4.2.0",
+    "components-font-awesome": "^5.15.1",
     "moment": "~2.20.0",
     "accounting": "~0.3.2",
     "bootstrap-multiselect": "0.9.15",

@@ -52,7 +52,8 @@ function EventFormController(
     EventFormData.calendar.calendarType = 'single';
     EventFormData.addTimeSpan(
       calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
-      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : '',
+      {type: 'Available'}
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
@@ -78,9 +79,14 @@ function EventFormController(
   function startEditing(offer) {
     var offerType = offer.url.split('/').shift();
 
+    EventFormData.status = offer.status;
+
     if (offerType === 'event') {
       EventFormData.isEvent = true;
       EventFormData.isPlace = false;
+
+      EventFormData.subEvent = offer.subEvent;
+
       copyItemDataToFormData(offer);
 
       // Copy location.
@@ -200,11 +206,11 @@ function EventFormController(
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate);
+        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate, subEvent.status || item.status);
       }
     }
     else if (item.calendarType === 'single') {
-      EventFormData.addTimeSpan(item.startDate, item.endDate);
+      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status);
     }
 
     if (EventFormData.calendar.calendarType) {

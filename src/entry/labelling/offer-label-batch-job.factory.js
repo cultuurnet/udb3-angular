@@ -56,7 +56,7 @@ function getOfferLabelBatchJobDescription (job, state, JobStates) {
   var description;
 
   if (state === JobStates.FAILED) {
-    description = 'Labelen van evenementen mislukt';
+    description = 'Labelen van items mislukt';
   } else {
     description = 'Label ' + job.events.length + ' items met "' + job.label + '"';
   }

@@ -138,6 +138,6 @@ function EventFormImageUploadController(
 
   function allFieldsValid() {
     return $scope.description && $scope.copyright && $scope.selectedFile &&
-        $scope.description.length <= 250 && $scope.copyright.length >= 3;
+        $scope.description.length <= 250 && $scope.copyright.length >= 2;
   }
 }

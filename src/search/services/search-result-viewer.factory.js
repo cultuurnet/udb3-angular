@@ -15,9 +15,9 @@ angular
 function SearchResultViewerFactory($translate) {
 
   var SelectionState = {
-    ALL: {'name': 'all', 'icon': 'fa-check-square'},
-    NONE: {'name': 'none', 'icon': 'fa-square-o'},
-    SOME: {'name': 'some', 'icon': 'fa-minus-square'}
+    ALL: {'name': 'all', 'icon': 'fas fa-check-square'},
+    NONE: {'name': 'none', 'icon': 'far fa-square'},
+    SOME: {'name': 'some', 'icon': 'fas fa-minus-square'}
   };
 
   var identifyItem = function (event) {

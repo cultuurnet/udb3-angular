@@ -38,6 +38,9 @@ angular.module('udb.core')
       'everyone': 'iedereen',
       'members': 'leden',
       'education': 'onderwijs',
+      'Available': 'Gaat door',
+      'Unavailable': 'Geannuleerd',
+      'TemporarilyUnavailable': 'Uitgesteld',
       'asc': 'oplopend',
       'desc': 'aflopend',
       'today': 'vandaag',
@@ -321,6 +324,7 @@ angular.module('udb.core')
       'kansentarief': 'Kansentarief',
       'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinfo',
+      'status': 'Status',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
@@ -347,6 +351,7 @@ angular.module('udb.core')
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
       'duplicate': 'Kopiëren en aanpassen',
+      'change_status': 'Status wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
       'type': 'Type',
@@ -651,6 +656,14 @@ angular.module('udb.core')
         'sizeError': 'Het geüpload bestand is te groot.'
       }
     },
+    offerStatus: {
+      'scheduled': 'Gaat door',
+      'cancelled': 'Geannuleerd',
+      'postponed': 'Uitgesteld',
+      'open': 'Open',
+      'temporarilyClosed': 'Tijdelijk gesloten',
+      'permanentlyClosed': 'Permanent gesloten',
+    },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
       'or': 'of',
@@ -744,6 +757,7 @@ angular.module('udb.core')
       'organiser_id': 'organisatie (id)',
       'agefrom': 'leeftijd',
       'price': 'prijs',
+      'status': 'status',
       'organiser_label': 'organisatie (naam)',
       'category_facility_name': 'voorzieningen',
       'category_targetaudience_name': 'doelgroep',
@@ -810,7 +824,7 @@ angular.module('udb.core')
       'description': 'Beschrijving',
       'description_help': 'Maximum 250 karakters',
       'copyright': 'Copyright',
-      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 3 karakters).',
+      'copyright_help': 'Vermeld de naam van de rechtenhoudende fotograaf. Vul alleen de naam van je eigen vereniging of organisatie in als je zelf de rechten bezit (minimum 2 karakters).',
       'cancel': 'Annuleren',
       'agree': 'Akkoord',
       upload: {
@@ -915,7 +929,6 @@ angular.module('udb.core')
         'no_publish': 'Niet gepubliceerd!',
         'online': 'Online op',
         'edit': 'Bewerken',
-        'confirm_event': 'Bevestig dat het aanbod doorgaat',
         'example': 'Voorbeeld',
         'delete': 'Verwijderen',
         'expired_event': 'Afgelopen evenement'
@@ -1131,7 +1144,7 @@ angular.module('udb.core')
         group: 'Groep ',
         include: 'Insluiten',
         exclude: 'Uitsluiten',
-        addGroup: 'Groep toeovegen',
+        addGroup: 'Groep toevoegen',
         cancel: 'Annuleren',
         search: 'Zoeken',
       }
