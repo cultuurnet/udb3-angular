@@ -1,0 +1,30 @@
+name: CI
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '10'
+
+      - name: Install npm
+        run: npm install -g npm@6
+
+      - name: Install grunt + bower
+        run: npm install -g grunt-cli bower
+
+      - name: Run npm install
+        run: npm install
+
+      - name: Run bower install
+        run: bower install
+
+      - name: Run tests
+        run: grunt build && grunt test
