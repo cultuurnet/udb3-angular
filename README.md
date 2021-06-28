@@ -3,7 +3,7 @@
 
 This project holds all the necessary angular recipes, styles and templates to
  create an UDB3 front-end.
- 
+
 ## Usage
 
 You can use bower to manage any dependencies on this project. Navigate to your bower project and the following
