@@ -62,12 +62,12 @@
                     </ng-pluralize>
 
                     <button class="btn btn-default rv-action" ng-click="label()">
-                        <i class="fa fa-tag"></i> Labelen
+                        <i class="fa fa-tag"></i> <span translate-once="search.label"></span>
                     </button>
                     <button class="btn btn-default rv-action" ng-click="exportEvents()">
                         <i class="fa fa-cloud-download"></i> <span translate-once="search.exportButton"></span>
                     </button>
-                    <a href="#" class="alert-link rv-action" ng-click="resultViewer.deselectAll()">Deselecteren</a>
+                    <a href="#" class="alert-link rv-action" ng-click="resultViewer.deselectAll()"><span translate-once="search.deselect"></span></a>
                 </div>
             </div>
 
