@@ -5,6 +5,7 @@ on: push
 jobs:
   test:
     runs-on: ubuntu-latest
+    name: Run grunt tests
     steps:
       - name: Checkout project
         uses: actions/checkout@v2
