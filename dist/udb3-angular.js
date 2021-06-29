@@ -3888,6 +3888,8 @@ angular.module('udb.core')
     search: {
       search: 'Zoeken',
       advanced: 'Geavanceerd',
+      label: 'Labelen',
+      deselect: 'Deselecteren',
       savedSearches: {
         savedSearches: 'Bewaarde zoekopdrachten',
         items: {
@@ -3895,7 +3897,9 @@ angular.module('udb.core')
         },
         mySearches: 'Mijn zoekopdrachten',
         title: 'Titel',
-        viewResults: 'Resultaten bekijken'
+        viewResults: 'Resultaten bekijken',
+        yourSearch: 'Jouw zoekopdracht',
+        save: 'Bewaren',
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',
@@ -5040,6 +5044,8 @@ angular.module('udb.core')
     search: {
       search: 'Chercher',
       advanced: 'Avancé',
+      label: 'Mettre un label',
+      deselect: 'Annuler la sélection',
       savedSearches: {
         savedSearches: 'Recherches conservées',
         items: {
@@ -5047,7 +5053,9 @@ angular.module('udb.core')
         },
         mySearches: 'Mes recherches',
         title: 'Titre',
-        viewResults: 'Consulter résultats'
+        viewResults: 'Consulter résultats',
+        yourSearch: 'Votre recherche',
+        save: 'Conserver',
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
@@ -31277,9 +31285,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/save-search.directive.html',
     "<p>\n" +
-    "    <strong>Jouw zoekopdracht</strong>\n" +
+    "    <strong translate-once=\"search.savedSearches.yourSearch\">Jouw zoekopdracht</strong>\n" +
     "    <a href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-sm btn-default\">\n" +
-    "        <i class=\"fa fa-bookmark-o\"></i> Bewaren\n" +
+    "        <i class=\"fa fa-bookmark-o\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
     "    </a>\n" +
     "</p>\n"
   );
@@ -32139,12 +32147,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </ng-pluralize>\n" +
     "\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"label()\">\n" +
-    "                        <i class=\"fa fa-tag\"></i> Labelen\n" +
+    "                        <i class=\"fa fa-tag\"></i> <span translate-once=\"search.label\"></span>\n" +
     "                    </button>\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"exportEvents()\">\n" +
     "                        <i class=\"fa fa-cloud-download\"></i> <span translate-once=\"search.exportButton\"></span>\n" +
     "                    </button>\n" +
-    "                    <a href=\"#\" class=\"alert-link rv-action\" ng-click=\"resultViewer.deselectAll()\">Deselecteren</a>\n" +
+    "                    <a href=\"#\" class=\"alert-link rv-action\" ng-click=\"resultViewer.deselectAll()\"><span translate-once=\"search.deselect\"></span></a>\n" +
     "                </div>\n" +
     "            </div>\n" +
     "\n" +
