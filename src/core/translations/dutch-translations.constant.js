@@ -1113,6 +1113,8 @@ angular.module('udb.core')
     search: {
       search: 'Zoeken',
       advanced: 'Geavanceerd',
+      label: 'Labelen',
+      deselect: 'Deselecteren',
       savedSearches: {
         savedSearches: 'Bewaarde zoekopdrachten',
         items: {
@@ -1120,7 +1122,9 @@ angular.module('udb.core')
         },
         mySearches: 'Mijn zoekopdrachten',
         title: 'Titel',
-        viewResults: 'Resultaten bekijken'
+        viewResults: 'Resultaten bekijken',
+        yourSearch: 'Jouw zoekopdracht',
+        save: 'Bewaren',
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',

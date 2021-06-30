@@ -1108,6 +1108,8 @@ angular.module('udb.core')
     search: {
       search: 'Chercher',
       advanced: 'Avancé',
+      label: 'Mettre un label',
+      deselect: 'Annuler la sélection',
       savedSearches: {
         savedSearches: 'Recherches conservées',
         items: {
@@ -1115,7 +1117,9 @@ angular.module('udb.core')
         },
         mySearches: 'Mes recherches',
         title: 'Titre',
-        viewResults: 'Consulter résultats'
+        viewResults: 'Consulter résultats',
+        yourSearch: 'Votre recherche',
+        save: 'Conserver',
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
