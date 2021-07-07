@@ -17,7 +17,8 @@ angular
     'manageUsers': 'GEBRUIKERS_BEHEREN',
     'manageLabels': 'LABELS_BEHEREN',
     'editFacilities': 'VOORZIENINGEN_BEWERKEN',
-    'createProductions': 'PRODUCTIES_AANMAKEN'
+    'createProductions': 'PRODUCTIES_AANMAKEN',
+    'createMovies': 'FILMS_AANMAKEN',
   })
   .service('authorizationService', AuthorizationService);
 
