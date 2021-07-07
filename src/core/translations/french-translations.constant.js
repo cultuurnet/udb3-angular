@@ -776,6 +776,7 @@ angular.module('udb.core')
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
     'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
     'PRODUCTIES_AANMAKEN': 'Gérer les productions',
+    'FILMS_AANMAKEN': 'Gérer les films',
     'event type missing': 'Choisissez un type à <a href="#quoi" class="alert-link">l\'étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de début et de fin en <a href="#quand" class="alert-link">étape 2</a>?',

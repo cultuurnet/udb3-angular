@@ -2221,7 +2221,8 @@ angular
     'manageUsers': 'GEBRUIKERS_BEHEREN',
     'manageLabels': 'LABELS_BEHEREN',
     'editFacilities': 'VOORZIENINGEN_BEWERKEN',
-    'createProductions': 'PRODUCTIES_AANMAKEN'
+    'createProductions': 'PRODUCTIES_AANMAKEN',
+    'createMovies': 'FILMS_AANMAKEN',
   })
   .service('authorizationService', AuthorizationService);
 
@@ -3555,6 +3556,7 @@ angular.module('udb.core')
     'VOORZIENINGEN_BEWERKEN': 'Voorzieningen bewerken',
     'ORGANISATIES_BEWERKEN': 'Organisaties bewerken',
     'PRODUCTIES_AANMAKEN': 'Producties aanmaken',
+    'FILMS_AANMAKEN': 'Films aanmaken',
     'event type missing': 'Koos je een type in <a href="#wat" class="alert-link">stap 1</a>?',
     'timestamp missing': 'Koos je een datum in <a href="#wanneer" class="alert-link">stap 2</a>?',
     'start or end date missing': 'Koos je een begin- en einddatum in <a href="#wanneer" class="alert-link">stap 2</a>?',
@@ -4712,6 +4714,7 @@ angular.module('udb.core')
     'VOORZIENINGEN_BEWERKEN': 'Modifier les dispositions',
     'ORGANISATIES_BEWERKEN': 'Modifier les organisations',
     'PRODUCTIES_AANMAKEN': 'Gérer les productions',
+    'FILMS_AANMAKEN': 'Gérer les films',
     'event type missing': 'Choisissez un type à <a href="#quoi" class="alert-link">l\'étape 1</a>?',
     'timestamp missing': 'Avez-vous choisi une date en <a href="#quand" class="alert-link">étape 2</a>?',
     'start or end date missing': 'Avez-vous choisi une date de début et de fin en <a href="#quand" class="alert-link">étape 2</a>?',
@@ -18384,7 +18387,8 @@ angular
       'GEBRUIKERS_BEHEREN': 'GEBRUIKERS_BEHEREN',
       'LABELS_BEHEREN': 'LABELS_BEHEREN',
       'VOORZIENINGEN_BEWERKEN': 'VOORZIENINGEN_BEWERKEN',
-      'PRODUCTIES_AANMAKEN': 'PRODUCTIES_AANMAKEN'
+      'PRODUCTIES_AANMAKEN': 'PRODUCTIES_AANMAKEN',
+      'FILMS_AANMAKEN': 'FILMS_AANMAKEN',
     }
   );
 })();
@@ -31285,7 +31289,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/save-search.directive.html',
     "<p>\n" +
-    "    <strong translate-once=\"search.savedSearches.yourSearch\">Jouw zoekopdracht</strong>\n" +
+    "    <strong translate-once=\"search.savedSearches.yourSearch\"></strong>\n" +
     "    <a href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-sm btn-default\">\n" +
     "        <i class=\"fa fa-bookmark-o\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
     "    </a>\n" +
