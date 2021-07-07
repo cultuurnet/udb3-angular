@@ -66,7 +66,8 @@ describe('Controller: Roles Form', function() {
     { key: 'GEBRUIKERS_BEHEREN', name: 'GEBRUIKERS_BEHEREN' },
     { key: 'LABELS_BEHEREN', name: 'LABELS_BEHEREN' },
     { key: 'VOORZIENINGEN_BEWERKEN', name: 'VOORZIENINGEN_BEWERKEN' },
-    { key: 'PRODUCTIES_AANMAKEN', name: 'PRODUCTIES_AANMAKEN' }
+    { key: 'PRODUCTIES_AANMAKEN', name: 'PRODUCTIES_AANMAKEN' },
+    { key: 'FILMS_AANMAKEN', name: 'FILMS_AANMAKEN' },
   ];
 
 
