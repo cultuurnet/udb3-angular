@@ -3146,6 +3146,9 @@ angular.module('udb.core')
       'free': 'Gratis',
       'currency': 'euro',
       'no_price': 'Geen prijsinformatie',
+      'booking_availability': 'Tickets & plaatsen',
+      'booking_unavailable': 'Volzet of uitverkocht',
+      'booking_available': 'Beschikbaar',
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
@@ -4305,8 +4308,11 @@ angular.module('udb.core')
       'no_organizer': 'Pas d\'information de l\'organisation',
       'price': 'Prix',
       'free': 'Gratuit',
-      'currency': 'euro',
+      'booking_availability': 'Billets & places',
+      'booking_unavailable': 'Complet',
+      'booking_available': 'Disponible',
       'no_price': 'Pas d\'information du prix',
+      'currency': 'euro',
       'age_label': 'Adapté à',
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
@@ -6750,6 +6756,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.type = getCategoryLabel(jsonEvent, 'eventtype') || '';
       this.theme = getCategoryLabel(jsonEvent, 'theme') || '';
       this.status = jsonEvent.status;
+      this.bookingAvailability = jsonEvent.bookingAvailability;
       this.calendarType = jsonEvent.calendarType || '';
       this.startDate = jsonEvent.startDate;
       this.endDate = jsonEvent.endDate;
@@ -27092,6 +27099,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </table>\n" +
     "                </td>\n" +
     "                <td ng-if=\"::(event.priceInfo.length == 0)\" translate-once=\"preview.no_price\"></td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.booking_availability\"></span></td>\n" +
+    "                <td ng-if=\"::(event.bookingAvailability.type == 'Available')\" translate-once=\"preview.booking_available\"></td>\n" +
+    "                <td ng-if=\"::(event.bookingAvailability.type == 'Unavailable')\" translate-once=\"preview.booking_unavailable\"></td>\n" +
     "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
