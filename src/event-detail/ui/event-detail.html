@@ -150,6 +150,11 @@
                 </td>
                 <td ng-if="::(event.priceInfo.length == 0)" translate-once="preview.no_price"></td>
               </tr>
+              <tr>
+                <td><span class="row-label" translate-once="preview.booking_availability"></span></td>
+                <td ng-if="::(event.bookingAvailability.type == 'Available')" translate-once="preview.booking_available"></td>
+                <td ng-if="::(event.bookingAvailability.type == 'Unavailable')" translate-once="preview.booking_unavailable"></td>
+              </tr>
             </tbody>
             <tbody ng-if="::(!isEmpty(event.bookingInfo))" udb-booking-info-detail="::event.bookingInfo"></tbody>
             <tbody udb-contact-point-detail="::event.contactPoint"></tbody>
