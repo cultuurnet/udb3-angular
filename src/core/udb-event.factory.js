@@ -157,6 +157,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.type = getCategoryLabel(jsonEvent, 'eventtype') || '';
       this.theme = getCategoryLabel(jsonEvent, 'theme') || '';
       this.status = jsonEvent.status;
+      this.bookingAvailability = jsonEvent.bookingAvailability;
       this.calendarType = jsonEvent.calendarType || '';
       this.startDate = jsonEvent.startDate;
       this.endDate = jsonEvent.endDate;
