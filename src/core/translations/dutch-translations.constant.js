@@ -325,6 +325,7 @@ angular.module('udb.core')
       'bookingInfo': 'Reservatie-info',
       'contactPoint': 'Contactinfo',
       'status': 'Status',
+      'bookingAvailability': 'Tickets & plaatsen',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
