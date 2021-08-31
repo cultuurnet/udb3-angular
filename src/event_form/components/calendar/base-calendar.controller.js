@@ -83,7 +83,9 @@ function BaseCalendarController(calendar, $scope, appConfig) {
       initTimeSpans();
       calendar.instantTimeSpanChanged();
     } else {
-      calendar.timeSpans.push(_.cloneDeep(_.last(calendar.timeSpans)));
+      var lastTimeSpan = _.cloneDeep(_.last(calendar.timeSpans));
+      lastTimeSpan.status = {type: 'Available'};
+      calendar.timeSpans.push(lastTimeSpan);
       // Do not trigger timeSpanChanged to prevent saving duplicates.
     }
   }
