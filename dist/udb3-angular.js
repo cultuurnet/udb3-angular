@@ -13771,6 +13771,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendar.calendarType = type;
 
       if (formData.calendar.calendarType === 'single') {
+        formData.openingHours = []; // Major info is created from this property and not the one in calendar
         if (appConfig.calendarHighlight.date) {
           formData.addTimeSpan(
               new Date(appConfig.calendarHighlight.date),
