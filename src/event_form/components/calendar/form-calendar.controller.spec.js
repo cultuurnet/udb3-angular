@@ -96,7 +96,8 @@ describe('Controller: Form Calendar', function () {
         allDay: false,
         start: new Date(2013, 9, 23, 9),
         end: new Date(2013, 9, 23, 17),
-        status: {type: 'Available'}
+        status: {type: 'Available'},
+        bookingAvailability: {type: 'Available'}
       }
     ];
     spyOn(controller, 'instantTimeSpanChanged');
