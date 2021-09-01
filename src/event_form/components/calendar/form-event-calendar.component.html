@@ -61,12 +61,12 @@
                                 </div>
                             </div>
                         </div>
-                        <div ng-if="calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'" class="status row alert alert-info">
-                            <div ng-switch="calendar.timeSpans[$index].status.type">
-                                <span ng-switch-when="TemporarilyUnavailable" translate-once="offerStatus.postponed"></span>
-                                <span ng-switch-when="Unavailable" translate-once="offerStatus.cancelled"></span>
-                            </div>
-                        </div>                        
+                        <div ng-if="calendar.timeSpans && (calendar.timeSpans[$index].status.type !== 'Available' || calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable')" class="status row alert alert-info">
+                            <span ng-show="calendar.timeSpans[$index].status.type === 'TemporarilyUnavailable'" translate-once="offerStatus.postponed"></span>
+                            <span ng-show="calendar.timeSpans[$index].status.type === 'Unavailable'" translate-once="offerStatus.cancelled"></span>
+                            <span ng-show="calendar.timeSpans[$index].status.type !== 'Available' && calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable'">&</span>
+                            <span ng-show="calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable'" translate-once="bookingAvailability.unavailable"></span>
+                        </div>
                     </div>
 
                     <a href="#" ng-click="calendar.createTimeSpan()" class="add-day-link" translate-once="calendar.add_days"></a>
