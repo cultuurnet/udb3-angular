@@ -13769,6 +13769,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendar.calendarType = type;
 
       if (formData.calendar.calendarType === 'single') {
+        formData.openingHours = [];
+        //formData.calendar.openingHours = [];
         if (appConfig.calendarHighlight.date) {
           formData.addTimeSpan(
               new Date(appConfig.calendarHighlight.date),
