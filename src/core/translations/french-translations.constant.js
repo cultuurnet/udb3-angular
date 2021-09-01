@@ -667,6 +667,9 @@ angular.module('udb.core')
       'temporarilyClosed': 'Fermé temporairement',
       'permanentlyClosed': 'Fermé définitivement',
     },
+    bookingAvailability: {
+      'unavailable': 'Complet'
+    },
     calendar: {
       'one_more_days': 'Jours récurrents ou variables',
       'or': 'ou',
