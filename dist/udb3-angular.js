@@ -8514,6 +8514,8 @@ function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $r
 
   calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
 
+  calendar.timeSpans.forEach(function(timeSpan) {timeSpan.status = {type: 'Available'};});
+
   calendar.formData
     .timingChanged$
     .subscribe(duplicateTimingChanged);
@@ -13769,8 +13771,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       formData.calendar.calendarType = type;
 
       if (formData.calendar.calendarType === 'single') {
-        formData.openingHours = [];
-        //formData.calendar.openingHours = [];
+        formData.openingHours = []; // Major info is created from this property and not the one in calendar
         if (appConfig.calendarHighlight.date) {
           formData.addTimeSpan(
               new Date(appConfig.calendarHighlight.date),
