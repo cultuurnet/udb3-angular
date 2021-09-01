@@ -52,8 +52,7 @@ function EventFormController(
     EventFormData.calendar.calendarType = 'single';
     EventFormData.addTimeSpan(
       calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
-      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : '',
-      {type: 'Available'}
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
@@ -206,11 +205,16 @@ function EventFormController(
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate, subEvent.status || item.status);
+        EventFormData.addTimeSpan(
+          subEvent.startDate,
+          subEvent.endDate,
+          subEvent.status || item.status,
+          subEvent.bookingAvailability || item.bookingAvailability
+        );
       }
     }
     else if (item.calendarType === 'single') {
-      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status);
+      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status, item.bookingAvailability);
     }
 
     if (EventFormData.calendar.calendarType) {
