@@ -23,6 +23,8 @@ function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $r
 
   calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
 
+  calendar.timeSpans.forEach(function(timeSpan) {timeSpan.status = {type: 'Available'};});
+
   calendar.formData
     .timingChanged$
     .subscribe(duplicateTimingChanged);
