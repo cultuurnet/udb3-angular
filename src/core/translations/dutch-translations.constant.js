@@ -670,6 +670,9 @@ angular.module('udb.core')
       'temporarilyClosed': 'Tijdelijk gesloten',
       'permanentlyClosed': 'Permanent gesloten',
     },
+    bookingAvailability: {
+      'unavailable': 'Volzet of uitverkocht'
+    },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
       'or': 'of',

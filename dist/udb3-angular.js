@@ -3446,6 +3446,9 @@ angular.module('udb.core')
       'temporarilyClosed': 'Tijdelijk gesloten',
       'permanentlyClosed': 'Permanent gesloten',
     },
+    bookingAvailability: {
+      'unavailable': 'Volzet of uitverkocht'
+    },
     calendar: {
       'one_more_days': 'Eén of meerdere dagen',
       'or': 'of',
@@ -4611,6 +4614,9 @@ angular.module('udb.core')
       'open': 'Ouvert',
       'temporarilyClosed': 'Fermé temporairement',
       'permanentlyClosed': 'Fermé définitivement',
+    },
+    bookingAvailability: {
+      'unavailable': 'Complet'
     },
     calendar: {
       'one_more_days': 'Jours récurrents ou variables',
@@ -8515,6 +8521,7 @@ function DuplicationCalendarController(EventFormData, OpeningHoursCollection, $r
   calendar.init(duplicateFormData, _.cloneDeep(OpeningHoursCollection));
 
   calendar.timeSpans.forEach(function(timeSpan) {timeSpan.status = {type: 'Available'};});
+  calendar.timeSpans.forEach(function(timeSpan) {timeSpan.bookingAvailability = {type: 'Available'};});
 
   calendar.formData
     .timingChanged$
@@ -11050,6 +11057,7 @@ function BaseCalendarController(calendar, $scope, appConfig) {
     } else {
       var lastTimeSpan = _.cloneDeep(_.last(calendar.timeSpans));
       lastTimeSpan.status = {type: 'Available'};
+      lastTimeSpan.bookingAvailability = {type: 'Available'};
       calendar.timeSpans.push(lastTimeSpan);
       // Do not trigger timeSpanChanged to prevent saving duplicates.
     }
@@ -13544,15 +13552,17 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     /**
      * @param {Date|string} start
      * @param {Date|string} end
-     *  An empty string when not set.
+     * @param {Object} status
+     * @param {Object} bookingAvailability
      */
-    addTimeSpan: function(start, end, status) {
+    addTimeSpan: function(start, end, status, bookingAvailability) {
       var allDay = moment(start).format('HH:mm') === '00:00' && moment(end).format('HH:mm') === '23:59';
       this.calendar.timeSpans.push({
         'start': moment(start).toISOString(),
         'end': moment(end).toISOString(),
         'allDay': allDay,
-        'status': status
+        'status': status ? status : {type: 'Available'},
+        'bookingAvailability': bookingAvailability ? bookingAvailability : {type: 'Available'}
       });
     },
 
@@ -13999,8 +14009,7 @@ function EventFormController(
     EventFormData.calendar.calendarType = 'single';
     EventFormData.addTimeSpan(
       calendarConfig.startTime ? moment(calendarConfig.date + ' ' + calendarConfig.startTime, 'YYYY-MM-DD HH:mm') : '',
-      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : '',
-      {type: 'Available'}
+      calendarConfig.endTime ? moment(calendarConfig.date + ' ' + calendarConfig.endTime, 'YYYY-MM-DD HH:mm') : ''
     );
     EventFormData.initCalendar();
     //EventFormData.showStep(3);
@@ -14153,11 +14162,16 @@ function EventFormController(
     if (item.calendarType === 'multiple' && item.subEvent) {
       for (var j = 0; j < item.subEvent.length; j++) {
         var subEvent = item.subEvent[j];
-        EventFormData.addTimeSpan(subEvent.startDate, subEvent.endDate, subEvent.status || item.status);
+        EventFormData.addTimeSpan(
+          subEvent.startDate,
+          subEvent.endDate,
+          subEvent.status || item.status,
+          subEvent.bookingAvailability || item.bookingAvailability
+        );
       }
     }
     else if (item.calendarType === 'single') {
-      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status);
+      EventFormData.addTimeSpan(item.startDate, item.endDate, item.status, item.bookingAvailability);
     }
 
     if (EventFormData.calendar.calendarType) {
@@ -27467,12 +27481,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                                </div>\n" +
     "                            </div>\n" +
     "                        </div>\n" +
-    "                        <div ng-if=\"calendar.timeSpans && calendar.timeSpans[$index].status.type !== 'Available'\" class=\"status row alert alert-info\">\n" +
-    "                            <div ng-switch=\"calendar.timeSpans[$index].status.type\">\n" +
-    "                                <span ng-switch-when=\"TemporarilyUnavailable\" translate-once=\"offerStatus.postponed\"></span>\n" +
-    "                                <span ng-switch-when=\"Unavailable\" translate-once=\"offerStatus.cancelled\"></span>\n" +
-    "                            </div>\n" +
-    "                        </div>                        \n" +
+    "                        <div ng-if=\"calendar.timeSpans && (calendar.timeSpans[$index].status.type !== 'Available' || calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable')\" class=\"status row alert alert-info\">\n" +
+    "                            <span ng-show=\"calendar.timeSpans[$index].status.type === 'TemporarilyUnavailable'\" translate-once=\"offerStatus.postponed\"></span>\n" +
+    "                            <span ng-show=\"calendar.timeSpans[$index].status.type === 'Unavailable'\" translate-once=\"offerStatus.cancelled\"></span>\n" +
+    "                            <span ng-show=\"calendar.timeSpans[$index].status.type !== 'Available' && calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable'\">&</span>\n" +
+    "                            <span ng-show=\"calendar.timeSpans[$index].bookingAvailability.type === 'Unavailable'\" translate-once=\"bookingAvailability.unavailable\"></span>\n" +
+    "                        </div>\n" +
     "                    </div>\n" +
     "\n" +
     "                    <a href=\"#\" ng-click=\"calendar.createTimeSpan()\" class=\"add-day-link\" translate-once=\"calendar.add_days\"></a>\n" +
