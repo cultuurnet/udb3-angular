@@ -27175,6 +27175,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <div ng-if=\"::eventAction.auth0ClientId\">\n" +
     "                  Auth0 client id: <span class=\"api\" ng-bind=\"::eventAction.auth0ClientId\"></span>\n" +
     "                </div>\n" +
+    "                <div ng-if=\"::eventAction.auth0ClientName\">\n" +
+    "                  Auth0 client name: <span class=\"api\" ng-bind=\"::eventAction.auth0ClientName\"></span>\n" +
+    "                </div>\n" +
     "              </dd>\n" +
     "            </dl>\n" +
     "          </div>\n" +
