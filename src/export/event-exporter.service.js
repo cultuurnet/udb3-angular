@@ -34,7 +34,8 @@ function eventExporter(jobLogger, appConfig, udbApi, EventExportJob, $cookies) {
    * @return {object}
    */
   ex.export = function (format, email, properties, perDay, customizations) {
-    var queryString = ex.activeExport.query.queryString + ' AND workflowStatus:("APPROVED" OR "READY_FOR_VALIDATION")',
+    var workflowQuery = ' AND workflowStatus:("APPROVED" OR "READY_FOR_VALIDATION")',
+        queryString = '(' + ex.activeExport.query.queryString + ')' + workflowQuery,
         selection = ex.activeExport.selection || [],
         eventCount = ex.activeExport.eventCount,
         brand = customizations.brand || '',
