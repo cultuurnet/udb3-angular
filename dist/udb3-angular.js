@@ -6291,7 +6291,7 @@ function UdbApi(
     };
 
     return $http
-        .post(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', constraintData, requestOptions)
+        .post(appConfig.baseUrl + 'roles/' + roleId + '/constraints/', constraintData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -6310,7 +6310,7 @@ function UdbApi(
     };
 
     return $http
-        .put(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', updateData, requestOptions)
+        .put(appConfig.baseUrl + 'roles/' + roleId + '/constraints/', updateData, requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
@@ -6324,7 +6324,7 @@ function UdbApi(
     requestOptions.headers['Content-Type'] = 'application/ld+json;domain-model=removeConstraint';
 
     return $http
-        .delete(appConfig.baseUrl + 'roles/' + roleId + '/constraints/v3', requestOptions)
+        .delete(appConfig.baseUrl + 'roles/' + roleId + '/constraints/', requestOptions)
         .then(returnUnwrappedData, returnApiProblem);
   };
 
