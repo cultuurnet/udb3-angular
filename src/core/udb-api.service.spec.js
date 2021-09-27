@@ -651,7 +651,7 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-        .expectPOST(baseUrl + 'roles/roleid/constraints/v3', expectedData, expectedHeaders)
+        .expectPOST(baseUrl + 'roles/roleid/constraints/', expectedData, expectedHeaders)
         .respond(JSON.stringify({}));
 
     service
@@ -685,7 +685,7 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-      .expectPUT(baseUrl + 'roles/roleid/constraints/v3', expectedData, expectedHeaders)
+      .expectPUT(baseUrl + 'roles/roleid/constraints/', expectedData, expectedHeaders)
       .respond(JSON.stringify({}));
 
     service
@@ -715,7 +715,7 @@ describe('Service: UDB3 Api', function () {
 
     // What we actually want to check
     $httpBackend
-        .expectDELETE(baseUrl + 'roles/roleid/constraints/v3', expectedHeaders)
+        .expectDELETE(baseUrl + 'roles/roleid/constraints/', expectedHeaders)
         .respond(JSON.stringify({}));
 
     service
@@ -1867,7 +1867,7 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-        .expectPOST(baseUrl + 'roles/1/constraints/v3', updateData)
+        .expectPOST(baseUrl + 'roles/1/constraints/', updateData)
         .respond(JSON.stringify(expectedCommandId));
 
     service
@@ -1892,7 +1892,7 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-      .expectPUT(baseUrl + 'roles/1/constraints/v3', updateData)
+      .expectPUT(baseUrl + 'roles/1/constraints/', updateData)
       .respond(JSON.stringify(expectedCommandId));
 
     service
@@ -1913,7 +1913,7 @@ describe('Service: UDB3 Api', function () {
     }
 
     $httpBackend
-        .expectDELETE(baseUrl + 'roles/1/constraints/v3')
+        .expectDELETE(baseUrl + 'roles/1/constraints/')
         .respond(JSON.stringify(expectedCommandId));
 
     service
