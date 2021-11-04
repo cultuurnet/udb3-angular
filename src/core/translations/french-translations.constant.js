@@ -319,6 +319,7 @@ angular.module('udb.core')
       'labels': 'Labels',
       'calendarSummary': 'Aperçu du calendre',
       'image': 'Image',
+      'videos': 'Vidéos',
       'location': 'Lieu',
       'address': 'Adresse',
       'organizer': 'Organisateur',
