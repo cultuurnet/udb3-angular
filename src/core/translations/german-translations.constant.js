@@ -415,8 +415,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'continue_validation': 'Mit Validierung fortfahren',
   },
   'cultuurkuur': {
-    'info':
-      'Diese Veranstaltung enthält <a target="_blank" href="{{previewLink}}">extra Informationen</a> für Schulen und Lehrkräfte.',
+    'info': 'Diese Veranstaltung enthält <a target="_blank" href="{{previewLink}}">extra Informationen</a> für Schulen und Lehrkräfte.',
     'subject': 'Betreff',
     'target_group': 'Zielgruppe',
     'levels': 'Geeignet für',
@@ -591,8 +590,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
           'Schreiben Sie eine enthusiastische Umschreibung der Tanzvorführung.<ul><li>Wer ist der <strong>Choreograph</strong>?</li><li>Wer sind die<strong> Tänzer</strong>?</li><li>Welchen <strong>Stil</strong> tanzen sie?</li><li>Um welches <strong>Thema oder Problem</strong> dreht sich die Vorstellung?</li></ul>',
         'Festival':
           'Schreiben Sie eine enthusiastische Umschreibung des Festivals. <ul> <li>Wer oder was steht auf dem <strong>Programm?</strong> </li> <li>Welche <strong>(Neben)Aktivitäten</strong> gibt es?</li> </ul>',
-        'Film':
-          'Schreiben Sie eine enthusiastische Umschreibung des Films. <ul> <li>Umreißen Sie kurz die <strong>Geschichte</strong>. </li> <li>Wer ist der <strong>Regisseur?</strong> </li> <li>Wer spielt die  <strong>Hauptrolle?</strong> </li> <li>Hat der Film <strong>Preise</strong> gewonnen? </li></ul>',
+        'Film': 'Schreiben Sie eine enthusiastische Umschreibung des Films. <ul> <li>Umreißen Sie kurz die <strong>Geschichte</strong>. </li> <li>Wer ist der <strong>Regisseur?</strong> </li> <li>Wer spielt die  <strong>Hauptrolle?</strong> </li> <li>Hat der Film <strong>Preise</strong> gewonnen? </li></ul>',
         'Lezing of congres':
           'Schreiben Sie eine enthusiastische Umschreibung der Lesung oder des Kongresses. <ul> <li>Welche<strong> Themas</strong> werden behandelt? </li><li>Welche <strong>Sprecher </strong>nehmen das Wort?</li></ul>',
         'Theatervoorstelling':
@@ -691,8 +689,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     },
     'embargo': {
       'title': 'Wählen Sie ein Veröffentlichungsdatum',
-      'help':
-        'Ab wann soll dies online angezeigt werden? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Achtung, dieses Datum kann nur einmalig eingestellt werden.</em>',
+      'help': 'Ab wann soll dies online angezeigt werden? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Achtung, dieses Datum kann nur einmalig eingestellt werden.</em>',
       'error_past':
         'Das Veröffentlichungsdatum kann nicht in der Vergangenheit liegen.',
       'error_empty': 'Wählen Sie ein Veröffentlichungsdatum.',
@@ -1142,8 +1139,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'Creativiteit': 'Kreativität',
     'Computer en techniek': 'Computer und Technik',
     'Opvoeding': 'Erziehung',
-    'Persoon en relaties':
-      'Persönliche Entwicklung und Beziehungen',
+    'Persoon en relaties': 'Persönliche Entwicklung und Beziehungen',
     'Interculturele vorming': 'Interkulturelle Entwicklung',
     'Kunst en kunsteducatie': 'Kunst und Kunsterziehung',
     'Gezondheid en zorg': 'Gesundheit und Pflege',
@@ -1164,8 +1160,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'Opera en operette': 'Opera und Operette',
     'Mime en bewegingstheater': 'Pantomimen- und Bewegungstheater',
     'Wetenschap': 'Wissenschaft',
-    'Zingeving, filosofie en religie':
-      'Sinngebung, Philosophie und Religion',
+    'Zingeving, filosofie en religie': 'Sinngebung, Philosophie und Religion',
     'Thema onbepaald': 'Thema unbestimmt',
     'Circus': 'Zirkus',
     'Voeding': 'Ernährung',
@@ -1249,8 +1244,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'advancedQueryBuilder': {
       'title': 'Ersteller erweiterte Suchanfragen',
       'header': {
-        'info':
-          'Hier können Sie komplexe Suchanfragen erstellen. Benötigen Sie Hilfe? Lesen Sie',
+        'info': 'Hier können Sie komplexe Suchanfragen erstellen. Benötigen Sie Hilfe? Lesen Sie',
         'link': 'unsere Anleitung',
       },
       'group': 'Gruppe ',
