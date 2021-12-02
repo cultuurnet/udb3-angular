@@ -728,7 +728,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'or': 'oder',
     'default_days': 'Feste Tage pro Woche',
     'start_label': 'Start',
-    'end_label': 'Einde',
+    'end_label': 'Ende',
     'whole_day_label': 'Ganztags',
     'start_hour_label': 'Beginn',
     'end_hour_label': 'Ende',
