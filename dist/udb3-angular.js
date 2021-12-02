@@ -5532,8 +5532,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'continue_validation': 'Mit Validierung fortfahren',
   },
   'cultuurkuur': {
-    'info':
-      'Diese Veranstaltung enthält <a target="_blank" href="{{previewLink}}">extra Informationen</a> für Schulen und Lehrkräfte.',
+    'info': 'Diese Veranstaltung enthält <a target="_blank" href="{{previewLink}}">extra Informationen</a> für Schulen und Lehrkräfte.',
     'subject': 'Betreff',
     'target_group': 'Zielgruppe',
     'levels': 'Geeignet für',
@@ -5702,47 +5701,46 @@ angular.module('udb.core').constant('udbGermanTranslations', {
         'Bringen Sie die wichtigste Botschaft in den ersten 200 Zeichen unter. Sie können noch zusätzliche Hintergrundinformationen hinzufügen.',
       'empty': 'Leeren',
       'tips': {
-        'Konzert':
+        'Concert':
           'Schreiben Sie eine enthusiastische Umschreibung des Konzerts. <ul><li>Welche(r)<strong> Künstler(innen)</strong> treten auf? </li><li>Um welches <strong>Genre</strong> handelt es sich?</li><li>Welches<strong> Album</strong> <strong>oder Werk </strong>wird vorgestellt? </li></ul>',
-        'Tanzvorführung':
+        'Dansvoorstelling':
           'Schreiben Sie eine enthusiastische Umschreibung der Tanzvorführung.<ul><li>Wer ist der <strong>Choreograph</strong>?</li><li>Wer sind die<strong> Tänzer</strong>?</li><li>Welchen <strong>Stil</strong> tanzen sie?</li><li>Um welches <strong>Thema oder Problem</strong> dreht sich die Vorstellung?</li></ul>',
         'Festival':
           'Schreiben Sie eine enthusiastische Umschreibung des Festivals. <ul> <li>Wer oder was steht auf dem <strong>Programm?</strong> </li> <li>Welche <strong>(Neben)Aktivitäten</strong> gibt es?</li> </ul>',
-        'Film':
-          'Schreiben Sie eine enthusiastische Umschreibung des Films. <ul> <li>Umreißen Sie kurz die <strong>Geschichte</strong>. </li> <li>Wer ist der <strong>Regisseur?</strong> </li> <li>Wer spielt die  <strong>Hauptrolle?</strong> </li> <li>Hat der Film <strong>Preise</strong> gewonnen? </li></ul>',
-        'Lesung oder Kongress':
+        'Film': 'Schreiben Sie eine enthusiastische Umschreibung des Films. <ul> <li>Umreißen Sie kurz die <strong>Geschichte</strong>. </li> <li>Wer ist der <strong>Regisseur?</strong> </li> <li>Wer spielt die  <strong>Hauptrolle?</strong> </li> <li>Hat der Film <strong>Preise</strong> gewonnen? </li></ul>',
+        'Lezing of congres':
           'Schreiben Sie eine enthusiastische Umschreibung der Lesung oder des Kongresses. <ul> <li>Welche<strong> Themas</strong> werden behandelt? </li><li>Welche <strong>Sprecher </strong>nehmen das Wort?</li></ul>',
-        'Theatervorstellung':
+        'Theatervoorstelling':
           'Schreiben Sie eine enthusiastische Umschreibung der Vorstellung.  <ul> <li>Umreißen Sie kurz die <strong>Geschichte</strong> oder das <strong>Thema</strong>. </li> <li>Welches <strong>Theaterensemble</strong> führt das Stück auf? </li> <li>Welche <strong>Darsteller</strong> spielen mit?</li></ul>',
-        'Sportwettkampf ansehen':
+        'Sportwedstrijd bekijken':
           'Schreiben Sie eine enthusiastische Umschreibung des Sportwettkampfes. <ul> <li>Welche <strong>Mannschaften oder Teilnehmer</strong> treten an? </li> <li>In welcher<strong> Liga</strong> findet der Wettkampf statt?</li></ul>',
-        'Markt oder Jahrmarkt':
+        'Markt of braderie':
           'Schreiben Sie eine enthusiastische Umschreibung des Markts oder Straßenfests. <ul> <li>In <strong>welchen Straßen</strong> findet dieser statt? </li> <li>Welche <strong>Stände</strong> werden anwesend sein? </li><li>Gibt es <strong>(Neben)Aktivitäten</strong>?</li></ul>',
-        'Tag der offenen Tür':
+        'Opendeurdag':
           'Schreiben Sie eine enthusiastische Umschreibung vom Tag der offenen Tür. Was kann man <strong>sehen </strong>oder <strong>erleben?</strong>',
-        'Messe':
+        'Beurs':
           'Schreiben Sie eine enthusiastische Umschreibung der Messe. Was kann man <strong>ansehen</strong>, <strong>erleben</strong> oder <strong>kaufen</strong>?',
-        'Ausstellung':
+        'Tentoonstelling':
           'Schreiben Sie eine enthusiastische Umschreibung der Ausstellung. <ul> <li>Welche <strong>Künstler</strong> stellen aus?</li> <li>Welche<strong> Kollektionen</strong> können betrachtet werden? </li> <li>Steht ein <strong>(Audio)Guide</strong> oder <strong>eine Broschüre</strong> zur Verfügung?</li></ul>',
-        'Begleiteter Ausflug oder Rundgang':
+        'Begeleide uitstap of rondleiding':
           'Schreiben Sie eine enthusiastische Umschreibung des Rundgangs. <ul> <li>Was kann man entlang der Strecke <strong>sehen oder erleben</strong>? </li> <li>Gibt es eine maximale <strong>Anzahl Teilnehmer</strong>? </li> <li>Wird der Rundgang durchgehen oder zu <strong>bestimmten Zeiten</strong> organisiert? </li> <li>Gibt es <strong>Dinge zu beachten</strong> (zB. Stiefel notwendig)?</li> </ul>',
-        'Vorlesungsreihe':
+        'Lessenreeks':
           'Schreiben Sie eine enthusiastische Umschreibung der Vorlesungsreihe. <ul> <li>Was genau lernt man? </li> <li>Benötigt man <strong>Vorkenntnisse</strong> um teilzunehmen? </li> <li>Welches <strong>Niveau</strong> haben die Vorlesungen? </li><li>Erhält man am Ende ein <strong>Diplom</strong> oder Zertifikat?</li></ul>',
-        'Kurs mit öffentlichen Sitzungen':
+        'Cursus met open sessies':
           'Schreiben Sie eine enthusiastische Umschreibung des Workshops oder Kurses mit öffentlichen Sitzungen.  <ul> <li>Was genau lernt man? </li> <li>Benötigt man <strong>Vorkenntnisse</strong> um teilzunehmen? </li> <li>Welches <strong>Niveau</strong> haben die Vorlesungen? </li> <li>Erhält man am Ende ein <strong>Diplom</strong> oder Zertifikat?</li> </ul>',
-        'Camp oder Ferienlager':
+        'Kamp of vakantie':
           'Schreiben Sie eine enthusiastische Umschreibung des Camps oder Ferienlagers.  <ul> <li>Welche <strong>Aktivitäten</strong> gibt es? </li> <li>Gibt es ein <strong>Thema</strong>? </li> <li>Gibt es beim Camp <strong>Übernachtungsmöglichkeiten</strong>? </li> <li>Wann <strong>beginnt und endet</strong> das Tagescamp und gibt es davor und danach <strong>Betreuungsmöglichkeiten</strong>?</li> </ul>',
-        'Feiern':
+        'Festiviteit':
           'Schreiben Sie eine enthusiastische Umschreibung des Jahrmarkts. <ul> <li>Welche <strong>Attraktionen</strong> gibt es? </li> <li>Gibt es<strong> (Neben)Aktivitäten</strong> (Quiz, Konzerte, Foodtrucks, Markt...)?</li> </ul>',
-        'Ausflug':
+        'Route':
           'Schreiben Sie eine enthusiastische Umschreibung des Ausflugs. <ul> <li>Findet dieser <strong>zu Fuß, mit dem Rad, mit dem Boot </strong>…statt? </li> <li>Welche möglichen <strong>Zwischenstopps</strong> gibt es? </li> <li>Wie lang ist die <strong>Strecke</strong> oder <strong>Dauer</strong> dieses Ausflugs?</li> <li>Findet der Ausflug <strong>in Begleitung</strong>, mit einem Guide, einer Broschüre oder mit Wegweisern statt?</li> </ul>',
-        'Party':
+        'Party of fuif':
           'Schreiben Sie eine enthusiastische Umschreibung der Party. Welche <strong>DJs</strong> oder <strong>Bands</strong> treten auf?',
-        'Spendenmahl':
+        'Eet of drankfestijn':
           'Schreiben Sie eine enthusiastische Umschreibung des Spendenmahls. <ul> <li>Was steht auf der <strong>Speisekarte?</strong> </li> <li>Geht der Erlös an einen<strong> guten Zweck</strong>? </li> <li>Gibt es <strong>(Neben)Aktivitäten</strong>?</li> </ul>',
-        'Spiel oder Quiz':
+        'Spel of quiz':
           'Schreiben Sie eine enthusiastische Umschreibung des Quiz oder Spiels. <ul> <li>Um welche <strong>Themen</strong> dreht sich das Quiz?</li> <li>Hat das Spiel ein <strong>Thema</strong>?</li> <li>Gibt es etwas zu <strong>gewinnen</strong>?</li> <li>Gibt es eine <strong>maximale</strong> Anzahl <strong>Teilnehmer</strong>?</li> </ul>',
-        'Sport und Bewegung':
+        'Sport en beweging':
           'Schreiben Sie eine enthusiastische Umschreibung der Sportaktivität. <ul> <li>Welche <strong>Sportart</strong>(en) können ausgeübt werden? </li> <li>Welche <strong>Geräte</strong> werden (nicht) gestellt?</li> </ul>',
         'Monument':
           'Schreiben Sie eine enthusiastische Umschreibung des Monuments. Geben Sie auch an, ob das Monument nur eingeschränkt zugänglich ist (zB. nur Salons).',
@@ -5808,8 +5806,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     },
     'embargo': {
       'title': 'Wählen Sie ein Veröffentlichungsdatum',
-      'help':
-        'Ab wann soll dies online angezeigt werden? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Achtung, dieses Datum kann nur einmalig eingestellt werden.</em>',
+      'help': 'Ab wann soll dies online angezeigt werden? <em class="text-info"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> Achtung, dieses Datum kann nur einmalig eingestellt werden.</em>',
       'error_past':
         'Das Veröffentlichungsdatum kann nicht in der Vergangenheit liegen.',
       'error_empty': 'Wählen Sie ein Veröffentlichungsdatum.',
@@ -6259,8 +6256,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'Creativiteit': 'Kreativität',
     'Computer en techniek': 'Computer und Technik',
     'Opvoeding': 'Erziehung',
-    'Persoon en relaties':
-      'Persönliche Entwicklung und Beziehungen',
+    'Persoon en relaties': 'Persönliche Entwicklung und Beziehungen',
     'Interculturele vorming': 'Interkulturelle Entwicklung',
     'Kunst en kunsteducatie': 'Kunst und Kunsterziehung',
     'Gezondheid en zorg': 'Gesundheit und Pflege',
@@ -6281,8 +6277,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'Opera en operette': 'Opera und Operette',
     'Mime en bewegingstheater': 'Pantomimen- und Bewegungstheater',
     'Wetenschap': 'Wissenschaft',
-    'Zingeving, filosofie en religie':
-      'Sinngebung, Philosophie und Religion',
+    'Zingeving, filosofie en religie': 'Sinngebung, Philosophie und Religion',
     'Thema onbepaald': 'Thema unbestimmt',
     'Circus': 'Zirkus',
     'Voeding': 'Ernährung',
@@ -6366,8 +6361,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'advancedQueryBuilder': {
       'title': 'Ersteller erweiterte Suchanfragen',
       'header': {
-        'info':
-          'Hier können Sie komplexe Suchanfragen erstellen. Benötigen Sie Hilfe? Lesen Sie',
+        'info': 'Hier können Sie komplexe Suchanfragen erstellen. Benötigen Sie Hilfe? Lesen Sie',
         'link': 'unsere Anleitung',
       },
       'group': 'Gruppe ',
