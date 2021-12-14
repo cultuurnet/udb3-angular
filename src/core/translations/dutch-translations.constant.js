@@ -354,6 +354,7 @@ angular.module('udb.core')
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
+      'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',

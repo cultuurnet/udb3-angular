@@ -58,15 +58,18 @@ function EventDetail(
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-
-          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+          $scope.isGodUser = !!_.find(userPermissions, function(permission) {
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          }).length > 0;
+          });
+
+          var canEditMovies = !!_.find(userPermissions, function(permission) {
+            return permission === RolePermission.FILMS_AANMAKEN;
+          });
 
           if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, duplication: true};
+            $scope.permissions = {editing: true, editingMovies: true, duplication: true};
           } else if (hasPermission) {
-            $scope.permissions = {editing: !event.isExpired(), duplication: true};
+            $scope.permissions = {editing: !event.isExpired(), editingMovies: canEditMovies, duplication: true};
           } else {
             $scope.permissions = {editing: false, duplication: false};
           }
@@ -248,6 +251,13 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEdit', {id: id});
+  };
+
+  $scope.openEditPageMovies = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+
+    $state.go('split.eventEditMovie', {id: id});
   };
 
   $scope.openTranslatePage = function() {
