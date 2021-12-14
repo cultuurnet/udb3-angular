@@ -3130,6 +3130,7 @@ angular.module('udb.core')
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
       'edit': 'Bewerken',
+      'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',
@@ -11755,6 +11756,13 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEdit', {id: id});
+  };
+
+  $scope.openEditPageMovies = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+
+    $state.go('split.eventEditMovie', {id: id});
   };
 
   $scope.openTranslatePage = function() {
@@ -28272,6 +28280,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
+    "        <button ng-if=\"::(permissions.editing && permissions.editingMovies)\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"openEditPageMovies()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.editMovie\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
