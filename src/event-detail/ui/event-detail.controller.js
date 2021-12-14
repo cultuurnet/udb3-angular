@@ -253,6 +253,13 @@ function EventDetail(
     $state.go('split.eventEdit', {id: id});
   };
 
+  $scope.openEditPageMovies = function() {
+    var eventLocation = $scope.eventId.toString();
+    var id = eventLocation.split('/').pop();
+
+    $state.go('split.eventEditMovie', {id: id});
+  };
+
   $scope.openTranslatePage = function() {
     var eventLocation = $scope.eventId.toString();
     var id = eventLocation.split('/').pop();
