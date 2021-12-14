@@ -11562,10 +11562,9 @@ function EventDetail(
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-
-          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+          $scope.isGodUser = !!_.find(userPermissions, function(permission) {
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          }).length > 0;
+          });
 
           if ($scope.isGodUser) {
             $scope.permissions = {editing: true, duplication: true};
