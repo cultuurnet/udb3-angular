@@ -55,6 +55,12 @@ function EventDetail(
     var hasPermission = permissionsData[0];
     var event = permissionsData[1];
 
+    var FILMINVOER_LABEL = 'udb-filminvoer';
+
+    var hasMovieLabel = !!_.find(event.labels, function (label) {
+      return label === FILMINVOER_LABEL;
+    });
+
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
@@ -62,12 +68,14 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           });
 
-          var canEditMovies = !!_.find(userPermissions, function(permission) {
+          var hasEditMoviesPermission = !!_.find(userPermissions, function(permission) {
             return permission === RolePermission.FILMS_AANMAKEN;
           });
 
+          var canEditMovies = hasEditMoviesPermission && hasMovieLabel;
+
           if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, editingMovies: true, duplication: true};
+            $scope.permissions = {editing: true, editingMovies: canEditMovies, duplication: true};
           } else if (hasPermission) {
             $scope.permissions = {editing: !event.isExpired(), editingMovies: canEditMovies, duplication: true};
           } else {
