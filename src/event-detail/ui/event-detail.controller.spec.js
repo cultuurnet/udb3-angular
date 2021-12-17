@@ -462,7 +462,7 @@ describe('Controller: Event Detail', function() {
 
     var expectedPermissions = {
       editing: true,
-      editingMovies: true,
+      editingMovies: false,
       duplication: true
     };
 
