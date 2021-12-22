@@ -126,7 +126,10 @@
                   <span class="text-muted"
                         ng-if="::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)">
                       Probleem bij het ophalen van de kalenderinformatie
-                    </span>
+                  </span>
+                  <div ng-if="isLessonSeries" class="alert alert-info lesson-series-info">
+                    <p translate-once="preview.info_lesson_series"></p>
+                  </div>
                 </td>
               </tr>
               <tr ng-class="::{muted: (!event.organizer)}">

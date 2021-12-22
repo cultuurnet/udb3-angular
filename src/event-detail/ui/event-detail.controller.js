@@ -184,6 +184,7 @@ function EventDetail(
 
     hasContactPoint();
     hasBookingInfo();
+    isLessonSeries();
 
     ModerationService
       .getMyRoles()
@@ -359,6 +360,11 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
+  }
+
+  function isLessonSeries() {
+    var eventTypeId = $scope.event.type.id;
+    $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
   }
 
   $scope.translateAudience = function (type) {
