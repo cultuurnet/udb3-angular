@@ -6185,6 +6185,9 @@ form.booking-period table {
 #form-age .form-group:not(:last-child) {
   margin-right: 1rem;
 }
+.alert-info.lesson-series-info {
+  margin-top: 1rem;
+}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
@@ -6295,6 +6298,9 @@ img.offer-image-main {
 .event-detail .media-object,
 .place-detail .media-object {
   max-height: 100px;
+}
+.alert-info.lesson-series-info {
+  margin-top: 1rem;
 }
 .editable-click {
   border: 1px solid #eeeeee;
