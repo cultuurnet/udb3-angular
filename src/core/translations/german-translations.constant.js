@@ -379,6 +379,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'no_age': 'Keine Altersinformation',
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
+    'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
