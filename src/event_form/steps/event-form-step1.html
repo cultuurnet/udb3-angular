@@ -24,7 +24,7 @@
           <li ng-hide="showAllEventTypes">
             <a href="" ng-click="toggleEventTypes()" translate-once="eventForm.step1.show_everything"></a>
           </li>
-        </ul>
+        </ul>        
       </div>
 
       <div class="col-sm-2" ng-show="splitTypes">
@@ -47,12 +47,15 @@
     </div>
 
     <div class="row">
-      <p class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
+      <div class="col-xs-12 col-md-12" ng-hide="activeEventType === ''">
         <span class="btn-chosen" ng-bind="activeEventTypeLabel"></span>
         <a class="btn btn-link btn-default"
            href="" ng-click="resetEventType()"
            translate-once="eventForm.step1.change"></a>
-      </p>
+        <div ng-if="isLessonSeries" class="alert alert-info lesson-series-info">
+         <p translate-once="preview.info_lesson_series"></p>
+        </div>
+      </div>      
 
       <div class="col-xs-12 theme-refinement" ng-hide="activeEventType === '' || activeTheme !== ''">
         <label class="event-theme-label" ng-show="eventThemeLabels.length" translate-once="eventForm.step1.refine"></label>
@@ -79,7 +82,6 @@
            href="" ng-click="resetTheme()"
            translate-once="eventForm.step1.change"></a>
       </p>
-
   </section>
 
 </div>
