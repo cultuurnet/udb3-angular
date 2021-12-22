@@ -486,7 +486,8 @@ angular.module('udb.core')
         'or': 'of',
         'location_label': 'Een locatie',
         'change': 'Wijzigen',
-        'refine': 'Verfijn'
+        'refine': 'Verfijn',
+        'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'
       },
       step2: {
         'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
