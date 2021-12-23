@@ -3132,6 +3132,7 @@ angular.module('udb.core')
       'edit': 'Bewerken',
       'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
+      'duplicate_as_movie': 'Kopiëren en aanpassen als film',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
@@ -3705,6 +3706,7 @@ angular.module('udb.core')
     },
     duplicate: {
       title: 'Kopiëren en aanpassen',
+      'duplicate_as_movie': 'Kopiëren en aanpassen als film',
       description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
       error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
     },
@@ -9856,6 +9858,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
+  var createDuplicateAsMovie$ = rx.createObservableFunction(controller, 'createDuplicateAsMovie');
 
   var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 
@@ -9875,11 +9878,29 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     })
     .subscribe();
 
+  createDuplicateAsMovie$
+    .withLatestFrom(duplicateFormData$, function (createDuplicateAsMovie, duplicateFormData) {
+      if (duplicateFormData) {
+        showAsyncDuplication();
+        eventDuplicator
+          .duplicate(duplicateFormData)
+          .then(showDuplicateAsMovie, showAsyncError);
+      }
+    })
+    .subscribe();
+
   /**
    * @param {string} duplicateId
    */
   function showDuplicate(duplicateId) {
     $state.go('split.eventEdit', {id: duplicateId});
+  }
+
+  /**
+   * @param {string} duplicateId
+   */
+  function showDuplicateAsMovie(duplicateId) {
+    $state.go('split.eventEditMovie', {id: duplicateId});
   }
 
   function showAsyncError() {
@@ -28042,6 +28063,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            role=\"button\"\n" +
     "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
     "            translate-once=\"duplicate.title\"></button>\n" +
+    "    <button class=\"btn btn-success\"\n" +
+    "            ng-disabled=\"duplication.duplicating\"\n" +
+    "            ng-click=\"duplication.createDuplicateAsMovie()\"\n" +
+    "            role=\"button\"\n" +
+    "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
+    "            translate-once=\"duplicate.duplicate_as_movie\"></button>\n" +
     "    <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"duplication.duplicating\"></i>\n" +
     "    <span ng-show=\"duplication.asyncError\" translate-once=\"duplicate.error\"></span>\n" +
     "</div>"
