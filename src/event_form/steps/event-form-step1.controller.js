@@ -17,8 +17,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
   var controller = this;
 
-  console.log('In Step 1');
-
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
@@ -58,7 +56,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
       $scope.isLessonSeries = $scope.activeEventType === '0.3.1.0.0';
-      console.log('isLessonSeries', $scope.isLessonSeries);
 
       if (type.themes) {
         theme = _.findWhere(type.themes, {id: $scope.eventThemeId});
