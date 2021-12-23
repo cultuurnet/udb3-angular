@@ -182,6 +182,9 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
+    var eventTypeId = $scope.event.type.id;
+    $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
+
     hasContactPoint();
     hasBookingInfo();
 

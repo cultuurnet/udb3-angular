@@ -3158,7 +3158,8 @@ angular.module('udb.core')
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
       'publiq_url': 'Bekijk op {{publicationBrand}}',
-      'translate': 'Vertalen'
+      'translate': 'Vertalen',
+      'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'
     },
     translate: {
       'ready': 'Klaar met vertalen',
@@ -3261,7 +3262,8 @@ angular.module('udb.core')
         'or': 'of',
         'location_label': 'Een locatie',
         'change': 'Wijzigen',
-        'refine': 'Verfijn'
+        'refine': 'Verfijn',
+        'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'
       },
       step2: {
         'date_help_event': 'Wanneer vindt dit evenement of deze activiteit plaats?',
@@ -4330,7 +4332,8 @@ angular.module('udb.core')
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
       'publiq_url': 'Voir sur {{publicationBrand}}',
-      'translate': 'Traduire'
+      'translate': 'Traduire',
+      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
     },
     translate: {
       'ready': 'Prêt à traduire',
@@ -4433,7 +4436,8 @@ angular.module('udb.core')
         'or': 'ou',
         'location_label': 'Un lieu',
         'change': 'Modifier',
-        'refine': 'Affiner'
+        'refine': 'Affiner',
+        'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
       },
       step2: {
         'date_help_event': 'L\'événement ou l\'activité a lieu quand?',
@@ -5497,6 +5501,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'no_age': 'Keine Altersinformation',
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
+    'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
@@ -5608,6 +5613,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'location_label': 'Einen Ort',
       'change': 'Ändern',
       'refine': 'Verfeinern',
+      'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
     },
     'step2': {
       'date_help_event':
@@ -11687,6 +11693,9 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
+    var eventTypeId = $scope.event.type.id;
+    $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
+
     hasContactPoint();
     hasBookingInfo();
 
@@ -15831,9 +15840,10 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.activeEventTypeLabel = $translate.instant('offerTypes.' + type.label);
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
+      $scope.isLessonSeries = $scope.activeEventType === '0.3.1.0.0';
 
       if (type.themes) {
-        theme = _.findWhere(type.themes, {id: eventThemeId});
+        theme = _.findWhere(type.themes, {id: $scope.eventThemeId});
       }
 
       if (type.groups) {
@@ -28390,7 +28400,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <span class=\"text-muted\"\n" +
     "                        ng-if=\"::(calendarSummary !== undefined ? (calendarSummary === false) : undefined)\">\n" +
     "                      Probleem bij het ophalen van de kalenderinformatie\n" +
-    "                    </span>\n" +
+    "                  </span>\n" +
+    "                  <div ng-if=\"isLessonSeries\" class=\"alert alert-info lesson-series-info\">\n" +
+    "                    <p translate-once=\"preview.info_lesson_series\"></p>\n" +
+    "                  </div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
     "              <tr ng-class=\"::{muted: (!event.organizer)}\">\n" +
@@ -29882,12 +29895,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
-    "      <p class=\"col-xs-12 col-md-12\" ng-hide=\"activeEventType === ''\">\n" +
+    "      <div class=\"col-xs-12 col-md-12\" ng-hide=\"activeEventType === ''\">\n" +
     "        <span class=\"btn-chosen\" ng-bind=\"activeEventTypeLabel\"></span>\n" +
     "        <a class=\"btn btn-link btn-default\"\n" +
     "           href=\"\" ng-click=\"resetEventType()\"\n" +
     "           translate-once=\"eventForm.step1.change\"></a>\n" +
-    "      </p>\n" +
+    "        <div ng-if=\"isLessonSeries\" class=\"alert alert-info lesson-series-info\">\n" +
+    "         <p translate-once=\"eventForm.step1.info_lesson_series\"></p>\n" +
+    "        </div>\n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"col-xs-12 theme-refinement\" ng-hide=\"activeEventType === '' || activeTheme !== ''\">\n" +
     "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\" translate-once=\"eventForm.step1.refine\"></label>\n" +
@@ -29914,7 +29930,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "           href=\"\" ng-click=\"resetTheme()\"\n" +
     "           translate-once=\"eventForm.step1.change\"></a>\n" +
     "      </p>\n" +
-    "\n" +
     "  </section>\n" +
     "\n" +
     "</div>\n"

@@ -380,7 +380,8 @@ angular.module('udb.core')
       'all_ages': 'Tous les âges',
       'no_age': 'Pas d\'information de l\'âge',
       'publiq_url': 'Voir sur {{publicationBrand}}',
-      'translate': 'Traduire'
+      'translate': 'Traduire',
+      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
     },
     translate: {
       'ready': 'Prêt à traduire',
@@ -483,7 +484,8 @@ angular.module('udb.core')
         'or': 'ou',
         'location_label': 'Un lieu',
         'change': 'Modifier',
-        'refine': 'Affiner'
+        'refine': 'Affiner',
+        'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
       },
       step2: {
         'date_help_event': 'L\'événement ou l\'activité a lieu quand?',

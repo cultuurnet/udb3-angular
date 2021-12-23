@@ -55,9 +55,10 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.activeEventTypeLabel = $translate.instant('offerTypes.' + type.label);
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
+      $scope.isLessonSeries = $scope.activeEventType === '0.3.1.0.0';
 
       if (type.themes) {
-        theme = _.findWhere(type.themes, {id: eventThemeId});
+        theme = _.findWhere(type.themes, {id: $scope.eventThemeId});
       }
 
       if (type.groups) {

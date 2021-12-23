@@ -6008,6 +6008,9 @@ input + .alert {
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
 }
+.offer-form .alert-info.lesson-series-info {
+  margin-top: 1rem;
+}
 .btn-plus {
   position: relative;
   margin-left: 1em;
@@ -6238,6 +6241,9 @@ h2.block-header {
 .event-detail-description {
   color: black;
   white-space: pre-line;
+}
+.event-detail .alert-info.lesson-series-info {
+  margin-top: 1rem;
 }
 img.offer-image-thumbnail {
   margin-top: 10px;

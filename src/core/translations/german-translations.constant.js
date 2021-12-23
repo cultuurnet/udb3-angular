@@ -379,6 +379,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'no_age': 'Keine Altersinformation',
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
+    'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
@@ -490,6 +491,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'location_label': 'Einen Ort',
       'change': 'Ändern',
       'refine': 'Verfeinern',
+      'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
     },
     'step2': {
       'date_help_event':
