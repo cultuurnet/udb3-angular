@@ -29872,7 +29872,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <li ng-hide=\"showAllEventTypes\">\n" +
     "            <a href=\"\" ng-click=\"toggleEventTypes()\" translate-once=\"eventForm.step1.show_everything\"></a>\n" +
     "          </li>\n" +
-    "        </ul>        \n" +
+    "        </ul>\n" +
     "      </div>\n" +
     "\n" +
     "      <div class=\"col-sm-2\" ng-show=\"splitTypes\">\n" +
