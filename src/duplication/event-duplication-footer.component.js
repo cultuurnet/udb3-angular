@@ -26,6 +26,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
+  var createDuplicateAsMovie$ = rx.createObservableFunction(controller, 'createDuplicateAsMovie');
 
   var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 
@@ -45,11 +46,29 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     })
     .subscribe();
 
+  createDuplicateAsMovie$
+    .withLatestFrom(duplicateFormData$, function (createDuplicateAsMovie, duplicateFormData) {
+      if (duplicateFormData) {
+        showAsyncDuplication();
+        eventDuplicator
+          .duplicate(duplicateFormData)
+          .then(showDuplicateAsMovie, showAsyncError);
+      }
+    })
+    .subscribe();
+
   /**
    * @param {string} duplicateId
    */
   function showDuplicate(duplicateId) {
     $state.go('split.eventEdit', {id: duplicateId});
+  }
+
+  /**
+   * @param {string} duplicateId
+   */
+  function showDuplicateAsMovie(duplicateId) {
+    $state.go('split.eventEditMovie', {id: duplicateId});
   }
 
   function showAsyncError() {
