@@ -356,6 +356,7 @@ angular.module('udb.core')
       'edit': 'Bewerken',
       'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
+      'duplicate_as_movie': 'Kopiëren en aanpassen als film',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
@@ -929,6 +930,7 @@ angular.module('udb.core')
     },
     duplicate: {
       title: 'Kopiëren en aanpassen',
+      duplicate_as_movie: 'Kopiëren en aanpassen als film',
       description: 'Je staat op het punt een evenement te kopiëren. Kies een tijdstip voor dit evenement.',
       error: 'Er ging iets mis tijdens het aanmaken van een kopie!'
     },
