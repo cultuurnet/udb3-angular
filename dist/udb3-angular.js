@@ -11693,9 +11693,11 @@ function EventDetail(
 
     $scope.eventIdIsInvalid = false;
 
+    var eventTypeId = $scope.event.type.id;
+    $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
+
     hasContactPoint();
     hasBookingInfo();
-    isLessonSeries();
 
     ModerationService
       .getMyRoles()
@@ -11871,11 +11873,6 @@ function EventDetail(
   function hasBookingInfo() {
     var bookingInfo = $scope.event.bookingInfo;
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
-  }
-
-  function isLessonSeries() {
-    var eventTypeId = $scope.event.type.id;
-    $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
   }
 
   $scope.translateAudience = function (type) {
@@ -15805,8 +15802,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
 
   var controller = this;
 
-  console.log('In Step 1');
-
   // main storage for event form.
   $scope.eventFormData = EventFormData;
 
@@ -15846,7 +15841,6 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.eventThemeLabels = type.themes;
       $scope.eventGroupLabels = type.groups;
       $scope.isLessonSeries = $scope.activeEventType === '0.3.1.0.0';
-      console.log('isLessonSeries', $scope.isLessonSeries);
 
       if (type.themes) {
         theme = _.findWhere(type.themes, {id: $scope.eventThemeId});
@@ -29909,7 +29903,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-if=\"isLessonSeries\" class=\"alert alert-info lesson-series-info\">\n" +
     "         <p translate-once=\"eventForm.step1.info_lesson_series\"></p>\n" +
     "        </div>\n" +
-    "      </div>      \n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"col-xs-12 theme-refinement\" ng-hide=\"activeEventType === '' || activeTheme !== ''\">\n" +
     "        <label class=\"event-theme-label\" ng-show=\"eventThemeLabels.length\" translate-once=\"eventForm.step1.refine\"></label>\n" +

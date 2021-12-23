@@ -6008,6 +6008,9 @@ input + .alert {
 .offer-form .event-validation div.text-danger {
   margin-bottom: 1ex;
 }
+.offer-form .alert-info.lesson-series-info {
+  margin-top: 1rem;
+}
 .btn-plus {
   position: relative;
   margin-left: 1em;
@@ -6185,9 +6188,6 @@ form.booking-period table {
 #form-age .form-group:not(:last-child) {
   margin-right: 1rem;
 }
-.alert-info.lesson-series-info {
-  margin-top: 1rem;
-}
 .muted td {
   background-color: #EDEDED;
   color: #777777;
@@ -6241,6 +6241,9 @@ h2.block-header {
 .event-detail-description {
   color: black;
   white-space: pre-line;
+}
+.event-detail .alert-info.lesson-series-info {
+  margin-top: 1rem;
 }
 img.offer-image-thumbnail {
   margin-top: 10px;
@@ -6298,9 +6301,6 @@ img.offer-image-main {
 .event-detail .media-object,
 .place-detail .media-object {
   max-height: 100px;
-}
-.alert-info.lesson-series-info {
-  margin-top: 1rem;
 }
 .editable-click {
   border: 1px solid #eeeeee;
