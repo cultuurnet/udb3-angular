@@ -9852,13 +9852,28 @@ function pickFirstEventArgument(event) {
 }
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx) {
+function EventDuplicationFooterController(
+  $rootScope,
+  eventDuplicator,
+  $state,
+  rx,
+  authorizationService,
+  RolePermission,
+  EventFormData
+) {
   var controller = this;
   var duplicateTimingChanged$ = $rootScope
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
   var createDuplicateAsMovie$ = rx.createObservableFunction(controller, 'createDuplicateAsMovie');
+
+  authorizationService
+  .getPermissions()
+  .then(function(userPermissions) {
+    controller.showDuplicateAsMovie = _.includes(userPermissions, RolePermission.FILMS_AANMAKEN) &&
+    _.includes(EventFormData.labels, 'udb-filminvoer');
+  });
 
   var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 
@@ -9913,7 +9928,7 @@ function EventDuplicationFooterController($rootScope, eventDuplicator, $state, r
     controller.duplicating = true;
   }
 }
-EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx"];
+EventDuplicationFooterController.$inject = ["$rootScope", "eventDuplicator", "$state", "rx", "authorizationService", "RolePermission", "EventFormData"];
 })();
 
 // Source: src/duplication/event-duplication-step.component.js
@@ -28064,6 +28079,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            ng-class=\"{disabled: !duplication.readyForDuplication}\"\n" +
     "            translate-once=\"duplicate.title\"></button>\n" +
     "    <button class=\"btn btn-success\"\n" +
+    "            ng-if=\"duplication.showDuplicateAsMovie\"\n" +
     "            ng-disabled=\"duplication.duplicating\"\n" +
     "            ng-click=\"duplication.createDuplicateAsMovie()\"\n" +
     "            role=\"button\"\n" +
