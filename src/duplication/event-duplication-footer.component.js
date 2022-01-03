@@ -20,13 +20,28 @@ function pickFirstEventArgument(event) {
 }
 
 /* @ngInject */
-function EventDuplicationFooterController($rootScope, eventDuplicator, $state, rx) {
+function EventDuplicationFooterController(
+  $rootScope,
+  eventDuplicator,
+  $state,
+  rx,
+  authorizationService,
+  RolePermission,
+  EventFormData,
+) {
   var controller = this;
   var duplicateTimingChanged$ = $rootScope
     .$eventToObservable('duplicateTimingChanged')
     .map(pickFirstEventArgument);
   var createDuplicate$ = rx.createObservableFunction(controller, 'createDuplicate');
   var createDuplicateAsMovie$ = rx.createObservableFunction(controller, 'createDuplicateAsMovie');
+
+  authorizationService
+  .getPermissions()
+  .then(function(userPermissions) {
+    controller.showDuplicateAsMovie = _.includes(userPermissions, RolePermission.FILMS_AANMAKEN) &&
+    _.includes(EventFormData.labels, 'udb-filminvoer');
+  });
 
   var duplicateFormData$ = duplicateTimingChanged$.startWith(false);
 

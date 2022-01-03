@@ -6,6 +6,7 @@
             ng-class="{disabled: !duplication.readyForDuplication}"
             translate-once="duplicate.title"></button>
     <button class="btn btn-success"
+            ng-if="duplication.showDuplicateAsMovie"
             ng-disabled="duplication.duplicating"
             ng-click="duplication.createDuplicateAsMovie()"
             role="button"
