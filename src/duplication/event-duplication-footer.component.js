@@ -27,7 +27,7 @@ function EventDuplicationFooterController(
   rx,
   authorizationService,
   RolePermission,
-  EventFormData,
+  EventFormData
 ) {
   var controller = this;
   var duplicateTimingChanged$ = $rootScope
