@@ -58,7 +58,7 @@ function EventFormStep1Controller($scope, $rootScope, EventFormData, eventCatego
       $scope.isLessonSeries = $scope.activeEventType === '0.3.1.0.0';
 
       if (type.themes) {
-        theme = _.findWhere(type.themes, {id: $scope.eventThemeId});
+        theme = _.findWhere(type.themes, {id: eventThemeId});
       }
 
       if (type.groups) {
