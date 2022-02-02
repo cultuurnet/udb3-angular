@@ -5,6 +5,13 @@
             role="button"
             ng-class="{disabled: !duplication.readyForDuplication}"
             translate-once="duplicate.title"></button>
+    <button class="btn btn-success"
+            ng-if="duplication.showDuplicateAsMovie"
+            ng-disabled="duplication.duplicating"
+            ng-click="duplication.createDuplicateAsMovie()"
+            role="button"
+            ng-class="{disabled: !duplication.readyForDuplication}"
+            translate-once="duplicate.duplicate_as_movie"></button>
     <i class="fa fa-circle-o-notch fa-spin" ng-show="duplication.duplicating"></i>
     <span ng-show="duplication.asyncError" translate-once="duplicate.error"></span>
 </div>
