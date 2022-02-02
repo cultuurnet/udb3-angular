@@ -3132,6 +3132,7 @@ angular.module('udb.core')
       'edit': 'Bewerken',
       'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
+      'duplicate_as_movie': 'Kopiëren en aanpassen als film',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
@@ -11780,6 +11781,19 @@ function EventDetail(
     var id = eventLocation.split('/').pop();
 
     $state.go('split.eventEditMovie', {id: id});
+  };
+
+  $scope.duplicateMovie = function() {
+    var eventLocation = $scope.eventId.toString();
+    var calendar = _.pick($scope.event, ['calendarType', 'subEvent']);
+
+    udbApi
+      .duplicateEvent(eventLocation, calendar)
+      .then(function (duplicatedEventInfo) {
+        var id = duplicatedEventInfo.eventId;
+        $state.go('split.eventEditMovie', {id: id});
+      })
+      .catch(function (e) { console.log('e', e); });
   };
 
   $scope.openTranslatePage = function() {
@@ -28310,6 +28324,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ui-sref='duplication.event(::{id: event.id})'><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
+    "        <button ng-if=\"::(permissions.duplication && permissions.editingMovies)\"\n" +
+    "                class=\"list-group-item\"\n" +
+    "                type=\"button\"\n" +
+    "                ng-click=\"duplicateMovie()\"><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate_as_movie\"></span></button>\n" +
     "        <a ng-if=\"::(permissions.editing && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
     "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
