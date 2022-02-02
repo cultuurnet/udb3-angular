@@ -271,6 +271,19 @@ function EventDetail(
     $state.go('split.eventEditMovie', {id: id});
   };
 
+  $scope.duplicateMovie = function() {
+    var eventLocation = $scope.eventId.toString();
+    var calendar = _.pick($scope.event, ['calendarType', 'subEvent']);
+
+    udbApi
+      .duplicateEvent(eventLocation, calendar)
+      .then(function (duplicatedEventInfo) {
+        var id = duplicatedEventInfo.eventId;
+        $state.go('split.eventEditMovie', {id: id});
+      })
+      .catch(function (e) { console.log('e', e); });
+  };
+
   $scope.openTranslatePage = function() {
     var eventLocation = $scope.eventId.toString();
     var id = eventLocation.split('/').pop();
