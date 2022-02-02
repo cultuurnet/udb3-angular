@@ -28327,7 +28327,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::(permissions.duplication && permissions.editingMovies)\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
-    "                ng-click=\"duplicateMovie()\"><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate_as_movie\"></span></button>\n" +
+    "                ng-click=\"duplicateMovie()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate_as_movie\"></span></button>\n" +
     "        <a ng-if=\"::(permissions.editing && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
     "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
