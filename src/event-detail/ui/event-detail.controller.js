@@ -281,7 +281,7 @@ function EventDetail(
         var id = duplicatedEventInfo.eventId;
         $state.go('split.eventEditMovie', {id: id});
       })
-      .catch(function (e) { console.log('e', e); });
+      .catch(function (err) { console.log('error', err); });
   };
 
   $scope.openTranslatePage = function() {
