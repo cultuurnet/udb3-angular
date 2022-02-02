@@ -356,6 +356,7 @@ angular.module('udb.core')
       'edit': 'Bewerken',
       'editMovie': 'Bewerken als film',
       'duplicate': 'Kopiëren en aanpassen',
+      'duplicate_as_movie': 'Kopiëren en aanpassen als film',
       'change_availability': 'Beschikbaarheid wijzigen',
       'delete': 'Verwijderen',
       'title': 'Titel',
