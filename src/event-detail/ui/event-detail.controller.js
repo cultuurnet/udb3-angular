@@ -30,6 +30,7 @@ function EventDetail(
 ) {
   var activeTabId = 'data';
   var controller = this;
+  var FILMINVOER_LABEL = 'udb-filminvoer';
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
   $scope.isOmdApp = !!_.get(appConfig, 'omdSpecific', false);
 
@@ -54,8 +55,6 @@ function EventDetail(
   function grantPermissions(permissionsData) {
     var hasPermission = permissionsData[0];
     var event = permissionsData[1];
-
-    var FILMINVOER_LABEL = 'udb-filminvoer';
 
     var hasMovieLabel = !!_.find(event.labels, function (label) {
       return label === FILMINVOER_LABEL;
@@ -279,7 +278,14 @@ function EventDetail(
       .duplicateEvent(eventLocation, calendar)
       .then(function (duplicatedEventInfo) {
         var id = duplicatedEventInfo.eventId;
-        $state.go('split.eventEditMovie', {id: id});
+        var eventUrl = duplicatedEventInfo.url;
+        udbApi.labelOffer(eventUrl, FILMINVOER_LABEL)
+          .then(function () {
+            $state.go('split.eventEditMovie', {id: id});
+          })
+          .catch(function (err) {
+            throw err;
+          });
       })
       .catch(function (err) { console.log('error', err); });
   };
