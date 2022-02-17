@@ -274,6 +274,13 @@ function EventDetail(
     var eventLocation = $scope.eventId.toString();
     var calendar = _.pick($scope.event, ['calendarType', 'subEvent']);
 
+    if (calendar.subEvent.length > 0) {
+      calendar.subEvent.forEach(function(event) {
+        event.status = {type: 'Available'};
+        event.bookingAvailability  = {type: 'Available'};
+      });
+    }
+
     udbApi
       .duplicateEvent(eventLocation, calendar)
       .then(function (duplicatedEventInfo) {
