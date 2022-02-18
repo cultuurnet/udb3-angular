@@ -15082,12 +15082,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     setCalendarType: function (type) {
       var formData = this;
 
-      // Check if previous calendar type was the same.
-      // If so, we don't need to create new opening hours. Just show the previous entered data.
-      if (formData.calendar.calendarType === type) {
-        return;
-      }
-
       // A type is chosen, start a complete new calendar, removing old data
       formData.resetCalendar();
       formData.calendar.calendarType = type;
@@ -15120,7 +15114,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       if (formData.calendar.calendarType === 'periodic') {
         formData.calendar.startDate = moment().startOf('day').toDate();
-        if (appConfig.addOffer.defaultEndPeriod) {
+        if (appConfig.addOffer && appConfig.addOffer.defaultEndPeriod) {
           var defaultEndPeriod = appConfig.addOffer.defaultEndPeriod;
           formData.calendar.endDate =
               moment(formData.calendar.startDate).add(defaultEndPeriod, 'd').startOf('day').toDate();
