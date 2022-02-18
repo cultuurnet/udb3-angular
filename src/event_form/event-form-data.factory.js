@@ -549,7 +549,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
 
       if (formData.calendar.calendarType === 'periodic') {
         formData.calendar.startDate = moment().startOf('day').toDate();
-        if (appConfig.addOffer.defaultEndPeriod) {
+        if (appConfig.addOffer && appConfig.addOffer.defaultEndPeriod) {
           var defaultEndPeriod = appConfig.addOffer.defaultEndPeriod;
           formData.calendar.endDate =
               moment(formData.calendar.startDate).add(defaultEndPeriod, 'd').startOf('day').toDate();
