@@ -14116,8 +14116,10 @@ function ReservationPeriodController($scope, EventFormData, $rootScope) {
 
   function saveBookingPeriod() {
     if (moment($scope.availabilityStarts).isValid() && moment($scope.availabilityEnds).isValid()) {
-      EventFormData.bookingInfo.availabilityStarts = moment($scope.availabilityStarts).format();
-      EventFormData.bookingInfo.availabilityEnds = moment($scope.availabilityEnds).format();
+      EventFormData.bookingInfo.availabilityStarts =
+      moment($scope.availabilityStarts).seconds(0).minutes(0).hours(0).format();
+      EventFormData.bookingInfo.availabilityEnds =
+      moment($scope.availabilityEnds).seconds(59).minutes(59).hours(23).format();
     } else {
       EventFormData.bookingInfo.availabilityStarts = '';
       EventFormData.bookingInfo.availabilityEnds = '';

@@ -43,8 +43,8 @@ describe('Controller: reservation period directive', function () {
   });
 
   it ('should save the bookingPeriod', function () {
-    scope.availabilityEnds = moment(new Date('02/09/2016')).format();
-    scope.availabilityStarts = moment(new Date('02/07/2016')).format();
+    scope.availabilityEnds = moment(new Date('02/09/2016')).seconds(59).minutes(59).hours(23).format();
+    scope.availabilityStarts = moment(new Date('02/07/2016')).seconds(0).minutes(0).hours(0).format();
 
     scope.saveBookingPeriod();
     scope.$digest();
@@ -56,8 +56,8 @@ describe('Controller: reservation period directive', function () {
   });
 
   it ('should fail in saving the bookingPeriod', function () {
-    scope.availabilityEnds = moment(new Date('02/09/2016')).format();
-    scope.availabilityStarts = moment(new Date('02/07/2016')).format();
+    scope.availabilityEnds = moment(new Date('02/09/2016')).seconds(59).minutes(59).hours(23).format();
+    scope.availabilityStarts = moment(new Date('02/07/2016')).seconds(0).minutes(0).hours(0).format();
 
     scope.saveBookingPeriod();
     scope.$digest();
