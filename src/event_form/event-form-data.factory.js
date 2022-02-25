@@ -518,7 +518,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       var formData = this;
 
       // Set start & endDate to undefined if calendarType is permanent
-      if (formData.calendar.calendarType === 'permanent') {
+      if (type === 'permanent') {
         formData.calendar.startDate = undefined;
         formData.calendar.endDate = undefined;
         formData.timingChanged();
