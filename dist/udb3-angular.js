@@ -15084,6 +15084,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     setCalendarType: function (type) {
       var formData = this;
 
+      // Set start & endDate to undefined if calendarType is permanent
+      if (type === 'permanent') {
+        formData.calendar.startDate = undefined;
+        formData.calendar.endDate = undefined;
+        formData.timingChanged();
+      }
+
       // Check if previous calendar type was the same.
       // If so, we don't need to create new opening hours. Just show the previous entered data.
       if (formData.calendar.calendarType === type) {
@@ -15112,12 +15119,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
           formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
         formData.saveTimeSpans(formData.calendar.timeSpans);
-      }
-
-      if (formData.calendar.calendarType === 'permanent') {
-        formData.calendar.startDate = undefined;
-        formData.calendar.endDate = undefined;
-        formData.timingChanged();
       }
 
       if (formData.calendar.calendarType === 'periodic') {
