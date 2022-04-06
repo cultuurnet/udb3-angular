@@ -15111,7 +15111,6 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       if (formData.calendar.calendarType === 'single') {
         formData.openingHours = []; // Major info is created from this property and not the one in calendar
         if (appConfig.calendarHighlight.date) {
-          console.log(appConfig.calendarHighlight);
           var startTime =  appConfig.calendarHighlight.startTime ?
           moment(appConfig.calendarHighlight.date + ' ' + appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm')
           .toDate() : '';
@@ -15242,11 +15241,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     saveTimeSpans: function (timeSpans) {
-      console.log('timeSpans', timeSpans);
       this.calendar.timeSpans = timeSpans;
       this.calendar.startDate = this.getFirstStartDate();
       this.calendar.endDate = this.getLastEndDate();
-      console.log('endDate', this.calendar.endDate);
       this.timingChanged();
     },
 
