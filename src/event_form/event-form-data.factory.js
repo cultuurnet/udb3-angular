@@ -537,17 +537,13 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       if (formData.calendar.calendarType === 'single') {
         formData.openingHours = []; // Major info is created from this property and not the one in calendar
         if (appConfig.calendarHighlight.date) {
-          formData.addTimeSpan(
-              new Date(appConfig.calendarHighlight.date),
-              appConfig.calendarHighlight.startTime || '',
-              appConfig.calendarHighlight.startTime ?
-                  moment(appConfig.calendarHighlight.date + ' ' +
-                      appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm').toDate() : '',
-              appConfig.calendarHighlight.endTime || '',
-              appConfig.endTime ?
-                  moment(appConfig.calendarHighlight.date + ' ' +
-                      appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm').toDate() : ''
-          );
+          var startTime =  appConfig.calendarHighlight.startTime ?
+          moment(appConfig.calendarHighlight.date + ' ' + appConfig.calendarHighlight.startTime, 'YYYY-MM-DD HH:mm')
+          .toDate() : '';
+          var endTime =  appConfig.calendarHighlight.endTime ?
+          moment(appConfig.calendarHighlight.date + ' ' + appConfig.calendarHighlight.endTime, 'YYYY-MM-DD HH:mm')
+          .toDate() : '';
+          formData.addTimeSpan(startTime, endTime);
         } else {
           formData.addTimeSpan(moment().startOf('day'), moment().endOf('day'));
         }
@@ -671,9 +667,11 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     saveTimeSpans: function (timeSpans) {
+      console.log('timeSpans', timeSpans);
       this.calendar.timeSpans = timeSpans;
       this.calendar.startDate = this.getFirstStartDate();
       this.calendar.endDate = this.getLastEndDate();
+      console.log('endDate', this.calendar.endDate);
       this.timingChanged();
     },
 
