@@ -206,6 +206,11 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.isDummyPlaceForEducationEvents) {
         this.isDummyPlaceForEducationEvents = jsonPlace.isDummyPlaceForEducationEvents;
       }
+      if (this.id === '00000000-0000-0000-0000-000000000000') {
+        this.isVirtualLocation = true;
+      }
+
+      this.isRealLocation = !this.isDummyPlaceForEducationEvents && !this.isVirtualLocation;
     },
 
     /**
