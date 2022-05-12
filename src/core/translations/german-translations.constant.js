@@ -326,6 +326,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'contactPoint': 'Kontaktinfo',
     'status': 'Status',
     'bookingAvailability': 'Tickets & Plätze',
+    'attendance': 'Anwesenheits-Modus',
     'creator': 'Autor',
     'terms.theme': 'Thema',
     'terms.eventtype': 'Typ',
