@@ -3105,7 +3105,7 @@ angular.module('udb.core')
       'contactPoint': 'Contactinfo',
       'status': 'Status',
       'bookingAvailability': 'Tickets & plaatsen',
-      'attendance': 'Aanwezigheidsvorm (fysiek / online)',
+      'attendance': 'Aanwezigheidsvorm (fysiek / online / beide)',
       'creator': 'Auteur',
       'terms.theme': 'Thema',
       'terms.eventtype': 'Type',
