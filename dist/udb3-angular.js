@@ -3143,6 +3143,7 @@ angular.module('udb.core')
       'no_description': 'Geen beschrijving',
       'where': 'Waar',
       'bookable_event_location_info': 'Locatie in overleg met de school.',
+      'online': 'Online',
       'when': 'Wanneer',
       'labels': 'Labels',
       'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
@@ -4319,6 +4320,7 @@ angular.module('udb.core')
       'no_description': 'Aucune description',
       'where': 'Où',
       'when': 'Quand',
+      'online': 'Online',
       'labels': 'Labels',
       'labels_error': 'Le label \'{{labelName}}\' n\'a pas pu être ajouté.',
       'labels_success': 'Le label \'{{addedLabel}}\' a été ajouté avec succès.',
@@ -5487,6 +5489,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'no_description': 'Keine Beschreibung',
     'where': 'Wo',
     'bookable_event_location_info': 'Ort in Absprache mit der Schule.',
+    'online': 'Online',
     'when': 'Wann',
     'labels': 'Labels',
     'labels_error': 'Das Hinzufügen von Label \'{{labelName}}\' war nicht möglich.',
@@ -8699,6 +8702,11 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       if (jsonPlace.isDummyPlaceForEducationEvents) {
         this.isDummyPlaceForEducationEvents = jsonPlace.isDummyPlaceForEducationEvents;
       }
+      if (this.id === '00000000-0000-0000-0000-000000000000') {
+        this.isVirtualLocation = true;
+      }
+
+      this.isRealLocation = !this.isDummyPlaceForEducationEvents && !this.isVirtualLocation;
     },
 
     /**
@@ -28418,7 +28426,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "                <td ng-if=\"::(isEmpty(event.description))\" translate-once=\"preview.no_description\"></td>\n" +
     "              </tr>\n" +
-    "              <tr ng-hide=\"::event.location.isDummyPlaceForEducationEvents\">\n" +
+    "              <tr ng-show=\"::event.location.isRealLocation\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td ng-show=\"::event.location.url\"><a ui-sref=\"split.footer.place-preview({id: event.location.id})\">{{eventLocation(event)}}</a></td>\n" +
     "                <td ng-hide=\"::event.location.url\">\n" +
@@ -28428,6 +28436,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr ng-show=\"::event.location.isDummyPlaceForEducationEvents\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td><span translate-once=\"preview.bookable_event_location_info\"></span></td>\n" +
+    "              </tr>\n" +
+    "              <tr ng-show=\"::event.location.isVirtualLocation\">\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
+    "                <td><span translate-once=\"preview.online\"></span></td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.when\"></span></td>\n" +

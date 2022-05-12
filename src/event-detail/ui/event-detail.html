@@ -112,7 +112,7 @@
                 </td>
                 <td ng-if="::(isEmpty(event.description))" translate-once="preview.no_description"></td>
               </tr>
-              <tr ng-hide="::event.location.isDummyPlaceForEducationEvents">
+              <tr ng-show="::event.location.isRealLocation">
                 <td><span class="row-label" translate-once="preview.where"></span></td>
                 <td ng-show="::event.location.url"><a ui-sref="split.footer.place-preview({id: event.location.id})">{{eventLocation(event)}}</a></td>
                 <td ng-hide="::event.location.url">
@@ -122,6 +122,10 @@
               <tr ng-show="::event.location.isDummyPlaceForEducationEvents">
                 <td><span class="row-label" translate-once="preview.where"></span></td>
                 <td><span translate-once="preview.bookable_event_location_info"></span></td>
+              </tr>
+              <tr ng-show="::event.location.isVirtualLocation">
+                <td><span class="row-label" translate-once="preview.where"></span></td>
+                <td><span translate-once="preview.online"></span></td>
               </tr>
               <tr>
                 <td><span class="row-label" translate-once="preview.when"></span></td>
