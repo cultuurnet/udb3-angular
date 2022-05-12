@@ -365,7 +365,7 @@ angular.module('udb.core')
       'no_description': 'Aucune description',
       'where': 'Où',
       'when': 'Quand',
-      'online': 'online',
+      'online': 'Online',
       'labels': 'Labels',
       'labels_error': 'Le label \'{{labelName}}\' n\'a pas pu être ajouté.',
       'labels_success': 'Le label \'{{addedLabel}}\' a été ajouté avec succès.',
