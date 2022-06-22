@@ -366,6 +366,8 @@ angular.module('udb.core')
       'where': 'Où',
       'when': 'Quand',
       'online': 'Online',
+      'online_location': 'Participation en ligne',
+      'online_location_missing': 'Pas d\'url pour la participation en ligne',
       'labels': 'Labels',
       'labels_error': 'Le label \'{{labelName}}\' n\'a pas pu être ajouté.',
       'labels_success': 'Le label \'{{addedLabel}}\' a été ajouté avec succès.',

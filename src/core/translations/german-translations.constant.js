@@ -363,6 +363,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'where': 'Wo',
     'bookable_event_location_info': 'Ort in Absprache mit der Schule.',
     'online': 'Online',
+    'online_location': 'Online-Teilnahme',
+    'online_location_missing': 'Keine Url für Online-Teilnahme',
     'when': 'Wann',
     'labels': 'Labels',
     'labels_error': 'Das Hinzufügen von Label \'{{labelName}}\' war nicht möglich.',
