@@ -1083,13 +1083,14 @@ function UdbApi(
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
+   * @param {Boolean} [suggestion]
    * @return {Promise.<PagedCollection>}
    */
-  this.findLabels = function (query, limit, start) {
+  this.findLabels = function (query, limit, start, suggestion) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
       query: query,
-      suggestion: true,
+      suggestion: suggestion === false ? undefined : true,
       limit: limit ? limit : 30,
       start: start ? start : 0
     };
