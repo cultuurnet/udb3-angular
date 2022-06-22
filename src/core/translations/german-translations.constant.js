@@ -1089,6 +1089,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'School of onderwijscentrum': 'Schule oder Bildungszentrum',
     'Sportcentrum': 'Sportzentrum',
     'Winkel': 'Laden',
+    'Speeltuin': 'Spielplats',
     'Museum of galerij': 'Museum oder Galerie',
     'Zaal of expohal': 'Saal oder Expo-Halle',
   },

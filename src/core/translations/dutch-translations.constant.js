@@ -1004,6 +1004,7 @@ angular.module('udb.core')
       'School of onderwijscentrum': 'School of onderwijscentrum',
       'Sportcentrum': 'Sportcentrum',
       'Winkel': 'Winkel',
+      'Speeltuin': 'Speeltuin',
       'Museum of galerij': 'Museum of galerij',
       'Zaal of expohal': 'Zaal of expohal'
     },

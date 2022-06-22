@@ -26,5 +26,6 @@ angular
     {label: 'Sportcentrum', id: 'eBwaUAAhw0ur0Z02i5ttnw'},
     {label: 'Thema of pretpark', id: '0.41.0.0.0'},
     {label: 'Winkel', id: 'VRC6HX0Wa063sq98G5ciqw'},
+    {label: 'Speeltuin', id: 'wwjRVmExI0w6xfQwT1KWpx'},
     {label: 'Zaal of expohal', id: 'OyaPaf64AEmEAYXHeLMAtA'},
   ]);
