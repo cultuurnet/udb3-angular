@@ -1566,7 +1566,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'labels/?query=labelquery&limit=30&start=0')
+      .expectGET(baseUrl + 'labels/?query=labelquery&limit=30&start=0&suggestion=true')
       .respond(JSON.stringify(response));
     service
       .findLabels(query)
@@ -1590,7 +1590,7 @@ describe('Service: UDB3 Api', function () {
     };
 
     $httpBackend
-      .expectGET(baseUrl + 'labels/?query=labelquery&limit=1&start=2')
+      .expectGET(baseUrl + 'labels/?query=labelquery&limit=1&start=2&suggestion=true')
       .respond(JSON.stringify(response));
     service
       .findLabels(query, 1, 2)

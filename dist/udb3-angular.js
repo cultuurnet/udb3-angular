@@ -7482,6 +7482,7 @@ function UdbApi(
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
       query: query,
+      suggestion: true,
       limit: limit ? limit : 30,
       start: start ? start : 0
     };
