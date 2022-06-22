@@ -126,6 +126,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.description = angular.copy(jsonEvent.description) || {};
       this.calendarSummary = jsonEvent.calendarSummary;
       this.location = new UdbPlace(jsonEvent.location);
+      this.onlineUrl = jsonEvent.onlineUrl;
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
       this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);

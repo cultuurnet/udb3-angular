@@ -128,6 +128,15 @@
                 <td><span translate-once="preview.online"></span></td>
               </tr>
               <tr>
+                <td><span class="row-label" translate-once="preview.online_location"></span></td>
+                <td>
+                  <span ng-show="::(!isEmpty(event.onlineUrl))">
+                    <a href="{{::event.onlineUrl}}" target="_blank">{{::event.onlineUrl}}</a>
+                  </span>
+                  <span ng-show="::(isEmpty(event.onlineUrl))" translate-once="preview.online_location_missing"></span>
+                </td>
+              </tr>
+              <tr>
                 <td><span class="row-label" translate-once="preview.when"></span></td>
                 <td>
                   <span ng-if="::calendarSummary" ng-bind-html="::calendarSummary"></span>

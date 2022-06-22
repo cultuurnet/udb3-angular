@@ -368,6 +368,8 @@ angular.module('udb.core')
       'where': 'Waar',
       'bookable_event_location_info': 'Locatie in overleg met de school.',
       'online': 'Online',
+      'online_location': 'Online deelname',
+      'online_location_missing': 'Geen url voor online deelname',
       'when': 'Wanneer',
       'labels': 'Labels',
       'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
