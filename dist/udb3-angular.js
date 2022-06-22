@@ -3144,6 +3144,8 @@ angular.module('udb.core')
       'where': 'Waar',
       'bookable_event_location_info': 'Locatie in overleg met de school.',
       'online': 'Online',
+      'online_location': 'Online deelname',
+      'online_location_missing': 'Geen url voor online deelname',
       'when': 'Wanneer',
       'labels': 'Labels',
       'labels_error': 'Het toevoegen van het label \'{{labelName}}\' is niet gelukt.',
@@ -4322,6 +4324,8 @@ angular.module('udb.core')
       'where': 'Où',
       'when': 'Quand',
       'online': 'Online',
+      'online_location': 'Participation en ligne',
+      'online_location_missing': 'Pas d\'url pour la participation en ligne',
       'labels': 'Labels',
       'labels_error': 'Le label \'{{labelName}}\' n\'a pas pu être ajouté.',
       'labels_success': 'Le label \'{{addedLabel}}\' a été ajouté avec succès.',
@@ -5492,6 +5496,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'where': 'Wo',
     'bookable_event_location_info': 'Ort in Absprache mit der Schule.',
     'online': 'Online',
+    'online_location': 'Online-Teilnahme',
+    'online_location_missing': 'Keine Url für Online-Teilnahme',
     'when': 'Wann',
     'labels': 'Labels',
     'labels_error': 'Das Hinzufügen von Label \'{{labelName}}\' war nicht möglich.',
@@ -8021,6 +8027,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       this.description = angular.copy(jsonEvent.description) || {};
       this.calendarSummary = jsonEvent.calendarSummary;
       this.location = new UdbPlace(jsonEvent.location);
+      this.onlineUrl = jsonEvent.onlineUrl;
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
       this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);
@@ -28445,6 +28452,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr ng-show=\"::event.location.isVirtualLocation\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td><span translate-once=\"preview.online\"></span></td>\n" +
+    "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"preview.online_location\"></span></td>\n" +
+    "                <td>\n" +
+    "                  <span ng-show=\"::(!isEmpty(event.onlineUrl))\"><a href=\"{{::event.onlineUrl}}\">{{::event.onlineUrl}}</a></span>\n" +
+    "                  <span ng-show=\"::(isEmpty(event.onlineUrl))\" translate-once=\"preview.online_location_missing\"></span>\n" +
+    "                </td>\n" +
     "              </tr>\n" +
     "              <tr>\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.when\"></span></td>\n" +
