@@ -31,7 +31,7 @@ function LabelManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findLabels(query, limit, start);
+    return udbApi.findLabels(query, limit, start, false);
   };
 
   /**

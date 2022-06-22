@@ -7485,13 +7485,14 @@ function UdbApi(
    * @param {Number} [limit]
    *  The limit of results per page.
    * @param {Number} [start]
+   * @param {Boolean} [suggestion]
    * @return {Promise.<PagedCollection>}
    */
-  this.findLabels = function (query, limit, start) {
+  this.findLabels = function (query, limit, start, suggestion) {
     var requestConfig = _.cloneDeep(defaultApiConfig);
     requestConfig.params = {
       query: query,
-      suggestion: true,
+      suggestion: suggestion === false ? undefined : true,
       limit: limit ? limit : 30,
       start: start ? start : 0
     };
@@ -18488,7 +18489,7 @@ function LabelManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findLabels(query, limit, start);
+    return udbApi.findLabels(query, limit, start, false);
   };
 
   /**
@@ -28456,7 +28457,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <tr>\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.online_location\"></span></td>\n" +
     "                <td>\n" +
-    "                  <span ng-show=\"::(!isEmpty(event.onlineUrl))\"><a href=\"{{::event.onlineUrl}}\">{{::event.onlineUrl}}</a></span>\n" +
+    "                  <span ng-show=\"::(!isEmpty(event.onlineUrl))\">\n" +
+    "                    <a href=\"{{::event.onlineUrl}}\" target=\"_blank\">{{::event.onlineUrl}}</a>\n" +
+    "                  </span>\n" +
     "                  <span ng-show=\"::(isEmpty(event.onlineUrl))\" translate-once=\"preview.online_location_missing\"></span>\n" +
     "                </td>\n" +
     "              </tr>\n" +
