@@ -28455,7 +28455,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td><span class=\"row-label\" translate-once=\"preview.where\"></span></td>\n" +
     "                <td><span translate-once=\"preview.online\"></span></td>\n" +
     "              </tr>\n" +
-    "              <tr ng-show=\"::event.attendanceMode != 'offline'\">\n" +
+    "              <tr ng-show=\"::event.attendanceMode !== 'offline'\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.online_location\"></span></td>\n" +
     "                <td>\n" +
     "                  <span ng-show=\"::(!isEmpty(event.onlineUrl))\">\n" +
