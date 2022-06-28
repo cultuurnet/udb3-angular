@@ -127,7 +127,7 @@
                 <td><span class="row-label" translate-once="preview.where"></span></td>
                 <td><span translate-once="preview.online"></span></td>
               </tr>
-              <tr ng-show="::event.attendanceMode != 'offline'">
+              <tr ng-show="::event.attendanceMode !== 'offline'">
                 <td><span class="row-label" translate-once="preview.online_location"></span></td>
                 <td>
                   <span ng-show="::(!isEmpty(event.onlineUrl))">
