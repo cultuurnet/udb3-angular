@@ -48,6 +48,7 @@ angular
     {name: 'organiser_keywords', field: 'organizer.labels', type: 'string', group: 'other', editable: true},
     {name: 'organiser_id', field: 'organizer.id', type: 'string', group: 'other', editable: true},
     {name: 'agefrom', field:'typicalAgeRange', type: 'number', group: 'other', editable: true},
+    {name: 'attendance_mode', field:'attendanceMode', type: 'choice', group: 'other', editable: true, options: ['online', 'offline', 'mixed']},
     {name: 'price', field: 'price', type: 'number' , group: 'other', editable: true},
     {name: 'status', field: 'status', type: 'choice', group: 'other', editable: true, options: ['Available', 'Unavailable', 'TemporarilyUnavailable']},
     {name: 'booking_availability', field: 'bookingAvailability', type: 'choice', group: 'other', editable: true, options: ['available', 'unavailable']},
