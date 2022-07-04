@@ -15116,6 +15116,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       this.timingChangedCallback(this);
     },
 
+    timingChangedCallback: function () {
+    },
+
     initOpeningHours: function(openingHours) {
       OpeningHoursCollection.deserialize(openingHours);
     },
