@@ -236,7 +236,7 @@ function UdbApi(
       deferredOffer.resolve(offer);
     } else {
       $http
-        .get(offerLocation.toString(), defaultApiConfig)
+        .get(offerLocation.toString() + '?embedUitpasPrices=false', defaultApiConfig)
         .success(cacheAndResolveOffer)
         .error(deferredOffer.reject);
     }
