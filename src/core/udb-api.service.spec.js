@@ -284,7 +284,7 @@ describe('Service: UDB3 Api', function () {
     var offerSummary = 'http://foo.bar/events/0823f57e-a6bd-450a-b4f5-8459b4b11043';
     var responseSummary = 'test';
     $httpBackend
-      .expectGET(offerLocation)
+      .expectGET(offerLocation + '?embedUitpasPrices=false')
       .respond(JSON.stringify(response));
     service
       .getOffer(offerLocation)
@@ -312,7 +312,7 @@ describe('Service: UDB3 Api', function () {
 
     // first time we expect a GET-call being made
     $httpBackend
-      .expectGET(offerLocation)
+      .expectGET(offerLocation + '?embedUitpasPrices=false')
       .respond(JSON.stringify(response));
     spyOn(offerCache, 'put').and.callThrough();
 
