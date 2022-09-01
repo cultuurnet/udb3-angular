@@ -16797,6 +16797,10 @@ function EventFormStep4Controller(
    * Validate date after step 4 to enter step 5.
    */
   function validateEventAfterStep4() {
+    if ($scope.isValidateButtonDisabled) {
+      return;
+    }
+
     $scope.isValidateButtonDisabled = true;
 
     validateEvent();
@@ -30331,8 +30335,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
-    "      <strong>Disabled: {{isValidateButtonDisabled}}</strong>\n" +
-    "      <button class=\"btn btn-primary titel-doorgaan\"\n" +
+    "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
     "          ng-disabled=\"isValidateButtonDisabled\"\n" +
     "          ng-click=\"validateEvent()\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
