@@ -105,6 +105,10 @@ function EventFormStep4Controller(
    * Validate date after step 4 to enter step 5.
    */
   function validateEventAfterStep4() {
+    if ($scope.isValidateButtonDisabled) {
+      return;
+    }
+
     $scope.isValidateButtonDisabled = true;
 
     validateEvent();
