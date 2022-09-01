@@ -60,21 +60,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   }
 
   function changePrice() {
-    if (controller.organizer && controller.price.length > 0) {
-      // check ticketsales
-      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
-        if (hasTicketSales) {
-          controller.hasTicketSales = hasTicketSales;
-        } else {
-          openModal();
-        }
-      }, function() {
-        controller.hasUitpasError = true;
-      });
-    }
-    else {
-      openModal();
-    }
+    openModal();
   }
 
   function openModal() {

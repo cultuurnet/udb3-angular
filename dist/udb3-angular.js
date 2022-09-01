@@ -13960,21 +13960,7 @@ function PriceInfoComponent($uibModal, EventFormData, eventCrud, $rootScope, udb
   }
 
   function changePrice() {
-    if (controller.organizer && controller.price.length > 0) {
-      // check ticketsales
-      udbUitpasApi.getTicketSales(controller.eventId, controller.organizer).then(function(hasTicketSales) {
-        if (hasTicketSales) {
-          controller.hasTicketSales = hasTicketSales;
-        } else {
-          openModal();
-        }
-      }, function() {
-        controller.hasUitpasError = true;
-      });
-    }
-    else {
-      openModal();
-    }
+    openModal();
   }
 
   function openModal() {
@@ -29584,7 +29570,6 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </td>\n" +
     "          </tr>\n" +
     "        </table>\n" +
-    "        <div ng-if=\"$ctrl.hasTicketSales\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.cantChangePrice\"></div>\n" +
     "        <div ng-if=\"$ctrl.hasUitpasError\" class=\"alert alert-danger\" translate=\"uitpas.uitpasInfo.unavailable\"></div>\n" +
     "      </div>\n" +
     "\n" +
