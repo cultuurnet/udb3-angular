@@ -36,6 +36,7 @@ function EventFormStep4Controller(
   $scope.duplicatesSearched = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.isValidateButtonDisabled = false;
 
   $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
@@ -104,10 +105,13 @@ function EventFormStep4Controller(
    * Validate date after step 4 to enter step 5.
    */
   function validateEventAfterStep4() {
+    $scope.isValidateButtonDisabled = true;
+
     validateEvent();
 
     if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
+      $scope.isValidateButtonDisabled = false;
       return;
     }
 
