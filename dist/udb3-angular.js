@@ -16728,6 +16728,7 @@ function EventFormStep4Controller(
   $scope.duplicatesSearched = false;
   $scope.saving = false;
   $scope.error = false;
+  $scope.isValidateButtonDisabled = false;
 
   $scope.validateEvent = validateEventAfterStep4;
   $scope.saveEvent = createOffer;
@@ -16796,10 +16797,17 @@ function EventFormStep4Controller(
    * Validate date after step 4 to enter step 5.
    */
   function validateEventAfterStep4() {
+    if ($scope.isValidateButtonDisabled) {
+      return;
+    }
+
+    $scope.isValidateButtonDisabled = true;
+
     validateEvent();
 
     if ($scope.missingInfo.length > 0) {
       $scope.infoMissing = true;
+      $scope.isValidateButtonDisabled = false;
       return;
     }
 
@@ -30328,7 +30336,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <p ng-show=\"eventFormData.id === ''\">\n" +
     "      <a class=\"btn btn-primary titel-doorgaan\"\n" +
-    "          ng-click=\"validateEvent(true);\">\n" +
+    "          ng-disabled=\"isValidateButtonDisabled\"\n" +
+    "          ng-click=\"validateEvent()\">\n" +
     "        <span translate-once=\"eventForm.step4.continue\"></span> <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"saving\"></i>\n" +
     "      </a>\n" +
     "    </p>\n" +
