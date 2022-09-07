@@ -93,27 +93,7 @@ describe('Component: price info', function () {
        expect(uibModal.open).toHaveBeenCalled();
    });
 
-  it('should not open the price edit modal when tickets have been sold', function() {
-      var controller = getController();
-      controller.price = [
-        {
-          category: 'base',
-          name: 'Basistarief',
-          priceCurrency: 'EUR',
-          price: 4.00
-        }
-      ];
-
-      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(true));
-
-      controller.changePrice();
-      $scope.$apply();
-
-      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
-      expect(controller.hasTicketSales).toBeTruthy();
-  });
-
-  it('should open the price edit modal when no tickets have been sold', function() {
+  it('should open the price edit modal when tickets have been sold', function() {
       var controller = getController();
       controller.price = [
         {
@@ -127,18 +107,17 @@ describe('Component: price info', function () {
       spyOn(uibModal, 'open').and.returnValue({
         result: $q.resolve()
       });
-      udbUitpasApi.getTicketSales.and.returnValue($q.resolve(false));
+
       eventCrud.updatePriceInfo.and.returnValue($q.resolve());
 
       controller.changePrice();
       $scope.$apply();
 
-      expect(udbUitpasApi.getTicketSales).toHaveBeenCalled();
       expect(uibModal.open).toHaveBeenCalled();
       expect(eventCrud.updatePriceInfo).toHaveBeenCalled();
   });
 
-  it('should throw an error when UiTPAS service rejects the request', function() {
+  it('should open the price edit modal', function() {
       var controller = getController();
       controller.price = [
         {
@@ -149,11 +128,17 @@ describe('Component: price info', function () {
         }
       ];
 
-      udbUitpasApi.getTicketSales.and.returnValue($q.reject());
+      spyOn(uibModal, 'open').and.returnValue({
+        result: $q.resolve()
+      });
+
+      eventCrud.updatePriceInfo.and.returnValue($q.resolve());
 
       controller.changePrice();
       $scope.$apply();
 
-      expect(controller.hasUitpasError).toBeTruthy();
+      expect(uibModal.open).toHaveBeenCalled();
+      expect(eventCrud.updatePriceInfo).toHaveBeenCalled();
   });
+
 });
