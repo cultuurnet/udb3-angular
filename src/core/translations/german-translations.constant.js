@@ -900,14 +900,14 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'cantChangeOrganiser':
         'Für diese Veranstaltung wurden bereits UiTPAS-Tickets verkauft. Sie können die Organisation nicht mehr anpassen.',
       'unavailable':
-        'UiTPAS ist im Moment nicht erreichbar, probieren Sie es später noch einmal oder kontaktieren Sie den Helpdesk (vragen@uitdatabank.be).',
+        'Für diese Veranstaltung sind bereits UiTPAS-Tickets verkauft worden. Sie können die Organisation nicht mehr ändern.',
     },
     'cardSystems': {
       'card_systems': 'Kartensysteme',
       'choose': '--Wählen Sie einen Verteilerschlüssel--',
       'retry': 'Erneut registrieren',
       'unavailable':
-        'UiTPAS ist im Moment nicht erreichbar, probieren Sie es später noch einmal oder kontaktieren Sie den Helpdesk (vragen@uitdatabank.be).',
+        'Für diese Veranstaltung sind bereits UiTPAS-Tickets verkauft worden. Sie können die Organisation nicht mehr ändern.',
     },
   },
   'images': {
