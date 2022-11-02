@@ -831,13 +831,13 @@ angular.module('udb.core')
         'uitpas_info': 'Dit is een UiTPAS activiteit.',
         'cantChangePrice': 'Voor dit evenement zijn al UiTPAS-tickets verkocht met de bestaande prijsinformatie. Je kan de prijsinformatie niet meer wijzigen.',
         'cantChangeOrganiser': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.',
-        'unavailable': 'UiTPAS kan momenteel niet bereikt worden, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be).'
+        'unavailable': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.'
       },
       cardSystems: {
         'card_systems': 'Kaartsystemen',
         'choose': '--Selecteer een verdeelsleutel--',
         'retry': 'Opnieuw registreren',
-        'unavailable': 'kan UiTPAS momenteel niet bereiken, probeer het later opnieuw of contacteer de helpdesk (vragen@uitdatabank.be)'
+        'unavailable': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.'
       }
     },
     images: {

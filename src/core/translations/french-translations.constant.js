@@ -825,13 +825,13 @@ angular.module('udb.core')
         'uitpas_info': 'Ceci est une activité UiTPAS.',
         'cantChangePrice': 'Pour cet événement des tickets ont été vendus dont l\'information du prix existe déjà. Vous ne pouvez plus modifier l\'information du prix.',
         'cantChangeOrganiser': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.',
-        'unavailable': 'UiTPAS n\'est pas disponible pour l\'instant, essayez plus tard ou contactez le helpdesk (vragen@uitdatabank.be).'
+        'unavailable': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.'
       },
       cardSystems: {
         'card_systems': '<Systèmes des cartes',
         'choose': '--Sélectionnez une clé de répartition--',
         'retry': 'Enregistrer à nouveau',
-        'unavailable': 'ne peut pas joindre UiTPAS, essayez plus tard ou contactez le helpdesk (vragen@uitdatabank.be)'
+        'unavailable': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.'
       }
     },
     images: {
