@@ -770,6 +770,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'other': 'Andere Vorrichtungen',
     'place': 'Vorrichtungen an diesem Ort',
     'mental': 'Vorrichtungen für Personen mit geistigen Einschränkungen',
+    'neurodivers': 'Vorrichtungen für neurodiverse Personen',
   },
   'audience': {
     'entrance': 'Zutritt',
