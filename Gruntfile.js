@@ -24,7 +24,7 @@ module.exports = function (grunt) {
     dev: {}
   };
 
-  var getTaxonomyTerms = function () {    
+  var getTaxonomyTerms = function () {
     const terms = require('./taxonomy-terms.json').terms.map(function (term) {
       return Object.assign(term, {
         label: term.name.nl,
