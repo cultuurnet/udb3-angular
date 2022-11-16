@@ -33492,6 +33492,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/search-facilities-modal.html',
     "<div class=\"modal-header\">\n" +
     "  <h4 class=\"modal-title\">Toegankelijkheidsinformatie</h4>\n" +
+    "  <a href=\"https://documentatie.uitdatabank.be/content/uitdatabank/latest/categorisatie/voorzieningen.html\" target=\"_blank\" rel=\"noopener noreferrer\">Meer info</a>\n" +
     "</div>\n" +
     "<div class=\"modal-body\">\n" +
     "\n" +
