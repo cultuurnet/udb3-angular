@@ -24,15 +24,15 @@ module.exports = function (grunt) {
     dev: {}
   };
 
-  var getTaxonomyTerms = function () {
-    var parser = new xml2js.Parser({mergeAttrs: true, explicitArray: false});
-    var xmlBuffer = grunt.file.read('taxonomy-terms.xml');
-    var terms = [];
-    parser.parseString(xmlBuffer, function (err, result) {
-      terms = result.cdbxml.categorisation.term.filter(
-        function (term) {
-          return term.enabled === 'true';
-        });
+  var getTaxonomyTerms = function () {    
+    const terms = require('./taxonomy-terms.json').terms.map(function (term) {
+      return Object.assign(term, {
+        label: term.name.nl,
+        labelnl: term.name.nl,
+        labelfr: term.name.fr,
+        labelen: term.name.en,
+        labelde: term.name.de,
+      });
     });
 
     return terms;
@@ -427,8 +427,8 @@ module.exports = function (grunt) {
 
     curl: {
       'taxonomy-terms': {
-        src: 'https://taxonomy.uitdatabank.be/api/term',
-        dest: 'taxonomy-terms.xml'
+        src: 'https://taxonomy.uitdatabank.be/terms',
+        dest: 'taxonomy-terms.json'
       },
       'cities': {
         src: 'https://taxonomy.uitdatabank.be/api/city',
