@@ -5,6 +5,7 @@ bower_components
 npm-debug.log
 config*.json
 taxonomy-terms.xml
+taxonomy-terms.json
 /cities.xml
 coverage/
 
