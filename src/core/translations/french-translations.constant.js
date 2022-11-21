@@ -715,7 +715,9 @@ angular.module('udb.core')
       'visual': 'Dispositions pour des malvoyants',
       'hearing': 'Dispositions pour des personnes d\'une limitation auditive',
       'other': 'Autres dispositions',
-      'place': 'Dispositions de cette location'
+      'place': 'Dispositions de cette location',
+      'mental': 'Dispositions pour des personnes handicapées mentales',
+      'neurodivers': 'Dispositions pour des personnes neurodiverses',
     },
     audience: {
       'entrance': 'Accès',

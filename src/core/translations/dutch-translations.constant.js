@@ -721,7 +721,8 @@ angular.module('udb.core')
       'hearing': 'Voorzieningen voor personen met een auditieve beperking',
       'other': 'Andere voorzieningen',
       'place': 'Voorzieningen op deze locatie',
-      'mental': 'Voorzieningen voor personen met een verstandelijke beperking'
+      'mental': 'Voorzieningen voor personen met een verstandelijke beperking',
+      'neurodivers': 'Voorzieningen voor neurodiverse personen',
     },
     audience: {
       'entrance': 'Toegang',

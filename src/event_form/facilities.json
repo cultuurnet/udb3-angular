@@ -47,10 +47,6 @@
     {
       "label": "Tolken Vlaamse Gebarentaal",
       "id": "3.33.0.0.0"
-    },
-    {
-      "label": "Voelstoelen",
-      "id": "3.17.2.0.0"
     }
   ],
   "mental": [
@@ -59,11 +55,17 @@
       "id": "3.34.0.0.0"
     }
   ],
-  "other": [
+  "neurodivers": [
     {
-      "label": "1 begeleider gratis",
-      "id": "3.35.0.0.0"
+      "label": "Prikkelarm aanbod",
+      "id": "H28fcfRKFQAQs00K9NF9hh"
     },
+    {
+      "label": "Afspraken en voorspelbaarheid",
+      "id": "4Vz9eZf0cnQmtfqcGGnNMF"
+    }
+  ],
+  "other": [
     {
       "label": "Alternatieve ingang",
       "id": "3.28.0.0.0"
