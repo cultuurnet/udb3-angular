@@ -8053,7 +8053,7 @@ function UdbEventFactory(EventTranslationState, UdbPlace, UdbOrganizer) {
       // @todo Use getImages() later on.
       this.image = jsonEvent.image;
       this.images = _.reject(getImages(jsonEvent), 'contentUrl', jsonEvent.image);
-      this.videos = jsonEvent.videos;
+      this.videos = jsonEvent.videos || [];
       this.labels = _.union(jsonEvent.labels, jsonEvent.hiddenLabels);
       if (jsonEvent.organizer) {
         // if it's a full organizer object, parse it as one
@@ -8698,6 +8698,7 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
       this.images = _.reject(getImages(jsonPlace), 'contentUrl', jsonPlace.image);
       this.labels = _.union(jsonPlace.labels, jsonPlace.hiddenLabels);
       this.mediaObject = jsonPlace.mediaObject || [];
+      this.videos = jsonPlace.videos || [];
       this.facilities = getCategoriesByType(jsonPlace, 'facility') || [];
       this.additionalData = jsonPlace.additionalData || {};
       if (jsonPlace['@id']) {
@@ -11728,8 +11729,6 @@ function EventDetail(
     }
 
     $scope.event = jsonLDLangFilter(event, language, true);
-
-    console.log($scope.event);
     $scope.allAges =  !(/\d/.test(event.typicalAgeRange));
     $scope.noAgeInfo = event.typicalAgeRange === '';
 
@@ -32663,6 +32662,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </tr>\n" +
     "          </tbody>\n" +
     "          <tbody udb-image-detail=\"::place.mediaObject\" image=\"::place.image\"></tbody>\n" +
+    "          <tbody>\n" +
+    "            <tr ng-class=\"::{muted:(place.videos.length === 0)}\">\n" +
+    "              <td><span class=\"row-label\" translate-once=\"preview.videos_label\"></span></td>\n" +
+    "              <td ng-if=\"::place.videos.length\"> \n" +
+    "                <ul>\n" +
+    "                  <li ng-repeat=\"video in ::place.videos\">\n" +
+    "                    <a target=\"_blank\" href=\"::video.url\" >{{ video.url }}</a>\n" +
+    "                  </li>\n" +
+    "                </ul>\n" +
+    "              </td>\n" +
+    "              <td ng-if=\"::place.videos.length === 0\" translate-once=\"preview.no_videos\"></td>\n" +
+    "            </tr>\n" +
+    "          </tbody>\n" +
     "        </table>\n" +
     "      </div>\n" +
     "\n" +
