@@ -200,7 +200,7 @@
                 <td ng-if="::event.videos.length"> 
                   <ul>
                     <li ng-repeat="video in ::event.videos">
-                      <a target="_blank" href="::video.url" >{{ video.url }}</a>
+                      <a target="_blank" rel="noopener noreferrer" href="::video.url" >{{ video.url }}</a>
                     </li>
                   </ul>
                 </td>
