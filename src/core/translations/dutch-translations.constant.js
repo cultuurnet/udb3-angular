@@ -389,6 +389,8 @@ angular.module('udb.core')
       'age_label': 'Geschikt voor',
       'all_ages': 'Alle leeftijden',
       'no_age': 'Geen leeftijdsinformatie',
+      'videos_label': 'Videos',
+      'no_videos': 'Geen video\'s',
       'publiq_url': 'Bekijk op {{publicationBrand}}',
       'translate': 'Vertalen',
       'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'

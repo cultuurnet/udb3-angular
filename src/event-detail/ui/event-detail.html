@@ -194,6 +194,19 @@
               </tr>
             </tbody>
             <tbody udb-image-detail="::event.mediaObject" image="::event.image"></tbody>
+            <tbody>
+              <tr ng-class="::{muted:isEmpty(event.videos)}">
+                <td><span class="row-label" translate-once="preview.videos_label"></span></td>
+                <td ng-if="::event.videos.length"> 
+                  <ul>
+                    <li ng-repeat="video in ::event.videos">
+                      <a target="_blank" rel="noopener noreferrer" href="::video.url" >{{ video.url }}</a>
+                    </li>
+                  </ul>
+                </td>
+                <td ng-if="::isEmpty(event.videos)" translate-once="preview.no_videos"></td>
+              </tr>
+            </tbody>
           </table>
       </div>
 

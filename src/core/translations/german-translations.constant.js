@@ -384,6 +384,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'age_label': 'Geeignet für',
     'all_ages': 'Alle Altersgruppen',
     'no_age': 'Keine Altersinformation',
+    'videos_label': 'Videos',
+    'no_videos': 'Keine Videos',
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
     'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'

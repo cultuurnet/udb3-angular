@@ -108,6 +108,19 @@
             </tr>
           </tbody>
           <tbody udb-image-detail="::place.mediaObject" image="::place.image"></tbody>
+          <tbody>
+            <tr ng-class="::{muted:(place.videos.length === 0)}">
+              <td><span class="row-label" translate-once="preview.videos_label"></span></td>
+              <td ng-if="::place.videos.length"> 
+                <ul>
+                  <li ng-repeat="video in ::place.videos">
+                    <a target="_blank" rel="noopener noreferrer" href="::video.url" >{{ video.url }}</a>
+                  </li>
+                </ul>
+              </td>
+              <td ng-if="::place.videos.length === 0" translate-once="preview.no_videos"></td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
