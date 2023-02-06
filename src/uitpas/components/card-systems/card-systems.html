@@ -33,8 +33,8 @@
             </div>
         </div>
 
-        <div class="alert alert-danger" role="alert" ng-show="cardSystemSelector.uitpasUnavailable">
-            <p translate="uitpas.cardSystems.unavailable"></p>
+        <div class="alert alert-danger" role="alert" ng-show="cardSystemSelector.uitpasUnavailableType">
+            <p translate="uitpas.cardSystems.{{cardSystemSelector.uitpasUnavailableType}}"></p>
             <button class="btn btn-default" ng-click="cardSystemSelector.refresh()" translate="uitpas.cardSystems.retry"></button>
         </div>
     </div>

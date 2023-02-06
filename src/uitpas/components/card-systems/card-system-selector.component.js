@@ -45,12 +45,17 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       .then(showCardSystems, showUitpasUnavailableNotice);
   }
 
-  function showUitpasUnavailableNotice() {
-    controller.uitpasUnavailable = true;
+  function showUitpasUnavailableNotice(requestInfo) {
+    if (requestInfo.status === 400) {
+      controller.uitpasUnavailableType = 'already_has_ticketsales';
+    }
+    if (requestInfo.status === 404) {
+      controller.uitpasUnavailableType = 'not_found';
+    }
   }
 
   function hideUitpasUnavailableNotice() {
-    controller.uitpasUnavailable = undefined;
+    controller.uitpasUnavailableType = undefined;
   }
 
   function refresh() {
