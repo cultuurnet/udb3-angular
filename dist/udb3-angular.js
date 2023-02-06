@@ -33723,7 +33723,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"alert alert-danger\" role=\"alert\" ng-show=\"cardSystemSelector.uitpasUnavailableType\">\n" +
     "            <p translate=\"uitpas.cardSystems.{{cardSystemSelector.uitpasUnavailableType}}\"></p>\n" +
-    "            <button class=\"btn btn-default\" ng-click=\"cardSystemSelector.refresh()\" translate=\"uitpas.cardSystems.retry\"></button>\n" +
+    "            <button ng-if=\"cardSystemSelector.uitpasUnavailableType === 'not_found'\" class=\"btn btn-default\" ng-click=\"cardSystemSelector.refresh()\" translate=\"uitpas.cardSystems.retry\"></button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "</div>"
