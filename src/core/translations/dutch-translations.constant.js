@@ -840,7 +840,8 @@ angular.module('udb.core')
         'card_systems': 'Kaartsystemen',
         'choose': '--Selecteer een verdeelsleutel--',
         'retry': 'Opnieuw registreren',
-        'unavailable': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.'
+        'already_has_ticketsales': 'Voor dit evenement zijn al UiTPAS-tickets verkocht. Je kan de organisatie niet meer wijzigen.',
+        'not_found': 'Deze activiteit is nog niet gekend bij UiTPAS.'
       }
     },
     images: {

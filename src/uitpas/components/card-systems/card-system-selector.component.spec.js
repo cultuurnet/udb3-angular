@@ -237,25 +237,34 @@ describe('Component: Uitpas Info', function () {
     expect(udbUitpasApi.addEventCardSystemDistributionKey).toHaveBeenCalledWith('A2EFC5BC-B8FD-4F27-A7B2-EDF46AEA2444', 2, 194);
   });
 
-  it('should notify the user that uitpas is unavailable when an event is not known by uitpas', function () {
-    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+  it('should notify the user when an event is not yet available yet if it is not found on uitpas', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject({ status: 404 }));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
 
     var controller = getComponentController();
 
-    expect(controller.uitpasUnavailable).toEqual(true);
+    expect(controller.uitpasUnavailableType).toEqual('not_found');
+  });
+
+  it('should notify the user when an event already has ticketsales', function () {
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject({ status: 400 }));
+    udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
+
+    var controller = getComponentController();
+
+    expect(controller.uitpasUnavailableType).toEqual('already_has_ticketsales');
   });
 
 
   it('should hide the uitpas unavailable notice while refreshing card systems', function () {
-    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject({ status: 404 }));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve([]));
 
     var controller = getComponentController();
-    expect(controller.uitpasUnavailable).toEqual(true);
+    expect(controller.uitpasUnavailableType).toEqual('not_found');
 
     controller.refresh();
-    expect(controller.uitpasUnavailable).toEqual(undefined);
+    expect(controller.uitpasUnavailableType).toEqual(undefined);
   });
 
   it('should indicate when a card system is activated and send to uitpas', function () {
@@ -263,7 +272,7 @@ describe('Component: Uitpas Info', function () {
     activatedCardSystem.active = true;
     var uitpasResponse = $q.defer();
 
-    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject({ status: 404 }));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue($q.resolve(organizerCardSystems));
     udbUitpasApi.addEventCardSystem.and.returnValue(uitpasResponse.promise);
 
@@ -299,16 +308,16 @@ describe('Component: Uitpas Info', function () {
     var activatedCardSystem = _.cloneDeep(evenCardSystemWithoutDistributionKey);
     activatedCardSystem.active = true;
 
-    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject());
+    udbUitpasApi.getEventCardSystems.and.returnValue($q.reject({ status: 404 }));
     udbUitpasApi.findOrganisationsCardSystems.and.returnValue(organizerCardSystemPromise);
-    udbUitpasApi.addEventCardSystem.and.returnValue($q.reject());
+    udbUitpasApi.addEventCardSystem.and.returnValue($q.reject({ status: 404 }));
 
     var controller = getComponentController();
     controller.activeCardSystemsChanged(activatedCardSystem);
     $scope.$digest();
 
     expect(activatedCardSystem.active).toEqual(false);
-    expect(controller.uitpasUnavailable).toEqual(true);
+    expect(controller.uitpasUnavailableType).toEqual('not_found');
   });
 
   it('should show event card systems as active', function () {

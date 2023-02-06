@@ -45,12 +45,17 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       .then(showCardSystems, showUitpasUnavailableNotice);
   }
 
-  function showUitpasUnavailableNotice() {
-    controller.uitpasUnavailable = true;
+  function showUitpasUnavailableNotice(requestInfo) {
+    if (requestInfo.status === 400) {
+      controller.uitpasUnavailableType = 'already_has_ticketsales';
+    }
+    if (requestInfo.status === 404) {
+      controller.uitpasUnavailableType = 'not_found';
+    }
   }
 
   function hideUitpasUnavailableNotice() {
-    controller.uitpasUnavailable = undefined;
+    controller.uitpasUnavailableType = undefined;
   }
 
   function refresh() {
@@ -130,9 +135,9 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       assignKeyAndOrCardSystem(cardSystem) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    function revertCardSystemStatus() {
+    function revertCardSystemStatus(requestInfo) {
       cardSystem.active = !cardSystem.active;
-      showUitpasUnavailableNotice();
+      showUitpasUnavailableNotice(requestInfo);
     }
 
     function notifyUitpasDataSaved () {

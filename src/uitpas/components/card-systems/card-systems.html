@@ -1,7 +1,7 @@
 <div class="form-group">
     <div class="card-system">
         <label translate="uitpas.cardSystems.card_systems"></label>
-        <span ng-hide="cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)">
+        <span ng-hide="cardSystemSelector.uitpasUnavailableType || (cardSystemSelector.availableCardSystems !== undefined)">
             <i class="fa fa-circle-o-notch fa-spin"></i> Loading...
         </span>
         <span ng-show="cardSystemSelector.persistingCardSystems">
@@ -33,9 +33,9 @@
             </div>
         </div>
 
-        <div class="alert alert-danger" role="alert" ng-show="cardSystemSelector.uitpasUnavailable">
-            <p translate="uitpas.cardSystems.unavailable"></p>
-            <button class="btn btn-default" ng-click="cardSystemSelector.refresh()" translate="uitpas.cardSystems.retry"></button>
+        <div class="alert alert-danger" role="alert" ng-show="cardSystemSelector.uitpasUnavailableType">
+            <p translate="uitpas.cardSystems.{{cardSystemSelector.uitpasUnavailableType}}"></p>
+            <button ng-if="cardSystemSelector.uitpasUnavailableType === 'not_found'" class="btn btn-default" ng-click="cardSystemSelector.refresh()" translate="uitpas.cardSystems.retry"></button>
         </div>
     </div>
 </div>
