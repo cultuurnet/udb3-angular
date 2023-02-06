@@ -909,8 +909,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'card_systems': 'Kartensysteme',
       'choose': '--Wählen Sie einen Verteilerschlüssel--',
       'retry': 'Erneut registrieren',
-      'unavailable':
-        'Für diese Veranstaltung sind bereits UiTPAS-Tickets verkauft worden. Sie können die Organisation nicht mehr ändern.',
+      'already_has_ticketsales': 'Für diese Veranstaltung sind bereits UiTPAS-Tickets verkauft worden. Sie können die Organisation nicht mehr ändern.',
+      'not_found': 'Diese Veranstaltung ist dem UiTPAS noch nicht bekannt.'
     },
   },
   'images': {

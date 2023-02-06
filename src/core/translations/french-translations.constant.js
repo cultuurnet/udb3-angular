@@ -835,7 +835,8 @@ angular.module('udb.core')
         'card_systems': '<Systèmes des cartes',
         'choose': '--Sélectionnez une clé de répartition--',
         'retry': 'Enregistrer à nouveau',
-        'unavailable': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.'
+        'already_has_ticketsales': 'Pour cet événement des tickets UiTPAS ont déjà été vendus. Vous ne pouvez plus modifier l\'organisation.',
+        'not_found': 'Cette activité n\'est pas encore connue par UiTPAS.'
       }
     },
     images: {
