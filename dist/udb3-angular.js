@@ -27273,9 +27273,9 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       assignKeyAndOrCardSystem(cardSystem) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    function revertCardSystemStatus() {
+    function revertCardSystemStatus(requestInfo) {
       cardSystem.active = !cardSystem.active;
-      showUitpasUnavailableNotice();
+      showUitpasUnavailableNotice(requestInfo);
     }
 
     function notifyUitpasDataSaved () {
@@ -33689,7 +33689,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"form-group\">\n" +
     "    <div class=\"card-system\">\n" +
     "        <label translate=\"uitpas.cardSystems.card_systems\"></label>\n" +
-    "        <span ng-hide=\"cardSystemSelector.uitpasUnavailable || (cardSystemSelector.availableCardSystems !== undefined)\">\n" +
+    "        <span ng-hide=\"cardSystemSelector.uitpasUnavailableType || (cardSystemSelector.availableCardSystems !== undefined)\">\n" +
     "            <i class=\"fa fa-circle-o-notch fa-spin\"></i> Loading...\n" +
     "        </span>\n" +
     "        <span ng-show=\"cardSystemSelector.persistingCardSystems\">\n" +
