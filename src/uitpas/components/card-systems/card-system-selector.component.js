@@ -135,9 +135,9 @@ function CardSystemsController($q, udbUitpasApi, $rootScope) {
       assignKeyAndOrCardSystem(cardSystem) :
       udbUitpasApi.removeEventCardSystem(offerData.id, cardSystem.id);
 
-    function revertCardSystemStatus() {
+    function revertCardSystemStatus(requestInfo) {
       cardSystem.active = !cardSystem.active;
-      showUitpasUnavailableNotice();
+      showUitpasUnavailableNotice(requestInfo);
     }
 
     function notifyUitpasDataSaved () {
