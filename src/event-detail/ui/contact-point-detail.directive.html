@@ -11,7 +11,7 @@
                     </span>
             </li>
             <li>
-                    <span ng-repeat="phone in ::contactPoint.phone">
+                    <span ng-repeat="phone in ::contactPoint.phone track by $index">
                       <span ng-bind="::phone"></span>
                       <span ng-if="::!$last" translate-once="contact.or"> </span>
                     </span>
