@@ -32844,7 +32844,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"list-inline\">\n" +
     "  <li ng-repeat=\"label in select.labels\">\n" +
-    "    <span class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "    <span ng-show=\"label.name !== 'new-entry-form'\" class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
     "  </li>\n" +
     "</ul>\n"
   );
