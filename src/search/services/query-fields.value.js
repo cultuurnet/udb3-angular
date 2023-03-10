@@ -70,6 +70,7 @@ angular
     {field: 'description.en', type: 'tokenized-string'},
     {field: 'terms.label', type: 'string'},
     {field: 'mediaObjectsCount', type: 'number'},
+    {field: 'videosCount', type: 'number'},
     {field: 'address.\\*.streetAddress', type: 'string'},
     {field: 'location.id', type: 'string'},
     {field: 'location.name.nl', type: 'tokenized-string'},
