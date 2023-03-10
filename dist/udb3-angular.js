@@ -25103,6 +25103,7 @@ angular
     {field: 'description.en', type: 'tokenized-string'},
     {field: 'terms.label', type: 'string'},
     {field: 'mediaObjectsCount', type: 'number'},
+    {field: 'videosCount', type: 'number'},
     {field: 'address.\\*.streetAddress', type: 'string'},
     {field: 'location.id', type: 'string'},
     {field: 'location.name.nl', type: 'tokenized-string'},
@@ -28336,7 +28337,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                    <span ng-repeat=\"phone in ::contactPoint.phone\">\n" +
+    "                    <span ng-repeat=\"phone in ::contactPoint.phone track by $index\">\n" +
     "                      <span ng-bind=\"::phone\"></span>\n" +
     "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
@@ -33206,7 +33207,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "  <div class=\"col-sm-2\">\n" +
     "    <div class=\"udb-place-name\" ng-bind=\"event.location.name\"></div>\n" +
-    "    <div class=\"udb-place-city\" ng-hide=\"event.location.isDummyPlaceForEducationEvents\" ng-bind=\"event.location.address.addressLocality\"></div>\n" +
+    "    <div class=\"udb-place-city\" ng-hide=\"event.location.isDummyPlaceForEducationEvents || event.attendanceMode == 'online'\" ng-bind=\"event.location.address.addressLocality\"></div>\n" +
     "  </div>\n" +
     "\n" +
     "  <div class=\"col-sm-2\" ng-switch=\"event.calendarType\">\n" +
