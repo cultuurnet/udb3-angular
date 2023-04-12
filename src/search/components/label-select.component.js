@@ -24,6 +24,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.areContentCriteriaMet = areContentCriteriaMet;
   /** @type {Label[]} */
   select.labels = objectifyLabels(select.labels);
+  select.hiddenLabels = ['new-entry-form'];
   select.minimumInputLength = 2;
   select.maxInputLength = 50;
   select.currentLabel = '';
