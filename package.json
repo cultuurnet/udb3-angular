@@ -49,6 +49,7 @@
   },
   "scripts": {
     "test": "grunt test",
-    "travis": "npm test && grunt coveralls"
+    "travis": "npm test && grunt coveralls",
+    "build:watch": "grunt watch"
   }
 }
