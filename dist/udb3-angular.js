@@ -23358,6 +23358,7 @@ function LabelSelectComponent(offerLabeller, $q) {
   select.areContentCriteriaMet = areContentCriteriaMet;
   /** @type {Label[]} */
   select.labels = objectifyLabels(select.labels);
+  select.hiddenLabels = ['new-entry-form', 'ook voor jongeren', 'ook voor kinderen'];
   select.minimumInputLength = 2;
   select.maxInputLength = 50;
   select.currentLabel = '';
@@ -32845,7 +32846,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"list-inline\">\n" +
     "  <li ng-repeat=\"label in select.labels\">\n" +
-    "    <span ng-show=\"label.name !== 'new-entry-form'\" class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
+    "    <span ng-hide=\"select.hiddenLabels.includes(label.name)\" class=\"badge\">{{label.name}} <a ng-click=\"select.onRemove(label)\" class=\"badge-remove\">&times;</a></span>\n" +
     "  </li>\n" +
     "</ul>\n"
   );
