@@ -25,6 +25,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.deleteOrganization = deleteOrganization;
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
+  controller.canEdit = canEdit;
 
   function loadOrganizer(organizerId) {
     OrganizerManager
@@ -135,5 +136,9 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
 
   function finishedLoading () {
     return (controller.organizer && !controller.loadingError);
+  }
+
+  function canEdit() {
+    return true;
   }
 }
