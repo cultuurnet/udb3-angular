@@ -436,6 +436,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   *  roleId for the role to retrieve permissions for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getOrganizerPermissions = function (organizerId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/permissions', requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} id
    * @param {string} type
    * @return {*}
