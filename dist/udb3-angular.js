@@ -6862,6 +6862,18 @@ function UdbApi(
   };
 
   /**
+   * @param {string} organizerId
+   *  roleId for the role to retrieve permissions for
+   * @return {Promise.Array<Permission>}
+   */
+  this.getOrganizerPermissions = function (organizerId) {
+    var requestConfig = defaultApiConfig;
+    return $http
+        .get(appConfig.baseUrl + 'organizers/' + organizerId + '/permissions', requestConfig)
+        .then(returnUnwrappedData, returnApiProblem);
+  };
+
+  /**
    * @param {string} id
    * @param {string} type
    * @return {*}
@@ -22056,7 +22068,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
@@ -22070,11 +22082,18 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.deleteOrganization = deleteOrganization;
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
+  controller.canEdit = canEdit;
+  controller.permissions = [];
 
   function loadOrganizer(organizerId) {
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
+
+    udbApi.getOrganizerPermissions(organizerId)
+      .then(function (response) {
+        controller.permissions = response.permissions;
+      });
   }
 
   loadOrganizer(organizerId);
@@ -22181,8 +22200,12 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   function finishedLoading () {
     return (controller.organizer && !controller.loadingError);
   }
+
+  function canEdit() {
+    return controller.permissions.indexOf('Organisaties bewerken') !== -1;
+  }
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state", "udbApi"];
 })();
 
 // Source: src/organizers/organizer-form.controller.js
@@ -27860,7 +27883,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </div>\n" +
     "            </div>\n" +
     "            <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete && $ctrl.forSchools\">\n" +
-    "                <p>Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.</p>\n" +
+    "                <p>Bekijk je evenement op cultuurkuur.be en voeg de juiste onderwijsniveaus toe zodat leerkrachten je vinden.</p>\n" +
     "                <a ng-href=\"{{::$ctrl.continueLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "            </div>\n" +
     "        </div>\n" +
@@ -32382,7 +32405,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
     "      <button class=\"list-group-item\"\n" +
     "              type=\"button\"\n" +
-    "              ui-sref=\"split.organizerEdit({id: odc.organizer.id})\">\n" +
+    "              ui-sref=\"split.organizerEdit({id: odc.organizer.id})\"\n" +
+    "              ng-if=\"odc.canEdit()\">\n" +
     "        <i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>\n" +
     "        <span translate-once=\"organizer.manage.edit\"></span>\n" +
     "      </button>\n" +
