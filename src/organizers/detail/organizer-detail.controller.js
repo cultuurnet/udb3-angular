@@ -26,12 +26,17 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
   controller.canEdit = canEdit;
-  controller.permissions = null;
+  controller.permissions = [];
 
   function loadOrganizer(organizerId) {
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
+
+    udbApi.getOrganizerPermissions(organizerId)
+      .then(function (response) {
+        controller.permissions = response.permissions;
+      });
   }
 
   loadOrganizer(organizerId);
@@ -140,13 +145,6 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 
   function canEdit() {
-    if (!controller.permissions) {
-      udbApi.getOrganizerPermissions(organizerId)
-        .then(function (response) {
-          controller.permissions = response.permissions;
-        });
-    }
-
     return controller.permissions.indexOf('Organisaties bewerken') !== -1;
   }
 }
