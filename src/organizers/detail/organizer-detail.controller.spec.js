@@ -87,6 +87,7 @@ describe('Controller: Organizer Detail', function() {
 
   it ('should load the organizer detail', function () {
     OrganizerManager.get.and.returnValue($q.resolve(fakeOrganizer));
+    udbApi.getOrganizerPermissions.and.returnValue($q.resolve(['Organisaties bewerken']));
 
     var expectedLabels = [
       {
