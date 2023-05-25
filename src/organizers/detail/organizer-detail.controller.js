@@ -11,7 +11,7 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
@@ -25,11 +25,18 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.deleteOrganization = deleteOrganization;
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
+  controller.canEdit = canEdit;
+  controller.permissions = [];
 
   function loadOrganizer(organizerId) {
     OrganizerManager
       .get(organizerId)
       .then(showOrganizer);
+
+    udbApi.getOrganizerPermissions(organizerId)
+      .then(function (response) {
+        controller.permissions = response.permissions;
+      });
   }
 
   loadOrganizer(organizerId);
@@ -135,5 +142,9 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
 
   function finishedLoading () {
     return (controller.organizer && !controller.loadingError);
+  }
+
+  function canEdit() {
+    return controller.permissions.indexOf('Organisaties bewerken') !== -1;
   }
 }
