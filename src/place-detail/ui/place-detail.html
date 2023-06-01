@@ -114,7 +114,7 @@
               <td ng-if="::place.videos.length"> 
                 <ul>
                   <li ng-repeat="video in ::place.videos">
-                    <a target="_blank" rel="noopener noreferrer" href="::video.url" >{{ video.url }}</a>
+                    <a target="_blank" rel="noopener noreferrer" ng-href="{{video.url}}" >{{ video.url }}</a>
                   </li>
                 </ul>
               </td>
