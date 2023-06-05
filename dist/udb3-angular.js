@@ -28582,7 +28582,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td ng-if=\"::event.videos.length\"> \n" +
     "                  <ul>\n" +
     "                    <li ng-repeat=\"video in ::event.videos\">\n" +
-    "                      <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"::video.url\" >{{ video.url }}</a>\n" +
+    "                      <a target=\"_blank\" rel=\"noopener noreferrer\" ng-href=\"{{video.url}}\" >{{ video.url }}</a>\n" +
     "                    </li>\n" +
     "                  </ul>\n" +
     "                </td>\n" +
@@ -32701,7 +32701,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "              <td ng-if=\"::place.videos.length\"> \n" +
     "                <ul>\n" +
     "                  <li ng-repeat=\"video in ::place.videos\">\n" +
-    "                    <a target=\"_blank\" rel=\"noopener noreferrer\" href=\"::video.url\" >{{ video.url }}</a>\n" +
+    "                    <a target=\"_blank\" rel=\"noopener noreferrer\" ng-href=\"{{video.url}}\" >{{ video.url }}</a>\n" +
     "                  </li>\n" +
     "                </ul>\n" +
     "              </td>\n" +
