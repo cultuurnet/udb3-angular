@@ -18525,7 +18525,7 @@ function LabelManager(udbApi) {
    * @return {Promise.<PagedCollection>}
    */
   service.find = function(query, limit, start) {
-    return udbApi.findLabels(query, limit, start, true);
+    return udbApi.findLabels(query, limit, start, false);
   };
 
   /**
@@ -28355,7 +28355,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td ng-if=\"::!isEmpty(contactPoint)\">\n" +
     "        <ul class=\"list-unstyled\">\n" +
     "            <li>\n" +
-    "                    <span ng-repeat=\"website in ::contactPoint.url\">\n" +
+    "                    <span ng-repeat=\"website in ::contactPoint.url track by $index\">\n" +
     "                      <a ng-href=\"{{::website}}\" target=\"_blank\" ng-bind=\"::website\"></a>\n" +
     "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
@@ -28367,7 +28367,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    </span>\n" +
     "            </li>\n" +
     "            <li>\n" +
-    "                    <span ng-repeat=\"email in ::contactPoint.email\">\n" +
+    "                    <span ng-repeat=\"email in ::contactPoint.email track by $index\">\n" +
     "                      <span ng-bind=\"::email\"></span>\n" +
     "                      <span ng-if=\"::!$last\" translate-once=\"contact.or\"> </span>\n" +
     "                    </span>\n" +
