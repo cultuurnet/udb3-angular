@@ -418,6 +418,7 @@ angular.module('udb.core')
       'permanent': 'Permanent'
     },
     moderate: {
+      'infoAlert': '<p>Bienvenue sur la page de validation. Sur cette page, vous pouvez approuver ou rejeter les événements en tant que validateur décentralisé : <br/><br/><ul><li><strong>Rejeter.</strong> Les événements rejetés ne sont plus publiés sur UiTinVlaanderen ou d\'autres agendas et ne peuvent plus être modifiés par l\'importateur.</li><li><strong>Approuver.</strong> Les événements approuvés resteront publiés sur UiTinVlaanderen et d\'autres calendriers UiT. Ils ne seront pas soumis à une nouvelle validation.</li></ul><br/>Vous trouverez des directives pour la validation dans <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">les règles de contenu de la base de données UiTdatabank.</a></p>',
       'validate': 'Valider',
       'approve': 'Approuver',
       'approved': 'Approuvé',
