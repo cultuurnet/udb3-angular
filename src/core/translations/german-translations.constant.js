@@ -417,6 +417,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'permanent': 'Permanent',
   },
   'moderate': {
+    'infoAlert': '<p>Willkommen auf der Validierungsseite. Auf dieser Seite können Sie als dezentraler Validator Veranstaltungen genehmigen oder ablehnen: <br/><br/><ul><li><strong>Ablehnen.</strong> Abgelehnte Veranstaltungen werden nicht mehr auf UiTinVlaanderen oder anderen UiT-Agenden veröffentlicht und können vom Importeur nicht mehr bearbeitet werden.</li><li><strong>Genehmigen.</strong> Genehmigte Veranstaltungen bleiben auf UiTinVlaanderen und anderen UiTagenda-Plattformen veröffentlicht. Sie werden nicht erneut zur Validierung vorgelegt.</li></ul><br/>Eine Anleitung zur Validierung finden Sie in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">den Inhaltsregeln der UiTdatabank.</a></p>',
     'validate': 'Validieren',
     'approve': 'Genehmigen',
     'approved': 'Genehmigt',
