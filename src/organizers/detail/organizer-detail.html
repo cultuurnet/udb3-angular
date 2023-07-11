@@ -49,7 +49,7 @@
           <span ng-bind="odc.organizer.name"></span>
         </td>
       </tr>
-      <tr>
+      <tr ng-if="odc.organizer.description">
         <td>
           <span class="row-label" translate-once="organizer.manage.description"></span>
         </td>
