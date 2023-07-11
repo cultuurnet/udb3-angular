@@ -107,6 +107,8 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       //this.url = jsonOrganizer.url;
       this.website = jsonOrganizer.url;
       this.contactPoint = jsonOrganizer.contactPoint;
+      this.mediaObject = jsonOrganizer.images || [];
+      this.image = jsonOrganizer.mainImage;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
