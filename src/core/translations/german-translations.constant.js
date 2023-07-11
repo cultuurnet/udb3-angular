@@ -1014,6 +1014,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
       'name': 'Name',
+      'description': 'Beschreibung',
       'address': 'Adresse',
       'website': 'Website',
       'phone': 'Telefonnummer',
