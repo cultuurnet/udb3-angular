@@ -66,30 +66,7 @@
           <span ng-bind="odc.organizer.address.postalCode"></span> <span ng-bind="odc.organizer.address.addressLocality"></span>
         </td>
       </tr>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.website"></span>
-        </td>
-        <td>
-          <span ng-bind="odc.organizer.website"></span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.phone"></span>
-        </td>
-        <td>
-          <span ng-bind="odc.organizer.phone"></span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.email"></span>
-        </td>
-        <td>
-          <span ng-bind="odc.organizer.email"></span>
-        </td>
-      </tr>
+      <tbody udb-contact-point-detail="odc.organizer.contactPoint"></tbody>
       <tr>
         <td>
           <span class="row-label" translate-once="organizer.manage.labels"></span>
