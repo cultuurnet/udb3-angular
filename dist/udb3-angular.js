@@ -32460,15 +32460,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.name\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
-    "      <tr ng-if=\"odc.organizer.description\">\n" +
+    "      <tr ng-if=\"::odc.organizer.description\">\n" +
     "        <td>\n" +
     "          <span class=\"row-label\" translate-once=\"organizer.manage.description\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.description\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.description\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
@@ -32476,11 +32476,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span><br/>\n" +
-    "          <span ng-bind=\"odc.organizer.address.postalCode\"></span> <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.streetAddress\"></span><br/>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.postalCode\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.addressLocality\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
-    "      <tbody udb-contact-point-detail=\"odc.organizer.contactPoint\"></tbody>\n" +
+    "      <tbody udb-contact-point-detail=\"::odc.organizer.contactPoint\"></tbody>\n" +
     "      <tr>\n" +
     "        <td>\n" +
     "          <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +

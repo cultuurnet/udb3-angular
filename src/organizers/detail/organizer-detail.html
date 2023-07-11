@@ -46,15 +46,15 @@
           <span class="row-label" translate-once="organizer.manage.name"></span>
         </td>
         <td>
-          <span ng-bind="odc.organizer.name"></span>
+          <span ng-bind="::odc.organizer.name"></span>
         </td>
       </tr>
-      <tr ng-if="odc.organizer.description">
+      <tr ng-if="::odc.organizer.description">
         <td>
           <span class="row-label" translate-once="organizer.manage.description"></span>
         </td>
         <td>
-          <span ng-bind="odc.organizer.description"></span>
+          <span ng-bind="::odc.organizer.description"></span>
         </td>
       </tr>
       <tr>
@@ -62,11 +62,12 @@
           <span class="row-label" translate-once="organizer.manage.address"></span>
         </td>
         <td>
-          <span ng-bind="odc.organizer.address.streetAddress"></span><br/>
-          <span ng-bind="odc.organizer.address.postalCode"></span> <span ng-bind="odc.organizer.address.addressLocality"></span>
+          <span ng-bind="::odc.organizer.address.streetAddress"></span><br/>
+          <span ng-bind="::odc.organizer.address.postalCode"></span>
+          <span ng-bind="::odc.organizer.address.addressLocality"></span>
         </td>
       </tr>
-      <tbody udb-contact-point-detail="odc.organizer.contactPoint"></tbody>
+      <tbody udb-contact-point-detail="::odc.organizer.contactPoint"></tbody>
       <tr>
         <td>
           <span class="row-label" translate-once="organizer.manage.labels"></span>
