@@ -925,6 +925,7 @@ angular.module('udb.core')
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
         'name': 'Nom',
+        'description': 'Description',
         'address': 'Adresse',
         'website': 'Site Internet',
         'phone': 'Numéro de téléphone',

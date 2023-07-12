@@ -933,6 +933,7 @@ angular.module('udb.core')
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
         'name': 'Naam',
+        'description': 'Beschrijving',
         'address': 'Adres',
         'website': 'Website',
         'phone': 'Telefoonnummer',

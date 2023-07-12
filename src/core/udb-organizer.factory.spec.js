@@ -11,12 +11,14 @@ describe('Factory: UDB Organizer', function () {
     'creator': '357D5297-9E37-1DE9-62398987EA110D38',
     'url': 'http://foo.bar',
     'name': 'Club Silo',
+    'description': 'Club Silo is een club in Leuven.',
     'address': {
       addressCountry: 'BE',
       addressLocality: 'Leuven',
       postalCode: '3000',
       streetAddress: 'Vaartkom 39'
     },
+    mainImage: 'http://foo.bar.jpg',
     contactPoint: {
       'email': [
         'info@silo.be'
@@ -91,6 +93,7 @@ describe('Factory: UDB Organizer', function () {
       '@id': 'http://culudb-silex.dev:8080/organizer/357D5297-9E37-1DE9-62398987EA110D38',
       'id': '357D5297-9E37-1DE9-62398987EA110D38',
       'name': 'Club Silo',
+      description: 'Club Silo is een club in Leuven.',
       'address': {
         addressCountry: 'BE',
         addressLocality: 'Leuven',
@@ -112,6 +115,8 @@ describe('Factory: UDB Organizer', function () {
         'green',
         'UiTPAS'
       ],
+      image: 'http://foo.bar.jpg',
+      mediaObject: [],
       hiddenLabels: [
 
       ],
@@ -159,7 +164,7 @@ describe('Factory: UDB Organizer', function () {
 
   it('should verify if contact url is valid according to the regex', inject(function (UdbOrganizer) {
     var OrganizerUrlRegex = new UdbOrganizer().regex.url;
-    var mockUrls= MockData.urls; 
+    var mockUrls= MockData.urls;
     mockUrls.map(function(mockUrl){
       expect(OrganizerUrlRegex.test(mockUrl.url)).toEqual(mockUrl.valid);
     });

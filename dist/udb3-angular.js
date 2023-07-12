@@ -3709,6 +3709,7 @@ angular.module('udb.core')
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
         'name': 'Naam',
+        'description': 'Beschrijving',
         'address': 'Adres',
         'website': 'Website',
         'phone': 'Telefoonnummer',
@@ -4892,6 +4893,7 @@ angular.module('udb.core')
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
         'name': 'Nom',
+        'description': 'Description',
         'address': 'Adresse',
         'website': 'Site Internet',
         'phone': 'Numéro de téléphone',
@@ -6166,6 +6168,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
       'name': 'Name',
+      'description': 'Beschreibung',
       'address': 'Adresse',
       'website': 'Website',
       'phone': 'Telefonnummer',
@@ -8462,6 +8465,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
+      this.description = _.get(jsonOrganizer.description, jsonOrganizer.mainLanguage, null) ||
+        _.get(jsonOrganizer.description, 'nl', null) ||
+        _.get(jsonOrganizer, 'description', '');
       this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -8469,6 +8475,8 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       //this.url = jsonOrganizer.url;
       this.website = jsonOrganizer.url;
       this.contactPoint = jsonOrganizer.contactPoint;
+      this.mediaObject = jsonOrganizer.images || [];
+      this.image = jsonOrganizer.mainImage;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
@@ -31287,7 +31295,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "\n" +
     "<div class=\"row\">\n" +
-    "    <div class=\"col-md-10 col-sm-12\">\n" +
+    "    <div class=\"col-md-12\">\n" +
     "        <div class=\"alert alert-info\" role=\"alert\" translate-once=\"moderate.infoAlert\">\n" +
     "        </div>\n" +
     "    </div>\n" +
@@ -32452,7 +32460,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.name\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.name\"></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr ng-if=\"::odc.organizer.description\">\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.description\"></span>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <span ng-bind=\"::odc.organizer.description\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
@@ -32460,34 +32476,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
     "        </td>\n" +
     "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.address.streetAddress\"></span><br/>\n" +
-    "          <span ng-bind=\"odc.organizer.address.postalCode\"></span> <span ng-bind=\"odc.organizer.address.addressLocality\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.streetAddress\"></span><br/>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.postalCode\"></span>\n" +
+    "          <span ng-bind=\"::odc.organizer.address.addressLocality\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.website\"></span>\n" +
-    "        </div>\n" +
-    "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.website\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.phone\"></span>\n" +
-    "        </div>\n" +
-    "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.phone\"></span>\n" +
-    "        </td>\n" +
-    "      </div>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.email\"></span>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <span ng-bind=\"odc.organizer.email\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
+    "      <tbody udb-contact-point-detail=\"::odc.organizer.contactPoint\"></tbody>\n" +
     "      <tr>\n" +
     "        <td>\n" +
     "          <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +
@@ -32502,6 +32496,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </div>\n" +
     "        </td>\n" +
     "      </tr>\n" +
+    "      <tbody udb-image-detail=\"::odc.organizer.mediaObject\" image=\"::odc.organizer.image\"></tbody>\n" +
     "    </table>\n" +
     "\n" +
     "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +

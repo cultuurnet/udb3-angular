@@ -46,7 +46,15 @@
           <span class="row-label" translate-once="organizer.manage.name"></span>
         </td>
         <td>
-          <span ng-bind="odc.organizer.name"></span>
+          <span ng-bind="::odc.organizer.name"></span>
+        </td>
+      </tr>
+      <tr ng-if="::odc.organizer.description">
+        <td>
+          <span class="row-label" translate-once="organizer.manage.description"></span>
+        </td>
+        <td>
+          <span ng-bind="::odc.organizer.description"></span>
         </td>
       </tr>
       <tr>
@@ -54,34 +62,12 @@
           <span class="row-label" translate-once="organizer.manage.address"></span>
         </td>
         <td>
-          <span ng-bind="odc.organizer.address.streetAddress"></span><br/>
-          <span ng-bind="odc.organizer.address.postalCode"></span> <span ng-bind="odc.organizer.address.addressLocality"></span>
+          <span ng-bind="::odc.organizer.address.streetAddress"></span><br/>
+          <span ng-bind="::odc.organizer.address.postalCode"></span>
+          <span ng-bind="::odc.organizer.address.addressLocality"></span>
         </td>
       </tr>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.website"></span>
-        </div>
-        <td>
-          <span ng-bind="odc.organizer.website"></span>
-        </td>
-      </tr>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.phone"></span>
-        </div>
-        <td>
-          <span ng-bind="odc.organizer.phone"></span>
-        </td>
-      </div>
-      <tr>
-        <td>
-          <span class="row-label" translate-once="organizer.manage.email"></span>
-        </td>
-        <td>
-          <span ng-bind="odc.organizer.email"></span>
-        </td>
-      </tr>
+      <tbody udb-contact-point-detail="::odc.organizer.contactPoint"></tbody>
       <tr>
         <td>
           <span class="row-label" translate-once="organizer.manage.labels"></span>
@@ -96,6 +82,7 @@
           </div>
         </td>
       </tr>
+      <tbody udb-image-detail="::odc.organizer.mediaObject" image="::odc.organizer.image"></tbody>
     </table>
 
     <div class="alert alert-danger" ng-if="odc.organizer && odc.organizer.deleted">

@@ -97,6 +97,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.name = _.get(jsonOrganizer.name, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.name, 'nl', null) ||
         _.get(jsonOrganizer, 'name', '');
+      this.description = _.get(jsonOrganizer.description, jsonOrganizer.mainLanguage, null) ||
+        _.get(jsonOrganizer.description, 'nl', null) ||
+        _.get(jsonOrganizer, 'description', '');
       this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -104,6 +107,8 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       //this.url = jsonOrganizer.url;
       this.website = jsonOrganizer.url;
       this.contactPoint = jsonOrganizer.contactPoint;
+      this.mediaObject = jsonOrganizer.images || [];
+      this.image = jsonOrganizer.mainImage;
       this.labels = _.union(jsonOrganizer.labels, jsonOrganizer.hiddenLabels);
       this.hiddenLabels = jsonOrganizer.hiddenLabels || [];
       this.isUitpas = isUitpas(jsonOrganizer);
