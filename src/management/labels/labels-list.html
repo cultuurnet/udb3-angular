@@ -36,6 +36,7 @@
                         <th>Naam</th>
                         <th>Verborgen</th>
                         <th>Voorbehouden</th>
+                        <th>Uitgesloten</th>
                         <th>Opties</th>
                     </tr>
                     </thead>
@@ -44,6 +45,7 @@
                         <td ng-bind="::label.name"></td>
                         <td ng-bind="::(label.visibility === 'invisible' ? 'Verborgen' : '')"></td>
                         <td ng-bind="::(label.privacy === 'private' ? 'Voorbehouden' : '')"></td>
+                        <td ng-bind="::(label.excluded ? 'Uitgesloten' : '')"></td>
                         <td>
                             <a ui-sref="split.manageLabels.edit({id: label.uuid})">Bewerken</a>
                         </td>
