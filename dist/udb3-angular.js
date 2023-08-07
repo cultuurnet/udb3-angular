@@ -31141,6 +31141,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <th>Naam</th>\n" +
     "                        <th>Verborgen</th>\n" +
     "                        <th>Voorbehouden</th>\n" +
+    "                        <th>Uitgesloten</th>\n" +
     "                        <th>Opties</th>\n" +
     "                    </tr>\n" +
     "                    </thead>\n" +
@@ -31149,6 +31150,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        <td ng-bind=\"::label.name\"></td>\n" +
     "                        <td ng-bind=\"::(label.visibility === 'invisible' ? 'Verborgen' : '')\"></td>\n" +
     "                        <td ng-bind=\"::(label.privacy === 'private' ? 'Voorbehouden' : '')\"></td>\n" +
+    "                        <td ng-bind=\"::(label.excluded ? 'Uitgesloten' : '')\"></td>\n" +
     "                        <td>\n" +
     "                            <a ui-sref=\"split.manageLabels.edit({id: label.uuid})\">Bewerken</a>\n" +
     "                        </td>\n" +
