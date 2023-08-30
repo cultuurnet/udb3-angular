@@ -401,7 +401,8 @@ describe('Controller: Event Detail', function() {
     var expectedPermissions = {
       editing: true,
       editingMovies: false,
-      duplication: true
+      duplication: true,
+      history: false
     };
 
     $scope.$digest();
@@ -422,7 +423,8 @@ describe('Controller: Event Detail', function() {
     var expectedPermissions = {
       editing: false,
       editingMovies: false,
-      duplication: true
+      duplication: true,
+      history: false
     };
 
     $scope.$digest();
@@ -442,7 +444,8 @@ describe('Controller: Event Detail', function() {
 
     var expectedPermissions = {
       editing: false,
-      duplication: false
+      duplication: false,
+      history: false
     };
 
     $scope.$digest();
@@ -463,7 +466,8 @@ describe('Controller: Event Detail', function() {
     var expectedPermissions = {
       editing: true,
       editingMovies: false,
-      duplication: true
+      duplication: true,
+      history: false
     };
 
     $scope.$digest();
