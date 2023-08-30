@@ -467,7 +467,7 @@ describe('Controller: Event Detail', function() {
       editing: true,
       editingMovies: false,
       duplication: true,
-      history: false
+      history: true
     };
 
     $scope.$digest();
