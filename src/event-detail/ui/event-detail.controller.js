@@ -71,14 +71,23 @@ function EventDetail(
             return permission === RolePermission.FILMS_AANMAKEN;
           });
 
+          var canSeeHistory = !!_.find($scope.userPermissions, function(permission) {
+            return permission === RolePermission.AANBOD_HISTORIEK;
+          });
+
           var canEditMovies = hasEditMoviesPermission && hasMovieLabel;
 
           if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, editingMovies: canEditMovies, duplication: true};
+            $scope.permissions = {editing: true, editingMovies: canEditMovies, duplication: true, history: true};
           } else if (hasPermission) {
-            $scope.permissions = {editing: !event.isExpired(), editingMovies: canEditMovies, duplication: true};
+            $scope.permissions = {
+              editing: !event.isExpired(),
+              editingMovies: canEditMovies,
+              duplication: true,
+              history: canSeeHistory
+            };
           } else {
-            $scope.permissions = {editing: false, duplication: false};
+            $scope.permissions = {editing: false, duplication: false, history: canSeeHistory};
           }
 
           setTabs();
@@ -112,7 +121,7 @@ function EventDetail(
   $scope.calendarSummary = undefined;
 
   function setTabs() {
-    if ($scope.isGodUser) {
+    if ($scope.permissions.history) {
       $scope.tabs = [
         {
           id: 'data'
