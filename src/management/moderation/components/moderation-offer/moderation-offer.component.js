@@ -38,17 +38,17 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
   // fetch offer
   ModerationService
     .getModerationOffer(moc.offerId)
-    .then(function(offer) {
+    .then(function (offer) {
       offer.updateTranslationState();
       moc.offer = jsonLDLangFilter(offer, defaultLanguage);
     })
     .catch(showLoadingError)
-    .finally(function() {
+    .finally(function () {
       moc.loading = false;
     });
 
   function showLoadingError(problem) {
-    showProblem(problem || {title:'Dit aanbod kon niet geladen worden.'});
+    showProblem(problem || {title: 'Dit aanbod kon niet geladen worden.'});
   }
 
   function continueValidation() {
@@ -71,8 +71,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = false;
     ModerationService
       .approve(moc.offer)
-      .then(function() {
-        moc.offer.workflowStatus = OfferWorkflowStatus.APPROVED;
+      .then(function () {
+        setWorkflowStatus(OfferWorkflowStatus.APPROVED);
       })
       .catch(showProblem);
   }
@@ -109,8 +109,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = false;
     ModerationService
       .reject(moc.offer, reason)
-      .then(function() {
-        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      .then(function () {
+        setWorkflowStatus(OfferWorkflowStatus.REJECTED);
       })
       .catch(showProblem);
   }
@@ -119,8 +119,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = false;
     ModerationService
       .flagAsDuplicate(moc.offer)
-      .then(function() {
-        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      .then(function () {
+        setWorkflowStatus(OfferWorkflowStatus.REJECTED);
       })
       .catch(showProblem);
   }
@@ -129,8 +129,8 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
     moc.error = false;
     ModerationService
       .flagAsInappropriate(moc.offer)
-      .then(function() {
-        moc.offer.workflowStatus = OfferWorkflowStatus.REJECTED;
+      .then(function () {
+        setWorkflowStatus(OfferWorkflowStatus.REJECTED);
       })
       .catch(showProblem);
   }
@@ -140,5 +140,10 @@ function ModerationOfferComponent(ModerationService, jsonLDLangFilter, OfferWork
    */
   function showProblem(problem) {
     moc.error = problem.title + (problem.detail ? ' ' + problem.detail : '');
+  }
+
+  function setWorkflowStatus(workflowStatus) {
+    moc.offer.workflowStatus = workflowStatus;
+    window.parent.postMessage({source: 'UDB', type: 'OFFER_MODERATED', status: workflowStatus}, '*');
   }
 }
