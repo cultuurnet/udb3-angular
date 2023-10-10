@@ -58,7 +58,9 @@ function OfferTranslateController(
     }
 
     _.forEach($scope.cachedOffer.name, function(name, language) {
-      $scope.activeLanguages[language].active = true;
+      if ($scope.activeLanguages[language]) {
+        $scope.activeLanguages[language].active = true;
+      }
     });
 
     $scope.activeLanguages[$scope.mainLanguage].main = true;
