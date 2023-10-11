@@ -14905,7 +14905,7 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     setPeriodicEndDate: function(endDate) {
-      const newEndDate =  moment(endDate).endOf('day').toDate();
+      var newEndDate =  moment(endDate).endOf('day').toDate();
       this.calendar.endDate = newEndDate;
     },
 
