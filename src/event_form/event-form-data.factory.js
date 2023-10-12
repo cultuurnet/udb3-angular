@@ -263,7 +263,8 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
     },
 
     setPeriodicEndDate: function(endDate) {
-      this.calendar.endDate = endDate;
+      var newEndDate =  moment(endDate).endOf('day').toDate();
+      this.calendar.endDate = newEndDate;
     },
 
     /**
@@ -684,6 +685,9 @@ function EventFormDataFactory(rx, calendarLabels, moment, OpeningHoursCollection
       if (formData.id) {
         //TODO: this was wrapping the code below, not sure why...
       }
+
+      var endDate = this.getPeriodicEndDate();
+      this.setPeriodicEndDate(endDate);
 
       if (formData.hasValidPeriodicRange()) {
         formData.periodicRangeError = false;
