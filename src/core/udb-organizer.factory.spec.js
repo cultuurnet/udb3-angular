@@ -12,6 +12,7 @@ describe('Factory: UDB Organizer', function () {
     'url': 'http://foo.bar',
     'name': 'Club Silo',
     'description': 'Club Silo is een club in Leuven.',
+    'educationalDescription': 'Club Silo is een club in Leuven.',
     'address': {
       addressCountry: 'BE',
       addressLocality: 'Leuven',
@@ -94,6 +95,7 @@ describe('Factory: UDB Organizer', function () {
       'id': '357D5297-9E37-1DE9-62398987EA110D38',
       'name': 'Club Silo',
       description: 'Club Silo is een club in Leuven.',
+      educationalDescription: 'Club Silo is een club in Leuven.',
       'address': {
         addressCountry: 'BE',
         addressLocality: 'Leuven',
