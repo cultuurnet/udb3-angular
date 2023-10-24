@@ -57,6 +57,14 @@
           <span ng-bind-html="::odc.organizer.description"></span>
         </td>
       </tr>
+      <tr ng-if="::odc.organizer.educationalDescription">
+        <td>
+          <span class="row-label" translate-once="organizer.manage.educationalDescription"></span>
+        </td>
+        <td>
+          <span ng-bind-html="::odc.organizer.educationalDescription"></span>
+        </td>
+      </tr>
       <tr>
         <td>
           <span class="row-label" translate-once="organizer.manage.address"></span>
