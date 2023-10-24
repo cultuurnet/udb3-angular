@@ -926,6 +926,7 @@ angular.module('udb.core')
         'dashboard': 'Retourner au tableau de bord',
         'name': 'Nom',
         'description': 'Description',
+        'educational_description': 'Description de Cultuurkuur',
         'address': 'Adresse',
         'website': 'Site Internet',
         'phone': 'Numéro de téléphone',

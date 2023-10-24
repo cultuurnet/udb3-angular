@@ -1015,6 +1015,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'dashboard': 'Zurück zum Dashboard',
       'name': 'Name',
       'description': 'Beschreibung',
+      'educational_description': 'Beschreibung für Cultuurkuur',
       'address': 'Adresse',
       'website': 'Website',
       'phone': 'Telefonnummer',
