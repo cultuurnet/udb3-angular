@@ -1175,7 +1175,8 @@ angular.module('udb.core')
         exclude: 'Exclure',
         addGroup: 'Ajouter groupe',
         cancel: 'Annuler',
-        search: 'Zoeken',
+        search: 'Rechercher',
+        syntaxError: 'Votre requête contient une erreur. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
       }
     }
   }

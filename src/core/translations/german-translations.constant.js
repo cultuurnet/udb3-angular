@@ -1269,6 +1269,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'addGroup': 'Gruppe hinzufügen',
       'cancel': 'Abbrechen',
       'search': 'Suchen',
+      syntaxError: 'Ihre Abfrage enthält einen Fehler. Auf <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">dieser Seite</a> finden Sie weitere Informationen über das Verfassen einer Abfrage',
     },
   },
 });
