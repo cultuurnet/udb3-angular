@@ -3958,6 +3958,7 @@ angular.module('udb.core')
         addGroup: 'Groep toevoegen',
         cancel: 'Annuleren',
         search: 'Zoeken',
+        syntaxError: 'Je query bevat een fout. Op <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">deze pagina</a> vind je meer informatie over hoe je een zoekopdracht kan samenstellen.',
       }
     }
   }
@@ -5143,7 +5144,8 @@ angular.module('udb.core')
         exclude: 'Exclure',
         addGroup: 'Ajouter groupe',
         cancel: 'Annuler',
-        search: 'Zoeken',
+        search: 'Rechercher',
+        syntaxError: 'Votre requête contient une erreur. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
       }
     }
   }
@@ -6423,6 +6425,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'addGroup': 'Gruppe hinzufügen',
       'cancel': 'Abbrechen',
       'search': 'Suchen',
+      syntaxError: 'Ihre Abfrage enthält einen Fehler. Auf <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">dieser Seite</a> finden Sie weitere Informationen über das Verfassen einer Abfrage',
     },
   },
 });
@@ -24052,7 +24055,7 @@ angular
   .directive('udbSearchBar', udbSearchBar);
 
 /* @ngInject */
-function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService) {
+function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSearchesService) {
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -24061,7 +24064,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
       var searchBar = {
         queryString: '',
         hasErrors: false,
-        errors: '',
+        errors: [],
         isEditing: false,
         savedSearches: []
       };
@@ -24116,18 +24119,18 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
           scope.sb.errors = formatErrors(query.errors);
         } else {
           scope.sb.hasErrors = false;
-          scope.sb.errors = '';
+          scope.sb.errors = [];
         }
       };
 
       function formatErrors(errors) {
-        var formattedErrors = '';
+        return errors.map(function (error) {
+          if (error.indexOf('Expected [') === 0) {
+            return $translate.instant('search.advancedQueryBuilder.syntaxError');
+          }
 
-        _.forEach(errors, function (error) {
-          formattedErrors += (error + '\n');
+          return error;
         });
-
-        return formattedErrors;
       }
 
       /**
@@ -24162,7 +24165,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
     }
   };
 }
-udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "savedSearchesService"];
+udbSearchBar.$inject = ["searchHelper", "$rootScope", "$uibModal", "$translate", "savedSearchesService"];
 })();
 
 // Source: src/search/event-types.value.js
@@ -33222,8 +33225,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <li><a href=\"saved-searches\" translate-once=\"search.manage\">Beheren</a></li>\n" +
     "      </ul>\n" +
     "    </span>\n" +
-    "    <i ng-show=\"sb.hasErrors\" class=\"fas fa-exclamation-triangle warning-icon\" tooltip-append-to-body=\"true\"\n" +
-    "       tooltip-placement=\"bottom\" uib-tooltip=\"{{sb.errors}}\"></i>\n" +
+    "    <i ng-show=\"sb.hasErrors\" class=\"fas fa-exclamation-triangle warning-icon\"></i>\n" +
     "  </div>\n" +
     "  <button type=\"submit\" class=\"btn udb-search-button\" ng-click=\"sb.find()\">\n" +
     "    <i class=\"fa fa-search\"></i>\n" +
@@ -33232,9 +33234,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<ul class=\"nav navbar-nav\">\n" +
     "  <li>\n" +
-    "    <a href=\"#\" ng-click=\"sb.editQuery()\" class=\"advanced-search\" ng-class=\"{'is-editing': sb.isEditing}\" translate-once=\"search.advanced\">Geavanceerd</a>\n" +
+    "    <a href=\"#\" ng-click=\"sb.editQuery()\" class=\"advanced-search\" ng-class=\"{'is-editing': sb.isEditing}\"\n" +
+    "       translate-once=\"search.advanced\">Geavanceerd</a>\n" +
     "  </li>\n" +
-    "</ul>\n"
+    "</ul>\n" +
+    "\n" +
+    "<div style=\"clear: both; margin: 0 10px\" ng-if=\"sb.errors.length\">\n" +
+    "  <p class=\"alert alert-warning\" ng-repeat=\"(index,error) in sb.errors track by index\" ng-bind-html=\"error\"/>\n" +
+    "</div>\n"
   );
 
 
