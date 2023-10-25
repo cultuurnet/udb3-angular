@@ -20,7 +20,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
       var searchBar = {
         queryString: '',
         hasErrors: false,
-        errors: '',
+        errors: [],
         isEditing: false,
         savedSearches: []
       };
@@ -75,7 +75,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
           scope.sb.errors = formatErrors(query.errors);
         } else {
           scope.sb.hasErrors = false;
-          scope.sb.errors = '';
+          scope.sb.errors = [];
         }
       };
 
