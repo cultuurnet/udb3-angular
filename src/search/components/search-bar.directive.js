@@ -11,7 +11,7 @@ angular
   .directive('udbSearchBar', udbSearchBar);
 
 /* @ngInject */
-function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService) {
+function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSearchesService) {
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -80,13 +80,13 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, savedSearchesService)
       };
 
       function formatErrors(errors) {
-        var formattedErrors = '';
+        return errors.map(function (error) {
+          if (error.indexOf('Expected [') === 0) {
+            return $translate.instant('search.advancedQueryBuilder.syntaxError');
+          }
 
-        _.forEach(errors, function (error) {
-          formattedErrors += (error + '\n');
+          return error;
         });
-
-        return formattedErrors;
       }
 
       /**
