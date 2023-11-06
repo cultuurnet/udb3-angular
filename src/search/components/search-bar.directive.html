@@ -31,5 +31,7 @@
 </ul>
 
 <div style="clear: both; margin: 0 10px" ng-if="sb.errors.length">
-  <p class="alert alert-warning" ng-repeat="(index,error) in sb.errors track by index" ng-bind-html="error"/>
+  <ul class="alert alert-warning list-unstyled">
+    <li ng-repeat="(index,error) in sb.errors track by index" ng-bind-html="error" />
+  </ul>
 </div>
