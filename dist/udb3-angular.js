@@ -33239,11 +33239,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "  </li>\n" +
     "</ul>\n" +
     "\n" +
-    "<div style=\"clear: both; margin: 0 10px\" ng-if=\"sb.errors.length\">\n" +
-    "  <ul class=\"alert alert-warning list-unstyled\">\n" +
-    "    <li ng-repeat=\"(index,error) in sb.errors track by index\" ng-bind-html=\"error\" />\n" +
-    "  </ul>\n" +
-    "</div>\n"
+    "<ul class=\"alert alert-warning list-unstyled\" style=\"clear: both; margin: 0 10px\" ng-if=\"sb.errors.length\">\n" +
+    "  <li ng-repeat=\"(index,error) in sb.errors track by index\" ng-bind-html=\"error\" />\n" +
+    "</ul>\n"
   );
 
 

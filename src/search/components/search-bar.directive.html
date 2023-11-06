@@ -30,8 +30,6 @@
   </li>
 </ul>
 
-<div style="clear: both; margin: 0 10px" ng-if="sb.errors.length">
-  <ul class="alert alert-warning list-unstyled">
-    <li ng-repeat="(index,error) in sb.errors track by index" ng-bind-html="error" />
-  </ul>
-</div>
+<ul class="alert alert-warning list-unstyled" style="clear: both; margin: 0 10px" ng-if="sb.errors.length">
+  <li ng-repeat="(index,error) in sb.errors track by index" ng-bind-html="error" />
+</ul>
