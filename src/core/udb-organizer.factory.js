@@ -100,6 +100,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.description = _.get(jsonOrganizer.description, jsonOrganizer.mainLanguage, null) ||
         _.get(jsonOrganizer.description, 'nl', null) ||
         _.get(jsonOrganizer, 'description', '');
+      this.educationalDescription = _.get(jsonOrganizer.educationalDescription, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.educationalDescription, 'nl', null) ||
+          _.get(jsonOrganizer, 'educationalDescription', '');
       this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');

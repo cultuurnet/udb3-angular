@@ -3710,6 +3710,7 @@ angular.module('udb.core')
         'dashboard': 'Terug naar dashboard',
         'name': 'Naam',
         'description': 'Beschrijving',
+        'educational_description': 'Beschrijving Cultuurkuur',
         'address': 'Adres',
         'website': 'Website',
         'phone': 'Telefoonnummer',
@@ -4895,6 +4896,7 @@ angular.module('udb.core')
         'dashboard': 'Retourner au tableau de bord',
         'name': 'Nom',
         'description': 'Description',
+        'educational_description': 'Description de Cultuurkuur',
         'address': 'Adresse',
         'website': 'Site Internet',
         'phone': 'Numéro de téléphone',
@@ -6171,6 +6173,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'dashboard': 'Zurück zum Dashboard',
       'name': 'Name',
       'description': 'Beschreibung',
+      'educational_description': 'Beschreibung für Cultuurkuur',
       'address': 'Adresse',
       'website': 'Website',
       'phone': 'Telefonnummer',
@@ -8471,6 +8474,9 @@ function UdbOrganizerFactory(UitpasLabels, EventTranslationState) {
       this.description = _.get(jsonOrganizer.description, jsonOrganizer.mainLanguage, null) ||
         _.get(jsonOrganizer.description, 'nl', null) ||
         _.get(jsonOrganizer, 'description', '');
+      this.educationalDescription = _.get(jsonOrganizer.educationalDescription, jsonOrganizer.mainLanguage, null) ||
+          _.get(jsonOrganizer.educationalDescription, 'nl', null) ||
+          _.get(jsonOrganizer, 'educationalDescription', '');
       this.address = _.get(jsonOrganizer.address, jsonOrganizer.mainLanguage, null) ||
           _.get(jsonOrganizer.address, 'nl', null) || jsonOrganizer.address || [];
       this.email = getFirst(jsonOrganizer, 'contactPoint.email');
@@ -32495,6 +32501,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        </td>\n" +
     "        <td>\n" +
     "          <span ng-bind-html=\"::odc.organizer.description\"></span>\n" +
+    "        </td>\n" +
+    "      </tr>\n" +
+    "      <tr ng-if=\"::odc.organizer.educationalDescription\">\n" +
+    "        <td>\n" +
+    "          <span class=\"row-label\" translate-once=\"organizer.manage.educational_description\"></span>\n" +
+    "        </td>\n" +
+    "        <td>\n" +
+    "          <span ng-bind-html=\"::odc.organizer.educationalDescription\"></span>\n" +
     "        </td>\n" +
     "      </tr>\n" +
     "      <tr>\n" +
