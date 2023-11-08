@@ -81,7 +81,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
 
       function formatErrors(errors) {
         return errors.map(function (error) {
-          if (error.indexOf('Expected [') === 0) {
+          if (error.indexOf('Expected ') === 0) {
             return $translate.instant('search.advancedQueryBuilder.syntaxError');
           }
 
