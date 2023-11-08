@@ -70,7 +70,7 @@ describe('Directive: Search Bar', function () {
 
     expect(searchBar.queryString).toEqual('beep:boop');
     expect(searchBar.hasErrors).toEqual(true);
-    expect(searchBar.errors).toEqual('beep is not a valid query field\nI don\'t like where this is going\n');
+    expect(searchBar.errors).toEqual(['beep is not a valid query field', 'I don\'t like where this is going']);
   });
 
   it('should reset query errors when updating with a valid query', function () {
@@ -81,6 +81,6 @@ describe('Directive: Search Bar', function () {
 
     expect(searchBar.queryString).toEqual('beep:boop');
     expect(searchBar.hasErrors).toEqual(false);
-    expect(searchBar.errors).toEqual('');
+    expect(searchBar.errors).toEqual([]);
   });
 });
