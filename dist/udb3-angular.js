@@ -3960,6 +3960,7 @@ angular.module('udb.core')
         cancel: 'Annuleren',
         search: 'Zoeken',
         syntaxError: 'Je query bevat een fout. Op <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">deze pagina</a> vind je meer informatie over hoe je een zoekopdracht kan samenstellen.',
+        invalidField: '{{field}} is geen geldig zoekveld. Op <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">deze pagina</a> vind je meer informatie over hoe je een zoekopdracht kan samenstellen.',
       }
     }
   }
@@ -5148,6 +5149,7 @@ angular.module('udb.core')
         cancel: 'Annuler',
         search: 'Rechercher',
         syntaxError: 'Votre requête contient une erreur. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
+        invalidField: '{{field}} n\'est pas un paramètre valide. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
       }
     }
   }
@@ -6429,6 +6431,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'cancel': 'Abbrechen',
       'search': 'Suchen',
       syntaxError: 'Ihre Abfrage enthält einen Fehler. Auf <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">dieser Seite</a> finden Sie weitere Informationen über das Verfassen einer Abfrage',
+      invalidField: '{{field}} ist kein gültiges Suchfeld. Auf <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">dieser Seite</a> finden Sie weitere Informationen über das Verfassen einer Abfrage',
     },
   },
 });
@@ -24131,8 +24134,11 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
 
       function formatErrors(errors) {
         return errors.map(function (error) {
-          if (error.indexOf('Expected [') === 0) {
+          if (error.indexOf('Expected ') === 0) {
             return $translate.instant('search.advancedQueryBuilder.syntaxError');
+          } else if (error.indexOf('is not a valid search field') !== -1) {
+            const field = error.split(' ')[0];
+            return $translate.instant('search.advancedQueryBuilder.invalidField', {field: field});
           }
 
           return error;
@@ -25310,14 +25316,9 @@ function QueryTreeValidator(queryFields) {
       var fieldHasWildcard = queryField !== field;
 
       if (field !== null && field !== implicitToken) {
-        if (fieldHasWildcard) {
-          if (!_.contains(validParentFields, field)) {
-            errors.push(field + ' is not a valid parent search field that can be used with a wildcard');
-          }
-        } else {
-          if (!_.contains(validFields, field)) {
-            errors.push(field + ' is not a valid search field');
-          }
+        var validFieldsToCheck = fieldHasWildcard ? validParentFields : validFields;
+        if (!_.contains(validFieldsToCheck, field)) {
+          errors.push(field + ' is not a valid search field');
         }
       }
     }
