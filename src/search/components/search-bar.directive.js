@@ -86,7 +86,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
           } else {
             var invalidFieldMessage = ' is not a valid search field';
             if (error.indexOf(invalidFieldMessage) !== -1) {
-              const field = error.split(invalidFieldMessage)[0];
+              var field = error.split(invalidFieldMessage)[0];
               return $translate.instant('search.advancedQueryBuilder.invalidField', {field: field});
             }
           }

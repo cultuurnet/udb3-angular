@@ -24108,7 +24108,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
       /**
        * When the user manually changes the query field the current query tree should be cleared
        */
-      searchBar.queryChanged = function () {
+      searchBar.queryChanged = function() {
         searchHelper.clearQueryTree();
       };
 
@@ -24120,7 +24120,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
        * @param {Object} event
        * @param {Object} query
        */
-      searchBar.updateQuery = function (event, query) {
+      searchBar.updateQuery = function(event, query) {
         searchBar.queryString = query.queryString;
 
         if (query.errors && query.errors.length) {
@@ -24139,7 +24139,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
           } else {
             var invalidFieldMessage = ' is not a valid search field';
             if (error.indexOf(invalidFieldMessage) !== -1) {
-              const field = error.split(invalidFieldMessage)[0];
+              var field = error.split(invalidFieldMessage)[0];
               return $translate.instant('search.advancedQueryBuilder.invalidField', {field: field});
             }
           }
