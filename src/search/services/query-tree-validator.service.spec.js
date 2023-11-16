@@ -107,7 +107,7 @@ describe('Service: QueryTreeValidator', function () {
     QueryTreeValidator.validate(queryTree, errors);
 
     var expectedErrors = [
-      'allowed.query.field is not a valid parent search field that can be used with a wildcard'
+      'allowed.query.field.\\* is not a valid search field'
     ];
 
     expect(errors).toEqual(expectedErrors);

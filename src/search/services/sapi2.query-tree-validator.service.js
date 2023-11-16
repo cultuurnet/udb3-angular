@@ -49,16 +49,10 @@ function QueryTreeValidator(queryFields) {
       var fieldName = _.trim(field, '.\\*');
       var fieldHasWildcard = field !== fieldName;
 
-      if (fieldName !== null && fieldName !== implicitToken) {
-
-        if (fieldHasWildcard) {
-          if (!_.contains(validParentFieldNames, fieldName)) {
-            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
-          }
-        } else {
-          if (!_.contains(validFieldNames, fieldName)) {
-            errors.push(fieldName + ' is not a valid search field');
-          }
+      if (field !== null && field !== implicitToken) {
+        var validFieldsToCheck = fieldHasWildcard ? validParentFieldNames : validFieldNames;
+        if (!_.contains(validFieldsToCheck, fieldName)) {
+          errors.push(field + ' is not a valid search field');
         }
       }
     }
