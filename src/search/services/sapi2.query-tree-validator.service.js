@@ -51,7 +51,7 @@ function QueryTreeValidator(queryFields) {
 
       if (field !== null && field !== implicitToken) {
         var validFieldsToCheck = fieldHasWildcard ? validParentFieldNames : validFieldNames;
-        if (!_.contains(validFieldsToCheck, field)) {
+        if (!_.contains(validFieldsToCheck, fieldName)) {
           errors.push(field + ' is not a valid search field');
         }
       }

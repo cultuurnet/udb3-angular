@@ -107,7 +107,7 @@ describe('Service: QueryTreeValidator', function () {
     QueryTreeValidator.validate(queryTree, errors);
 
     var expectedErrors = [
-      'allowed.query.field is not a valid search field'
+      'allowed.query.field.\\* is not a valid search field'
     ];
 
     expect(errors).toEqual(expectedErrors);

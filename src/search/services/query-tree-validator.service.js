@@ -53,7 +53,7 @@ function QueryTreeValidator(queryFields) {
       if (field !== null && field !== implicitToken) {
         var validFieldsToCheck = fieldHasWildcard ? validParentFields : validFields;
         if (!_.contains(validFieldsToCheck, field)) {
-          errors.push(field + ' is not a valid search field');
+          errors.push(queryField + ' is not a valid search field');
         }
       }
     }
