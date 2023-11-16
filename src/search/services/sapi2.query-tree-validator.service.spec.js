@@ -90,7 +90,7 @@ describe('Service: sapi2QueryTreeValidator', function () {
     QueryTreeValidator.validate(queryTree, errors);
 
     var expectedErrors = [
-      'allowed-query-field is not a valid field'
+      'allowed-query-field.* is not a valid search field'
     ];
 
     expect(errors).toEqual(expectedErrors);
