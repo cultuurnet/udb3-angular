@@ -25321,7 +25321,7 @@ function QueryTreeValidator(queryFields) {
       if (field !== null && field !== implicitToken) {
         var validFieldsToCheck = fieldHasWildcard ? validParentFields : validFields;
         if (!_.contains(validFieldsToCheck, field)) {
-          errors.push(field + ' is not a valid search field');
+          errors.push(queryField + ' is not a valid search field');
         }
       }
     }
@@ -26135,16 +26135,10 @@ function QueryTreeValidator(queryFields) {
       var fieldName = _.trim(field, '.\\*');
       var fieldHasWildcard = field !== fieldName;
 
-      if (fieldName !== null && fieldName !== implicitToken) {
-
-        if (fieldHasWildcard) {
-          if (!_.contains(validParentFieldNames, fieldName)) {
-            errors.push(fieldName + ' is not a valid parent search field that can be used with a wildcard');
-          }
-        } else {
-          if (!_.contains(validFieldNames, fieldName)) {
-            errors.push(fieldName + ' is not a valid search field');
-          }
+      if (field !== null && field !== implicitToken) {
+        var validFieldsToCheck = fieldHasWildcard ? validParentFieldNames : validFieldNames;
+        if (!_.contains(validFieldsToCheck, fieldName)) {
+          errors.push(field + ' is not a valid search field');
         }
       }
     }
@@ -31023,6 +31017,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<h1 class=\"title\">Label toevoegen</h1>\n" +
     "\n" +
     "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
+    "    <div class=\"label-create-wrapper\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-6\">\n" +
     "            <div class=\"form-group\" udb-form-group>\n" +
@@ -31063,6 +31058,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "        </div>\n" +
     "\n" +
+    " \n" +
+    "    </div>\n" +
+    "\n" +
+    "    <div class=\"row\">\n" +
     "        <div class=\"col-md-12\">\n" +
     "            <button ng-disabled=\"!creator.form.$valid || creator.creating\"\n" +
     "                    type=\"button\"\n" +
@@ -31084,7 +31083,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "</div>\n" +
     "\n" +
     "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
-    "    <div ng-show=\"editor.label\">\n" +
+    "    <div ng-show=\"editor.label\" class=\"label-editor-wrapper\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-6\">\n" +
     "                <div class=\"form-group\" udb-form-group>\n" +
@@ -31627,7 +31626,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <i ng-show=\"!editor.loadedRolePermissions\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "              </div>\n" +
     "            </div>\n" +
-    "            <div class=\"col-md-12\">\n" +
+    "            <div class=\"row\">\n" +
+    "              <div class=\"col-md-12\">\n" +
     "                <div class=\"checkbox\" ng-repeat=\"permission in editor.availablePermissions | filter: permissionSearch\">\n" +
     "                  <label>\n" +
     "                        <input  type=\"checkbox\"\n" +
@@ -31639,6 +31639,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </label>\n" +
     "                </div>\n" +
     "            </div>\n" +
+    "            </div>\n" +
+    "      \n" +
     "          </uib-tab>\n" +
     "          <uib-tab heading=\"Leden\">\n" +
     "              <div class=\"row\">\n" +
@@ -31829,7 +31831,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<div ng-show=\"editor.user\">\n" +
+    "<div class=\"user-editor-wrapper\" ng-show=\"editor.user\">\n" +
     "    <div class=\"row\">\n" +
     "        <div class=\"col-md-3\">\n" +
     "            <span>E-mailadres</span>\n" +
@@ -32234,17 +32236,19 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "  </div>\n" +
     "\n" +
-    "  <!-- Titel -->\n" +
-    "  <offer-translate-title offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-title>\n" +
+    "  <div class=\"offer-translate-wrapper\">\n" +
+    "     <!-- Titel -->\n" +
+    "    <offer-translate-title offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-title>\n" +
     "\n" +
-    "  <!-- Beschrijving -->\n" +
-    "  <offer-translate-description offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-description>\n" +
+    "    <!-- Beschrijving -->\n" +
+    "    <offer-translate-description offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-description>\n" +
     "\n" +
-    "  <!-- Prijs -->\n" +
-    "  <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
+    "    <!-- Prijs -->\n" +
+    "    <offer-translate-tariffs offer=\"cachedOffer\" active-languages=\"activeLanguages\"></offer-translate-tariffs>\n" +
     "\n" +
-    "  <!-- Address -->\n" +
-    "  <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
+    "    <!-- Address -->\n" +
+    "    <offer-translate-address offer=\"cachedOffer\" active-languages=\"activeLanguages\" ng-if=\"isPlace\"></offer-translate-address>\n" +
+    "  </div>\n" +
     "\n" +
     "  <button class=\"btn btn-success\" ng-click=\"goToDashboard()\" translate-once=\"translate.ready\"></button>\n" +
     "\n" +
