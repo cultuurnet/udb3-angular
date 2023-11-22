@@ -92,7 +92,8 @@
                 <i ng-show="!editor.loadedRolePermissions" class="fa fa-circle-o-notch fa-spin"></i>
               </div>
             </div>
-            <div class="col-md-12">
+            <div class="row">
+              <div class="col-md-12">
                 <div class="checkbox" ng-repeat="permission in editor.availablePermissions | filter: permissionSearch">
                   <label>
                         <input  type="checkbox"
@@ -104,6 +105,8 @@
                   </label>
                 </div>
             </div>
+            </div>
+      
           </uib-tab>
           <uib-tab heading="Leden">
               <div class="row">

@@ -30,17 +30,19 @@
     </div>
   </div>
 
-  <!-- Titel -->
-  <offer-translate-title offer="cachedOffer" active-languages="activeLanguages"></offer-translate-title>
+  <div class="offer-translate-wrapper">
+     <!-- Titel -->
+    <offer-translate-title offer="cachedOffer" active-languages="activeLanguages"></offer-translate-title>
 
-  <!-- Beschrijving -->
-  <offer-translate-description offer="cachedOffer" active-languages="activeLanguages"></offer-translate-description>
+    <!-- Beschrijving -->
+    <offer-translate-description offer="cachedOffer" active-languages="activeLanguages"></offer-translate-description>
 
-  <!-- Prijs -->
-  <offer-translate-tariffs offer="cachedOffer" active-languages="activeLanguages"></offer-translate-tariffs>
+    <!-- Prijs -->
+    <offer-translate-tariffs offer="cachedOffer" active-languages="activeLanguages"></offer-translate-tariffs>
 
-  <!-- Address -->
-  <offer-translate-address offer="cachedOffer" active-languages="activeLanguages" ng-if="isPlace"></offer-translate-address>
+    <!-- Address -->
+    <offer-translate-address offer="cachedOffer" active-languages="activeLanguages" ng-if="isPlace"></offer-translate-address>
+  </div>
 
   <button class="btn btn-success" ng-click="goToDashboard()" translate-once="translate.ready"></button>
 
