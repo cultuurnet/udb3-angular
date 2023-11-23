@@ -31018,47 +31018,48 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<form name=\"creator.form\" class=\"css-form\" novalidate>\n" +
     "    <div class=\"label-create-wrapper\">\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-6\">\n" +
-    "            <div class=\"form-group\" udb-form-group>\n" +
-    "                <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
-    "                <input id=\"label-name-field\"\n" +
-    "                       class=\"form-control\"\n" +
-    "                       name=\"name\"\n" +
-    "                       type=\"text\"\n" +
-    "                       udb-unique-label\n" +
-    "                       udb-semicolon-label-check\n" +
-    "                       ng-minlength=\"2\"\n" +
-    "                       ng-required=\"true\"\n" +
-    "                       ng-maxlength=\"255\"\n" +
-    "                       ng-model=\"creator.label.name\"\n" +
-    "                       ng-model-options=\"{debounce: 300}\"\n" +
-    "                       ng-disabled=\"creator.creating\">\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
-    "                <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-6\">\n" +
+    "                <div class=\"form-group\" udb-form-group>\n" +
+    "                    <label class=\"control-label\" for=\"label-name-field\">Naam</label>\n" +
+    "                    <input id=\"label-name-field\"\n" +
+    "                        class=\"form-control\"\n" +
+    "                        name=\"name\"\n" +
+    "                        type=\"text\"\n" +
+    "                        udb-unique-label\n" +
+    "                        udb-semicolon-label-check\n" +
+    "                        ng-minlength=\"2\"\n" +
+    "                        ng-required=\"true\"\n" +
+    "                        ng-maxlength=\"255\"\n" +
+    "                        ng-model=\"creator.label.name\"\n" +
+    "                        ng-model-options=\"{debounce: 300}\"\n" +
+    "                        ng-disabled=\"creator.creating\">\n" +
+    "                    <p class=\"help-block\" ng-if=\"creator.form.name.$error.uniqueLabel\">Er bestaat al een label met deze naam.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"creator.form.name.$error.required\">Een label naam is verplicht.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"creator.form.name.$error.minlength\">Een label moet uit minstens 2 tekens bestaan.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"creator.form.name.$error.maxlength\">Een label mag maximum 255 tekens bevatten.</p>\n" +
+    "                    <p class=\"help-block\" ng-if=\"creator.form.name.$error.semicolonLabel\">Een label naam mag geen puntkomma bevatten.</p>\n" +
+    "                </div>\n" +
     "            </div>\n" +
     "        </div>\n" +
-    "    </div>\n" +
-    "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-12\">\n" +
-    "            <div class=\"checkbox\">\n" +
-    "                <label>\n" +
-    "                    <input type=\"checkbox\"\n" +
-    "                           ng-model=\"creator.label.isVisible\"> Tonen op publicatiekanalen\n" +
-    "                </label>\n" +
+    "        <div class=\"row\">\n" +
+    "            <div class=\"col-md-12\">\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                            ng-model=\"creator.label.isVisible\"> Tonen op publicatiekanalen\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"checkbox\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"checkbox\"\n" +
+    "                            ng-model=\"creator.label.isPrivate\"> Voorbehouden aan specifieke gebruikersgroepen\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
     "            </div>\n" +
-    "            <div class=\"checkbox\">\n" +
-    "                <label>\n" +
-    "                    <input type=\"checkbox\"\n" +
-    "                           ng-model=\"creator.label.isPrivate\"> Voorbehouden aan specifieke gebruikersgroepen\n" +
-    "                </label>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
     "\n" +
-    " \n" +
+    "    \n" +
+    "        </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"row\">\n" +
@@ -31638,7 +31639,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                        > <strong ng-bind=\"permission.name\"></strong>\n" +
     "                  </label>\n" +
     "                </div>\n" +
-    "            </div>\n" +
+    "              </div>\n" +
     "            </div>\n" +
     "      \n" +
     "          </uib-tab>\n" +
