@@ -1,46 +1,52 @@
 <h1 class="title">Label toevoegen</h1>
 
 <form name="creator.form" class="css-form" novalidate>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group" udb-form-group>
-                <label class="control-label" for="label-name-field">Naam</label>
-                <input id="label-name-field"
-                       class="form-control"
-                       name="name"
-                       type="text"
-                       udb-unique-label
-                       udb-semicolon-label-check
-                       ng-minlength="2"
-                       ng-required="true"
-                       ng-maxlength="255"
-                       ng-model="creator.label.name"
-                       ng-model-options="{debounce: 300}"
-                       ng-disabled="creator.creating">
-                <p class="help-block" ng-if="creator.form.name.$error.uniqueLabel">Er bestaat al een label met deze naam.</p>
-                <p class="help-block" ng-if="creator.form.name.$error.required">Een label naam is verplicht.</p>
-                <p class="help-block" ng-if="creator.form.name.$error.minlength">Een label moet uit minstens 2 tekens bestaan.</p>
-                <p class="help-block" ng-if="creator.form.name.$error.maxlength">Een label mag maximum 255 tekens bevatten.</p>
-                <p class="help-block" ng-if="creator.form.name.$error.semicolonLabel">Een label naam mag geen puntkomma bevatten.</p>
+    <div class="label-create-wrapper">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" udb-form-group>
+                    <label class="control-label" for="label-name-field">Naam</label>
+                    <input id="label-name-field"
+                        class="form-control"
+                        name="name"
+                        type="text"
+                        udb-unique-label
+                        udb-semicolon-label-check
+                        ng-minlength="2"
+                        ng-required="true"
+                        ng-maxlength="255"
+                        ng-model="creator.label.name"
+                        ng-model-options="{debounce: 300}"
+                        ng-disabled="creator.creating">
+                    <p class="help-block" ng-if="creator.form.name.$error.uniqueLabel">Er bestaat al een label met deze naam.</p>
+                    <p class="help-block" ng-if="creator.form.name.$error.required">Een label naam is verplicht.</p>
+                    <p class="help-block" ng-if="creator.form.name.$error.minlength">Een label moet uit minstens 2 tekens bestaan.</p>
+                    <p class="help-block" ng-if="creator.form.name.$error.maxlength">Een label mag maximum 255 tekens bevatten.</p>
+                    <p class="help-block" ng-if="creator.form.name.$error.semicolonLabel">Een label naam mag geen puntkomma bevatten.</p>
+                </div>
             </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                            ng-model="creator.label.isVisible"> Tonen op publicatiekanalen
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"
+                            ng-model="creator.label.isPrivate"> Voorbehouden aan specifieke gebruikersgroepen
+                    </label>
+                </div>
+            </div>
+
+    
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                           ng-model="creator.label.isVisible"> Tonen op publicatiekanalen
-                </label>
-            </div>
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"
-                           ng-model="creator.label.isPrivate"> Voorbehouden aan specifieke gebruikersgroepen
-                </label>
-            </div>
-        </div>
 
+    <div class="row">
         <div class="col-md-12">
             <button ng-disabled="!creator.form.$valid || creator.creating"
                     type="button"
