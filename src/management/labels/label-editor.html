@@ -44,13 +44,14 @@
             </div>
         </div>
     </div>
-<button ng-disabled="!editor.form.$valid || editor.saving"
-        type="button"
-        class="btn btn-primary"
-        ng-click="editor.save()">
-    Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
-</button>
+    <button ng-disabled="!editor.form.$valid || editor.saving"
+            type="button"
+            class="btn btn-primary"
+            ng-click="editor.save()">
+        Opslaan <i class="fa fa-circle-o-notch fa-spin" ng-show="editor.saving"></i>
+    </button>
 
-<div ng-show="editor.loadingError">
-    <span ng-bind="editor.loadingError"></span>
-</div>
+    <div ng-show="editor.loadingError">
+        <span ng-bind="editor.loadingError"></span>
+    </div>
+</form>
