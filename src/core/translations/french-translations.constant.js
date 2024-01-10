@@ -796,6 +796,7 @@ angular.module('udb.core')
     'AANBOD_BEWERKEN': 'Modifier l\'offre',
     'AANBOD_MODEREREN': 'Modérer l\'offre',
     'AANBOD_VERWIJDEREN': 'Supprimer l\'offre',
+    'AANBOD_HISTORIEK': 'Consulter l\'historique',
     'ORGANISATIES_BEHEREN': 'Gérer les organisations',
     'GEBRUIKERS_BEHEREN': 'Gérer les utilisateurs',
     'LABELS_BEHEREN': 'Gérer les labels',

@@ -801,6 +801,7 @@ angular.module('udb.core')
     'AANBOD_BEWERKEN': 'Aanbod bewerken',
     'AANBOD_MODEREREN': 'Aanbod modereren',
     'AANBOD_VERWIJDEREN': 'Aanbod verwijderen',
+    'AANBOD_HISTORIEK': 'Historiek raadplegen',
     'ORGANISATIES_BEHEREN': 'Organisaties beheren',
     'GEBRUIKERS_BEHEREN': 'Gebruikers beheren',
     'LABELS_BEHEREN': 'Labels beheren',
