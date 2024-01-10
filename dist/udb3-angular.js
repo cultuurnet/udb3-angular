@@ -25192,6 +25192,8 @@ angular
     {field: 'organizer.name.fr', type: 'tokenized-string'},
     {field: 'organizer.name.de', type: 'tokenized-string'},
     {field: 'organizer.name.en', type: 'tokenized-string'},
+    {field: 'allAges', type: 'string'},
+    {field: 'contributors', type: 'string'},
 
     // Start- and end-date have been dropped in favor of a single date field. Keep these around to map SAPI2 translations.
     {name: 'startdate', field:'dateRange', type: 'date-range'},
@@ -31085,8 +31087,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<form name=\"editor.form\" class=\"css-form\" novalidate>\n" +
-    "    <div ng-show=\"editor.label\" class=\"label-editor-wrapper\">\n" +
+    "<form name=\"editor.form\" class=\"css-form label-editor-wrapper\" novalidate>\n" +
+    "    <div ng-show=\"editor.label\">\n" +
     "        <div class=\"row\">\n" +
     "            <div class=\"col-md-6\">\n" +
     "                <div class=\"form-group\" udb-form-group>\n" +
@@ -31125,16 +31127,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "<button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
-    "        type=\"button\"\n" +
-    "        class=\"btn btn-primary\"\n" +
-    "        ng-click=\"editor.save()\">\n" +
-    "    Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
-    "</button>\n" +
+    "    <button ng-disabled=\"!editor.form.$valid || editor.saving\"\n" +
+    "            type=\"button\"\n" +
+    "            class=\"btn btn-primary\"\n" +
+    "            ng-click=\"editor.save()\">\n" +
+    "        Opslaan <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"editor.saving\"></i>\n" +
+    "    </button>\n" +
     "\n" +
-    "<div ng-show=\"editor.loadingError\">\n" +
-    "    <span ng-bind=\"editor.loadingError\"></span>\n" +
-    "</div>\n"
+    "    <div ng-show=\"editor.loadingError\">\n" +
+    "        <span ng-bind=\"editor.loadingError\"></span>\n" +
+    "    </div>\n" +
+    "</form>\n"
   );
 
 
@@ -32493,62 +32496,65 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "  </div>\n" +
     "  <div class=\"col-sm-9 col-sm-pull-3\">\n" +
-    "    <table ng-if=\"odc.organizer && !odc.organizer.deleted\" class=\"table udb3-data-table\">\n" +
-    "      <colgroup>\n" +
-    "        <col style=\"width:20%\"/>\n" +
-    "        <col style=\"width:80%\"/>\n" +
-    "      </colgroup>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <span ng-bind=\"::odc.organizer.name\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tr ng-if=\"::odc.organizer.description\">\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.description\"></span>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <span ng-bind-html=\"::odc.organizer.description\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tr ng-if=\"::odc.organizer.educationalDescription\">\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.educational_description\"></span>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <span ng-bind-html=\"::odc.organizer.educationalDescription\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <span ng-bind=\"::odc.organizer.address.streetAddress\"></span><br/>\n" +
-    "          <span ng-bind=\"::odc.organizer.address.postalCode\"></span>\n" +
-    "          <span ng-bind=\"::odc.organizer.address.addressLocality\"></span>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tbody udb-contact-point-detail=\"::odc.organizer.contactPoint\"></tbody>\n" +
-    "      <tr>\n" +
-    "        <td>\n" +
-    "          <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +
-    "          <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
-    "        </td>\n" +
-    "        <td>\n" +
-    "          <udb-label-select labels=\"odc.organizer.labels\"\n" +
-    "                            label-added=\"odc.addLabel(label)\"\n" +
-    "                            label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
-    "          <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "              <span ng-bind=\"odc.labelsError\"></span>\n" +
-    "          </div>\n" +
-    "        </td>\n" +
-    "      </tr>\n" +
-    "      <tbody udb-image-detail=\"::odc.organizer.mediaObject\" image=\"::odc.organizer.image\"></tbody>\n" +
-    "    </table>\n" +
+    "    <div class=\"organizer-detail-wrapper\">\n" +
+    "      <table ng-if=\"odc.organizer && !odc.organizer.deleted\" class=\"table udb3-data-table\">\n" +
+    "        <colgroup>\n" +
+    "          <col style=\"width:20%\"/>\n" +
+    "          <col style=\"width:80%\"/>\n" +
+    "        </colgroup>\n" +
+    "        <tr>\n" +
+    "          <td>\n" +
+    "            <span class=\"row-label\" translate-once=\"organizer.manage.name\"></span>\n" +
+    "          </td>\n" +
+    "          <td>\n" +
+    "            <span ng-bind=\"::odc.organizer.name\"></span>\n" +
+    "          </td>\n" +
+    "        </tr>\n" +
+    "        <tr ng-if=\"::odc.organizer.description\">\n" +
+    "          <td>\n" +
+    "            <span class=\"row-label\" translate-once=\"organizer.manage.description\"></span>\n" +
+    "          </td>\n" +
+    "          <td>\n" +
+    "            <span ng-bind-html=\"::odc.organizer.description\"></span>\n" +
+    "          </td>\n" +
+    "        </tr>\n" +
+    "        <tr ng-if=\"::odc.organizer.educationalDescription\">\n" +
+    "          <td>\n" +
+    "            <span class=\"row-label\" translate-once=\"organizer.manage.educational_description\"></span>\n" +
+    "          </td>\n" +
+    "          <td>\n" +
+    "            <span ng-bind-html=\"::odc.organizer.educationalDescription\"></span>\n" +
+    "          </td>\n" +
+    "        </tr>\n" +
+    "        <tr>\n" +
+    "          <td>\n" +
+    "            <span class=\"row-label\" translate-once=\"organizer.manage.address\"></span>\n" +
+    "          </td>\n" +
+    "          <td>\n" +
+    "            <span ng-bind=\"::odc.organizer.address.streetAddress\"></span><br/>\n" +
+    "            <span ng-bind=\"::odc.organizer.address.postalCode\"></span>\n" +
+    "            <span ng-bind=\"::odc.organizer.address.addressLocality\"></span>\n" +
+    "          </td>\n" +
+    "        </tr>\n" +
+    "        <tbody udb-contact-point-detail=\"::odc.organizer.contactPoint\"></tbody>\n" +
+    "        <tr>\n" +
+    "          <td>\n" +
+    "            <span class=\"row-label\" translate-once=\"organizer.manage.labels\"></span>\n" +
+    "            <i class=\"fa fa-circle-o-notch fa-spin\" ng-show=\"labelSaving\"></i>\n" +
+    "          </td>\n" +
+    "          <td>\n" +
+    "            <udb-label-select labels=\"odc.organizer.labels\"\n" +
+    "                              label-added=\"odc.addLabel(label)\"\n" +
+    "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
+    "            <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
+    "                <span ng-bind=\"odc.labelsError\"></span>\n" +
+    "            </div>\n" +
+    "          </td>\n" +
+    "        </tr>\n" +
+    "        <tbody udb-image-detail=\"::odc.organizer.mediaObject\" image=\"::odc.organizer.image\"></tbody>\n" +
+    "      </table>\n" +
+    "    </div>\n" +
+    " \n" +
     "\n" +
     "    <div class=\"alert alert-danger\" ng-if=\"odc.organizer && odc.organizer.deleted\">\n" +
     "      <span translate-once=\"organizer.manage.removed\"></span>\n" +
