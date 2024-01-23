@@ -186,6 +186,10 @@ function SearchController(
     }
   };
 
+  var addLanguageIcons = function () {
+
+  };
+
   function exportEvents() {
     var exportingQuery = $scope.resultViewer.querySelected,
         query = $scope.activeQuery,
