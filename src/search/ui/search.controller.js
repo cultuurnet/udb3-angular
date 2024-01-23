@@ -187,7 +187,35 @@ function SearchController(
   };
 
   var addLanguageIcons = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
 
+    console.log(selectedOffers);
+    if (!selectedOffers.length) {
+      $window.alert('First select the events you want to label.');
+      return;
+    }
+
+
+    var modal = $uibModal.open({
+      templateUrl: 'templates/offer-languages-modal.html',
+      controller: 'OfferLanguagesModalCtrl',
+      controllerAs: 'lmc'
+    });
+
+    modal.result.then(function (labels) {
+      _.each(selectedOffers, function (offer) {
+        var eventPromise;
+        eventPromise = udbApi.getOffer(new URL(offer['@id']));
+
+        eventPromise.then(function (event) {
+          event.label(labels);
+        });
+      });
+
+      _.each(labels, function (label) {
+        offerLabeller.labelOffersById(selectedOffers, label);
+      });
+    });
   };
 
   function exportEvents() {
@@ -247,6 +275,7 @@ function SearchController(
 
   $scope.exportEvents = exportEvents;
   $scope.label = label;
+  $scope.addLanguageIcons = addLanguageIcons;
 
   $scope.startEditing = function () {
     $scope.queryEditorShown = true;
