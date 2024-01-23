@@ -113,10 +113,24 @@ function SearchController(
     }
   };
 
-  var labelSelection = function () {
-
+  var saveLabels = function(labels) {
     var selectedOffers = $scope.resultViewer.selectedOffers;
+    _.each(selectedOffers, function (offer) {
+      var eventPromise;
+      eventPromise = udbApi.getOffer(new URL(offer['@id']));
 
+      eventPromise.then(function (event) {
+        event.label(labels);
+      });
+    });
+
+    _.each(labels, function (label) {
+      offerLabeller.labelOffersById(selectedOffers, label);
+    });
+  };
+
+  var labelSelection = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
     if (!selectedOffers.length) {
       $window.alert('First select the events you want to label.');
       return;
@@ -128,21 +142,7 @@ function SearchController(
       controllerAs: 'lmc'
     });
 
-    modal.result.then(function (labels) {
-
-      _.each(selectedOffers, function (offer) {
-        var eventPromise;
-        eventPromise = udbApi.getOffer(new URL(offer['@id']));
-
-        eventPromise.then(function (event) {
-          event.label(labels);
-        });
-      });
-
-      _.each(labels, function (label) {
-        offerLabeller.labelOffersById(selectedOffers, label);
-      });
-    });
+    modal.result.then(saveLabels);
   };
 
   function labelActiveQuery() {
@@ -188,8 +188,6 @@ function SearchController(
 
   var addLanguageIcons = function () {
     var selectedOffers = $scope.resultViewer.selectedOffers;
-
-    console.log(selectedOffers);
     if (!selectedOffers.length) {
       $window.alert('First select the events you want to label.');
       return;
@@ -202,20 +200,7 @@ function SearchController(
       controllerAs: 'lmc'
     });
 
-    modal.result.then(function (labels) {
-      _.each(selectedOffers, function (offer) {
-        var eventPromise;
-        eventPromise = udbApi.getOffer(new URL(offer['@id']));
-
-        eventPromise.then(function (event) {
-          event.label(labels);
-        });
-      });
-
-      _.each(labels, function (label) {
-        offerLabeller.labelOffersById(selectedOffers, label);
-      });
-    });
+    modal.result.then(saveLabels);
   };
 
   function exportEvents() {

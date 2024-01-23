@@ -29,16 +29,16 @@ function OfferLanguagesModalCtrl($uibModalInstance) {
   }
 
   function ok() {
-    var selected = lmc.options.filter(function (option) {
+    var labels = lmc.options.filter(function (option) {
       return option.selected;
     }).map(function (option) {
       return option.value;
     });
 
-    if (!selected.length) {
+    if (!labels.length) {
       return;
     }
 
-    $uibModalInstance.close(selected);
+    $uibModalInstance.close(labels);
   }
 }
