@@ -1,35 +1,21 @@
 <div class="modal-body offer-languages-modal">
-
   <h2>Taaliconen toevoegen</h2>
-  <div class="alert alert-info"
-       role="alert">
+  <div class="alert alert-info" role="alert">
     Aan de hand van taaliconen geef je aan hoeveel kennis van het Nederlands vereist is om aan je aanbod te kunnen
-    deelnemen. Een leidraad over taaliconen vind je hier
+    deelnemen. Een leidraad over taaliconen vind je <a
+    href="https://helpdesk.publiq.be/hc/nl/articles/15301494887058-Hoe-voeg-ik-taaliconen-toe" target="_blank">hier</a>
   </div>
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="checkbox" ng-repeat="(index,option) in lmc.options">
-        <label>
-          <input type="checkbox" ng-model="label.selected"/>
-          <span style="display:flex; gap: 5px; justify-content: flex-start; align-items: center">
-            <span>
-
-            NL
-            </span>
-            <i class="fa-comment-alt" ng-repeat="(availableIndex,_option) in lmc.options" ng-class="{'fas': availableIndex <= index, 'far': availableIndex > index}"></i>
-            <span>
-<strong>
-
-            {{option.label}}
-</strong>
-            </span>
+  <div class="checkbox" ng-repeat="(index,option) in lmc.options">
+    <label>
+      <input type="checkbox" ng-model="option.selected"/>
+      <span style="display:flex; gap: 5px; justify-content: flex-start; align-items: center">
+            <span>NL</span>
+            <i class="fa-comment-alt" ng-repeat="(availableIndex,_option) in lmc.options"
+               ng-class="{'fas': availableIndex <= index, 'far': availableIndex > index}"></i>
+            <strong ng-bind="option.label"></strong>
           </span>
-          <span class="text-muted">
-{{option.text}}
-          </span>
-        </label>
-      </div>
-    </div>
+      <span class="text-muted" ng-bind="option.text"></span>
+    </label>
   </div>
 </div>
 
