@@ -9,11 +9,9 @@
     <label>
       <input type="checkbox" ng-model="option.selected"/>
       <span style="display:flex; gap: 5px; justify-content: flex-start; align-items: center">
-            <span>NL</span>
-            <i class="fa-comment-alt" ng-repeat="(availableIndex,_option) in lmc.options"
-               ng-class="{'fas': availableIndex <= index, 'far': availableIndex > index}"></i>
-            <strong ng-bind="option.label"></strong>
-          </span>
+        <img ng-src="../images/language-icons/{{index+1}}.png" style="height: 1em" />
+        <strong ng-bind="option.label"></strong>
+      </span>
       <span class="text-muted" ng-bind="option.text"></span>
     </label>
   </div>
