@@ -113,7 +113,7 @@ function SearchController(
     }
   };
 
-  var saveLabels = function(labels) {
+  var saveLabels = function (labels) {
     var selectedOffers = $scope.resultViewer.selectedOffers;
     _.each(selectedOffers, function (offer) {
       var eventPromise;
@@ -193,7 +193,6 @@ function SearchController(
       return;
     }
 
-
     var modal = $uibModal.open({
       templateUrl: 'templates/offer-languages-modal.html',
       controller: 'OfferLanguagesModalCtrl',
@@ -205,23 +204,23 @@ function SearchController(
 
   function exportEvents() {
     var exportingQuery = $scope.resultViewer.querySelected,
-        query = $scope.activeQuery,
-        eventCount,
-        selectedIds = [];
+      query = $scope.activeQuery,
+      eventCount,
+      selectedIds = [];
 
     if (exportingQuery) {
       eventCount = $scope.resultViewer.totalItems;
     } else {
       selectedIds = _.chain($scope.resultViewer.selectedOffers)
         .filter({'@type': 'Event'})
-        .map(function(offer) {
+        .map(function (offer) {
           return new URL(offer['@id']);
         })
         .value();
 
       if (!selectedIds.length) {
         $window.alert(
-            $translate.instant('search.modal')
+          $translate.instant('search.modal')
         );
         return;
       } else {
@@ -238,11 +237,10 @@ function SearchController(
     var tooManyItems = eventCount >= exportLimit;
 
     if (tooManyItems) {
-      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
+      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function (message) {
         $window.alert(message);
       });
-    }
-    else {
+    } else {
       if (query && query.queryString.length && LuceneQueryBuilder.isValid(query)) {
         var modal = $uibModal.open({
           templateUrl: 'templates/event-export-modal.html',
@@ -251,7 +249,7 @@ function SearchController(
           size: 'lg'
         });
       } else {
-        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function (message) {
           $window.alert(message);
         });
       }

@@ -3923,6 +3923,7 @@ angular.module('udb.core')
       search: 'Zoeken',
       advanced: 'Geavanceerd',
       label: 'Labelen',
+      languageIcons: 'Taaliconen toevoegen',
       deselect: 'Deselecteren',
       savedSearches: {
         savedSearches: 'Bewaarde zoekopdrachten',
@@ -10877,6 +10878,71 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
   };
 }
 OfferLabeller.$inject = ["jobLogger", "udbApi", "OfferLabelBatchJob", "QueryLabelJob", "$q"];
+})();
+
+// Source: src/entry/labelling/offer-languages-modal.controller.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.entry.controller:OfferLanguagesModalCtrl
+ * @description
+ * # OfferLanguagesModalCtrl
+ * Controller of the udb.entry
+ */
+angular
+  .module('udb.entry')
+  .controller('OfferLanguagesModalCtrl', OfferLanguagesModalCtrl);
+
+/* @ngInject */
+function OfferLanguagesModalCtrl($uibModalInstance) {
+  var lmc = this;
+  lmc.close = close;
+  lmc.ok = ok;
+
+  lmc.options = [
+    {
+      label: 'één taalicoon',
+      value: 'één taalicoon',
+      text: 'om te kunnen deelnemen, moet je nog niet veel Nederlands spreken of gebruiken.'
+    },
+    {
+      label: 'twee taaliconen',
+      value: 'twee taaliconen',
+      text: 'deelnemers begrijpen al een beetje Nederlands maar spreken het nog niet zo goed.'
+    },
+    {
+      label: 'drie taaliconen',
+      value: 'drie taaliconen',
+      text: 'deelnemers spreken vrij veel Nederlands en kunnen ook iets vertellen.'
+    },
+    {
+      label: 'vier taaliconen',
+      value: 'vier taaliconen',
+      text: 'deelnemers begrijpen Nederlands en spreken het ook goed.'
+    },
+  ];
+
+  function close() {
+    $uibModalInstance.dismiss('cancel');
+  }
+
+  function ok() {
+    var labels = lmc.options.filter(function (option) {
+      return option.selected;
+    }).map(function (option) {
+      return option.value;
+    });
+
+    if (!labels.length) {
+      return;
+    }
+
+    $uibModalInstance.close(labels);
+  }
+}
+OfferLanguagesModalCtrl.$inject = ["$uibModalInstance"];
 })();
 
 // Source: src/entry/labelling/query-label-job.factory.js
@@ -26987,10 +27053,24 @@ function SearchController(
     }
   };
 
-  var labelSelection = function () {
-
+  var saveLabels = function (labels) {
     var selectedOffers = $scope.resultViewer.selectedOffers;
+    _.each(selectedOffers, function (offer) {
+      var eventPromise;
+      eventPromise = udbApi.getOffer(new URL(offer['@id']));
 
+      eventPromise.then(function (event) {
+        event.label(labels);
+      });
+    });
+
+    _.each(labels, function (label) {
+      offerLabeller.labelOffersById(selectedOffers, label);
+    });
+  };
+
+  var labelSelection = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
     if (!selectedOffers.length) {
       $window.alert('First select the events you want to label.');
       return;
@@ -27002,21 +27082,7 @@ function SearchController(
       controllerAs: 'lmc'
     });
 
-    modal.result.then(function (labels) {
-
-      _.each(selectedOffers, function (offer) {
-        var eventPromise;
-        eventPromise = udbApi.getOffer(new URL(offer['@id']));
-
-        eventPromise.then(function (event) {
-          event.label(labels);
-        });
-      });
-
-      _.each(labels, function (label) {
-        offerLabeller.labelOffersById(selectedOffers, label);
-      });
-    });
+    modal.result.then(saveLabels);
   };
 
   function labelActiveQuery() {
@@ -27060,25 +27126,41 @@ function SearchController(
     }
   };
 
+  var addLanguageIcons = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
+    if (!selectedOffers.length) {
+      $window.alert('First select the events you want to label.');
+      return;
+    }
+
+    var modal = $uibModal.open({
+      templateUrl: 'templates/offer-languages-modal.html',
+      controller: 'OfferLanguagesModalCtrl',
+      controllerAs: 'lmc'
+    });
+
+    modal.result.then(saveLabels);
+  };
+
   function exportEvents() {
     var exportingQuery = $scope.resultViewer.querySelected,
-        query = $scope.activeQuery,
-        eventCount,
-        selectedIds = [];
+      query = $scope.activeQuery,
+      eventCount,
+      selectedIds = [];
 
     if (exportingQuery) {
       eventCount = $scope.resultViewer.totalItems;
     } else {
       selectedIds = _.chain($scope.resultViewer.selectedOffers)
         .filter({'@type': 'Event'})
-        .map(function(offer) {
+        .map(function (offer) {
           return new URL(offer['@id']);
         })
         .value();
 
       if (!selectedIds.length) {
         $window.alert(
-            $translate.instant('search.modal')
+          $translate.instant('search.modal')
         );
         return;
       } else {
@@ -27095,11 +27177,10 @@ function SearchController(
     var tooManyItems = eventCount >= exportLimit;
 
     if (tooManyItems) {
-      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
+      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function (message) {
         $window.alert(message);
       });
-    }
-    else {
+    } else {
       if (query && query.queryString.length && LuceneQueryBuilder.isValid(query)) {
         var modal = $uibModal.open({
           templateUrl: 'templates/event-export-modal.html',
@@ -27108,7 +27189,7 @@ function SearchController(
           size: 'lg'
         });
       } else {
-        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function (message) {
           $window.alert(message);
         });
       }
@@ -27117,6 +27198,7 @@ function SearchController(
 
   $scope.exportEvents = exportEvents;
   $scope.label = label;
+  $scope.addLanguageIcons = addLanguageIcons;
 
   $scope.startEditing = function () {
     $scope.queryEditorShown = true;
@@ -28284,6 +28366,33 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div class=\"modal-footer\">\n" +
     "  <button class=\"btn btn-default\" ng-click=\"lmc.close()\">Annuleren</button>\n" +
     "  <button class=\"btn btn-primary\" ng-click=\"lmc.ok()\">Label</button>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/offer-languages-modal.html',
+    "<div class=\"modal-body offer-languages-modal\">\n" +
+    "  <h2>Taaliconen toevoegen</h2>\n" +
+    "  <div class=\"alert alert-info\" role=\"alert\">\n" +
+    "    Aan de hand van taaliconen geef je aan hoeveel kennis van het Nederlands vereist is om aan je aanbod te kunnen\n" +
+    "    deelnemen. Een leidraad over taaliconen vind je <a\n" +
+    "    href=\"https://helpdesk.publiq.be/hc/nl/articles/15301494887058-Hoe-voeg-ik-taaliconen-toe\" target=\"_blank\">hier</a>\n" +
+    "  </div>\n" +
+    "  <div class=\"checkbox\" ng-repeat=\"(index,option) in lmc.options\">\n" +
+    "    <label>\n" +
+    "      <input type=\"checkbox\" ng-model=\"option.selected\"/>\n" +
+    "      <span style=\"display:flex; gap: 5px; justify-content: flex-start; align-items: center\">\n" +
+    "        <img ng-src=\"../images/language-icons/{{index+1}}.png\" style=\"height: 1em\" />\n" +
+    "        <strong ng-bind=\"option.label\"></strong>\n" +
+    "      </span>\n" +
+    "      <span class=\"text-muted\" ng-bind=\"option.text\"></span>\n" +
+    "    </label>\n" +
+    "  </div>\n" +
+    "</div>\n" +
+    "\n" +
+    "<div class=\"modal-footer\">\n" +
+    "  <button class=\"btn btn-default\" ng-click=\"lmc.close()\">Annuleren</button>\n" +
+    "  <button class=\"btn btn-primary\" ng-click=\"lmc.ok()\">Toevoegen</button>\n" +
     "</div>\n"
   );
 
@@ -33719,6 +33828,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"label()\">\n" +
     "                        <i class=\"fa fa-tag\"></i> <span translate-once=\"search.label\"></span>\n" +
+    "                    </button>\n" +
+    "                    <button class=\"btn btn-default rv-action\" ng-click=\"addLanguageIcons()\">\n" +
+    "                      <i class=\"fa fa-comment-alt\"></i> <span translate-once=\"search.languageIcons\"></span>\n" +
     "                    </button>\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"exportEvents()\">\n" +
     "                        <i class=\"fa fa-cloud-download\"></i> <span translate-once=\"search.exportButton\"></span>\n" +
