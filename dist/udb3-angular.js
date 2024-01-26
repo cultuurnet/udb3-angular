@@ -26989,6 +26989,7 @@ function SearchController(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
+  $scope.language = $translate.use() || 'nl';
 
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
@@ -33829,7 +33830,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"label()\">\n" +
     "                        <i class=\"fa fa-tag\"></i> <span translate-once=\"search.label\"></span>\n" +
     "                    </button>\n" +
-    "                    <button class=\"btn btn-default rv-action\" ng-click=\"addLanguageIcons()\">\n" +
+    "                    <button class=\"btn btn-default rv-action\" ng-click=\"addLanguageIcons()\" ng-if=\"language == 'nl'\">\n" +
     "                      <i class=\"fa fa-comment-alt\"></i> <span translate-once=\"search.languageIcons\"></span>\n" +
     "                    </button>\n" +
     "                    <button class=\"btn btn-default rv-action\" ng-click=\"exportEvents()\">\n" +
