@@ -3169,7 +3169,8 @@ angular.module('udb.core')
       'no_videos': 'Geen video\'s',
       'publiq_url': 'Bekijk op {{publicationBrand}}',
       'translate': 'Vertalen',
-      'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'
+      'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.',
+      'info_holiday_camp': 'Je kamp of vakantie verschijnt in UiTagenda\'s tot aan de startdag.'
     },
     translate: {
       'ready': 'Klaar met vertalen',
@@ -4362,7 +4363,8 @@ angular.module('udb.core')
       'no_videos': 'Aucune vidéo',
       'publiq_url': 'Voir sur {{publicationBrand}}',
       'translate': 'Traduire',
-      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
+      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.',
+      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.'
     },
     translate: {
       'ready': 'Prêt à traduire',
@@ -5550,7 +5552,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'no_videos': 'Keine Videos',
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
-    'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.'
+    'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.',
+    'info_holiday_camp': 'Ihr Camp oder Urlaub wird bis zum Starttag in online Agendas angezeigt.'
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
@@ -11791,6 +11794,7 @@ function EventDetail(
 
     var eventTypeId = $scope.event.type.id;
     $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
+    $scope.isHolidayCamp = eventTypeId === '0.57.0.0.0';
 
     hasContactPoint();
     hasBookingInfo();
@@ -28571,6 +28575,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  </span>\n" +
     "                  <div ng-if=\"isLessonSeries\" class=\"alert alert-info lesson-series-info\">\n" +
     "                    <p translate-once=\"preview.info_lesson_series\"></p>\n" +
+    "                  </div>\n" +
+    "                  <div ng-if=\"isHolidayCamp\" class=\"alert alert-info lesson-series-info\">\n" +
+    "                    <p translate-once=\"preview.info_holiday_camp\"></p>\n" +
     "                  </div>\n" +
     "                </td>\n" +
     "              </tr>\n" +
