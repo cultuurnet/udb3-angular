@@ -192,6 +192,7 @@ function EventDetail(
 
     var eventTypeId = $scope.event.type.id;
     $scope.isLessonSeries = eventTypeId === '0.3.1.0.0';
+    $scope.isHolidayCamp = eventTypeId === '0.57.0.0.0';
 
     hasContactPoint();
     hasBookingInfo();
