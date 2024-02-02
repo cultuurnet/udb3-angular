@@ -1,7 +1,6 @@
 {
   "name": "udb3-angular",
   "version": "0.0.0",
-  "dependencies": {},
   "devDependencies": {
     "connect-modrewrite": "^0.7.9",
     "grunt": "^0.4.1",
@@ -32,6 +31,10 @@
     "grunt-svgmin": "^0.4.0",
     "grunt-usemin": "^2.1.1",
     "grunt-wiredep": "^1.7.0",
+    "imagemin-gifsicle": "^7.0.0",
+    "imagemin-jpegtran": "^7.0.0",
+    "imagemin-optipng": "^8.0.0",
+    "imagemin-pngquant": "^9.0.2",
     "jasmine-core": "^2.3.4",
     "jshint-stylish": "^0.2.0",
     "karma": "~0.13.10",
@@ -50,6 +53,7 @@
   "scripts": {
     "test": "grunt test",
     "travis": "npm test && grunt coveralls",
+    "build": "grunt build --force",
     "build:watch": "grunt watch"
   }
 }

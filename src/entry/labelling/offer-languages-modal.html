@@ -1,0 +1,23 @@
+<div class="modal-body offer-languages-modal">
+  <h2>Taaliconen toevoegen</h2>
+  <div class="alert alert-info" role="alert">
+    Aan de hand van taaliconen geef je aan hoeveel kennis van het Nederlands vereist is om aan je aanbod te kunnen
+    deelnemen. Een leidraad over taaliconen vind je <a
+    href="https://helpdesk.publiq.be/hc/nl/articles/15301494887058-Hoe-voeg-ik-taaliconen-toe" target="_blank">hier</a>
+  </div>
+  <div class="checkbox" ng-repeat="(index,option) in lmc.options">
+    <label>
+      <input type="checkbox" ng-model="option.selected"/>
+      <span style="display:flex; gap: 5px; justify-content: flex-start; align-items: center">
+        <img ng-src="../images/language-icons/{{index+1}}.png" style="height: 1em" />
+        <strong ng-bind="option.label"></strong>
+      </span>
+      <span class="text-muted" ng-bind="option.text"></span>
+    </label>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-default" ng-click="lmc.close()">Annuleren</button>
+  <button class="btn btn-primary" ng-click="lmc.ok()">Toevoegen</button>
+</div>
