@@ -1148,6 +1148,7 @@ angular.module('udb.core')
       search: 'Zoeken',
       advanced: 'Geavanceerd',
       label: 'Labelen',
+      languageIcons: 'Taaliconen toevoegen',
       deselect: 'Deselecteren',
       savedSearches: {
         savedSearches: 'Bewaarde zoekopdrachten',

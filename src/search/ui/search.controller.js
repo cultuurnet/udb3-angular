@@ -49,6 +49,7 @@ function SearchController(
   $scope.activeQuery = false;
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
+  $scope.language = $translate.use() || 'nl';
 
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
@@ -113,10 +114,24 @@ function SearchController(
     }
   };
 
-  var labelSelection = function () {
-
+  var saveLabels = function (labels) {
     var selectedOffers = $scope.resultViewer.selectedOffers;
+    _.each(selectedOffers, function (offer) {
+      var eventPromise;
+      eventPromise = udbApi.getOffer(new URL(offer['@id']));
 
+      eventPromise.then(function (event) {
+        event.label(labels);
+      });
+    });
+
+    _.each(labels, function (label) {
+      offerLabeller.labelOffersById(selectedOffers, label);
+    });
+  };
+
+  var labelSelection = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
     if (!selectedOffers.length) {
       $window.alert('First select the events you want to label.');
       return;
@@ -128,21 +143,7 @@ function SearchController(
       controllerAs: 'lmc'
     });
 
-    modal.result.then(function (labels) {
-
-      _.each(selectedOffers, function (offer) {
-        var eventPromise;
-        eventPromise = udbApi.getOffer(new URL(offer['@id']));
-
-        eventPromise.then(function (event) {
-          event.label(labels);
-        });
-      });
-
-      _.each(labels, function (label) {
-        offerLabeller.labelOffersById(selectedOffers, label);
-      });
-    });
+    modal.result.then(saveLabels);
   };
 
   function labelActiveQuery() {
@@ -186,25 +187,41 @@ function SearchController(
     }
   };
 
+  var addLanguageIcons = function () {
+    var selectedOffers = $scope.resultViewer.selectedOffers;
+    if (!selectedOffers.length) {
+      $window.alert('First select the events you want to label.');
+      return;
+    }
+
+    var modal = $uibModal.open({
+      templateUrl: 'templates/offer-languages-modal.html',
+      controller: 'OfferLanguagesModalCtrl',
+      controllerAs: 'lmc'
+    });
+
+    modal.result.then(saveLabels);
+  };
+
   function exportEvents() {
     var exportingQuery = $scope.resultViewer.querySelected,
-        query = $scope.activeQuery,
-        eventCount,
-        selectedIds = [];
+      query = $scope.activeQuery,
+      eventCount,
+      selectedIds = [];
 
     if (exportingQuery) {
       eventCount = $scope.resultViewer.totalItems;
     } else {
       selectedIds = _.chain($scope.resultViewer.selectedOffers)
         .filter({'@type': 'Event'})
-        .map(function(offer) {
+        .map(function (offer) {
           return new URL(offer['@id']);
         })
         .value();
 
       if (!selectedIds.length) {
         $window.alert(
-            $translate.instant('search.modal')
+          $translate.instant('search.modal')
         );
         return;
       } else {
@@ -221,11 +238,10 @@ function SearchController(
     var tooManyItems = eventCount >= exportLimit;
 
     if (tooManyItems) {
-      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function(message) {
+      $translate('EVENT-EXPORT.TOO-MANY-ITEMS', {limit: exportLimit}).then(function (message) {
         $window.alert(message);
       });
-    }
-    else {
+    } else {
       if (query && query.queryString.length && LuceneQueryBuilder.isValid(query)) {
         var modal = $uibModal.open({
           templateUrl: 'templates/event-export-modal.html',
@@ -234,7 +250,7 @@ function SearchController(
           size: 'lg'
         });
       } else {
-        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function(message) {
+        $translate('EVENT-EXPORT.QUERY-IS-MISSING').then(function (message) {
           $window.alert(message);
         });
       }
@@ -243,6 +259,7 @@ function SearchController(
 
   $scope.exportEvents = exportEvents;
   $scope.label = label;
+  $scope.addLanguageIcons = addLanguageIcons;
 
   $scope.startEditing = function () {
     $scope.queryEditorShown = true;
