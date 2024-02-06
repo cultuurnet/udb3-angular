@@ -390,7 +390,8 @@ angular.module('udb.core')
       'no_videos': 'Aucune vidéo',
       'publiq_url': 'Voir sur {{publicationBrand}}',
       'translate': 'Traduire',
-      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.'
+      'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.',
+      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.'
     },
     translate: {
       'ready': 'Prêt à traduire',

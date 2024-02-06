@@ -393,7 +393,8 @@ angular.module('udb.core')
       'no_videos': 'Geen video\'s',
       'publiq_url': 'Bekijk op {{publicationBrand}}',
       'translate': 'Vertalen',
-      'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.'
+      'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.',
+      'info_holiday_camp': 'Je kamp of vakantie verschijnt in UiTagenda\'s tot aan de startdag.'
     },
     translate: {
       'ready': 'Klaar met vertalen',
