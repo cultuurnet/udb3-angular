@@ -24284,9 +24284,9 @@ angular
     {label: 'Markt, braderie of kermis', id: '0.37.0.0.0'},
     {label: 'Opendeurdag', id: '0.12.0.0.0'},
     {label: 'Party of fuif', id: '0.49.0.0.0'},
-    {label: 'Route', id: '0.17.0.0.0'},
+    {label: 'Fiets- of wandelroute', id: '0.17.0.0.0'},
     {label: 'Spel of quiz', id: '0.50.21.0.0'},
-    {label: 'Sport en beweging', id: '0.59.0.0.0'},
+    {label: 'Sportactiviteit', id: '0.59.0.0.0'},
     {label: 'Sportwedstrijd bekijken', id: '0.19.0.0.0'},
     {label: 'Tentoonstelling', id: '0.0.0.0.0'},
     {label: 'Theatervoorstelling', id: '0.55.0.0.0'}
