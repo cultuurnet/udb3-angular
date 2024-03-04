@@ -12,7 +12,7 @@ angular
   .controller('SaveSearchModalController', SaveSearchModalController);
 
 /* @ngInject */
-function SaveSearchModalController($scope, $uibModalInstance) {
+function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
   var ok = function () {
     var name = $scope.queryName;
@@ -35,6 +35,25 @@ function SaveSearchModalController($scope, $uibModalInstance) {
     $scope.activeTabId = tabId;
   };
 
+  var getSavedSearches = function () {
+    return udbApi.getSavedSearches().then(function (data) {
+      var withTranslation = data.map(function (savedSearch) {
+        var key = 'search.savedSearches.items.' + savedSearch.name.toString();
+        var translated = $translate.instant(key);
+        if (translated !== key) {
+          savedSearch.name = translated;
+        }
+        return savedSearch;
+      });
+      return $q.resolve(withTranslation);
+    });
+  };
+
+  getSavedSearches().then(function (savedSearches) {
+    $scope.savedSearches = savedSearches;
+  });
+
+  $scope.savedSearches = [];
   $scope.cancel = cancel;
   $scope.ok = ok;
   $scope.isTabActive = isTabActive;
