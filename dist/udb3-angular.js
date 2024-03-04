@@ -23219,7 +23219,7 @@ angular
   .controller('SaveSearchModalController', SaveSearchModalController);
 
 /* @ngInject */
-function SaveSearchModalController($scope, $uibModalInstance) {
+function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
   var ok = function () {
     var name = $scope.queryName;
@@ -23242,6 +23242,25 @@ function SaveSearchModalController($scope, $uibModalInstance) {
     $scope.activeTabId = tabId;
   };
 
+  var getSavedSearches = function () {
+    return udbApi.getSavedSearches().then(function (data) {
+      var withTranslation = data.map(function (savedSearch) {
+        var key = 'search.savedSearches.items.' + savedSearch.name.toString();
+        var translated = $translate.instant(key);
+        if (translated !== key) {
+          savedSearch.name = translated;
+        }
+        return savedSearch;
+      });
+      return $q.resolve(withTranslation);
+    });
+  };
+
+  getSavedSearches().then(function (savedSearches) {
+    $scope.savedSearches = savedSearches;
+  });
+
+  $scope.savedSearches = [];
   $scope.cancel = cancel;
   $scope.ok = ok;
   $scope.isTabActive = isTabActive;
@@ -23250,7 +23269,7 @@ function SaveSearchModalController($scope, $uibModalInstance) {
   $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }
-SaveSearchModalController.$inject = ["$scope", "$uibModalInstance"];
+SaveSearchModalController.$inject = ["$scope", "udbApi", "$q", "$uibModalInstance", "$translate"];
 })();
 
 // Source: src/saved-searches/components/save-search.directive.js
@@ -32988,7 +33007,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
-    "        <div class=\"modal-body\"><p>Bestaande zoekopdracht</p></div>\n" +
+    "        <div class=\"modal-body\">\n" +
+    "            <p>Bestaande zoekopdracht</p>\n" +
+    "            <select>\n" +
+    "                <option ng-repeat=\"search in savedSearches\" value=\"{{search.id}}\">{{search.name}}</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "  \n" +
+    "        <div class=\"modal-footer\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancelExisting()\">Annuleren</button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"saveExisting()\">Bewaren</button>\n" +
+    "        </div>\n" +
+    "\n" +
     "    </div>\n" +
     "\n" +
     "\n" +
