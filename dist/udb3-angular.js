@@ -23234,9 +23234,20 @@ function SaveSearchModalController($scope, $uibModalInstance) {
     $uibModalInstance.dismiss('cancel');
   };
 
+  var isTabActive = function (tabId) {
+    return tabId === $scope.activeTabId;
+  };
+
+  var makeTabActive = function (tabId) {
+    $scope.activeTabId = tabId;
+  };
+
   $scope.cancel = cancel;
   $scope.ok = ok;
+  $scope.isTabActive = isTabActive;
+  $scope.makeTabActive = makeTabActive;
   $scope.queryName = '';
+  $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }
 SaveSearchModalController.$inject = ["$scope", "$uibModalInstance"];
@@ -32946,22 +32957,41 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/save-search-modal.html',
     "<form name=\"saveQueryForm\" novalidate class=\"save-search-modal\">\n" +
-    "    <div class=\"modal-body\">\n" +
     "\n" +
-    "        <label>Geef je zoekopdracht een naam</label>\n" +
+    "    <div class=\"modal-header\">\n" +
+    "        <h5 class=\"modal-title\">Zoekopdracht opslaan</h5>\n" +
+    "    </div>\n" +
     "\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-lg-12\">\n" +
-    "                <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
-    "                <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "    <ul class=\"nav nav-tabs\">\n" +
+    "        <li  ng-class=\"{active: isTabActive('new')}\"><a ng-click=\"makeTabActive('new')\">Nieuwe zoekopdracht</a></li>\n" +
+    "        <li  ng-class=\"{active: isTabActive('existing')}\"><a ng-click=\"makeTabActive('existing')\">Bestaande zoekopdracht</a></li>\n" +
+    "    </ul>\n" +
+    "\n" +
+    "    \n" +
+    "    <div class=\"tab-pane\" ng-show=\"isTabActive('new')\" role=\"tabpanel\">\n" +
+    "        <div class=\"modal-body\">\n" +
+    "\n" +
+    "            <label>Geef je zoekopdracht een naam</label>\n" +
+    "\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-lg-12\">\n" +
+    "                    <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
+    "                    <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "                </div>\n" +
     "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"modal-footer\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"modal-footer\">\n" +
-    "      <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "      <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
+    "        <div class=\"modal-body\"><p>Bestaande zoekopdracht</p></div>\n" +
     "    </div>\n" +
+    "\n" +
+    "\n" +
     "</form>\n"
   );
 
