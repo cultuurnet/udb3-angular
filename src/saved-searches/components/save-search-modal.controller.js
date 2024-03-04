@@ -27,8 +27,19 @@ function SaveSearchModalController($scope, $uibModalInstance) {
     $uibModalInstance.dismiss('cancel');
   };
 
+  var isTabActive = function (tabId) {
+    return tabId === $scope.activeTabId;
+  };
+
+  var makeTabActive = function (tabId) {
+    $scope.activeTabId = tabId;
+  };
+
   $scope.cancel = cancel;
   $scope.ok = ok;
+  $scope.isTabActive = isTabActive;
+  $scope.makeTabActive = makeTabActive;
   $scope.queryName = '';
+  $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }
