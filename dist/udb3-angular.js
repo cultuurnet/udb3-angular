@@ -23222,7 +23222,6 @@ angular
 function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
   var ok = function (type) {
-    console.log('in ok', type);
     var name = $scope.queryName;
     $scope.wasSubmitted = true;
 
@@ -23929,7 +23928,77 @@ function QueryEditorController(
       ]
     };
   };
+
+  console.log('queryFields', queryFields);
+
   qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
+
+  // init query modal?
+  var queryString = window.location.search;
+  console.log('queryString', queryString);
+  console.log('queryBuilder', queryBuilder);
+  /* jshint ignore:start */
+  var urlParams = new URLSearchParams(queryString);
+  console.log('urlParams', urlParams);
+  var currentQuery = {};
+  currentQuery.queryString = urlParams.get('query');
+  console.log('currentQuery', currentQuery);
+  var initialQuery = queryBuilder.parseQueryString(currentQuery);
+  console.log('initialQuery', initialQuery);
+  var root = qe.groupedQueryTree;
+  console.log('old root', root);
+
+  var groups = queryBuilder.groupQueryTree(initialQuery);
+  console.log('initialGroups', groups);
+  console.log('fieldTypeTransformers', fieldTypeTransformers);
+
+  var newGroupNodes = groups.nodes.map(function(group) {
+    group.nodes = group.nodes.map(function(node) {
+      const foundQueryField = queryFields.find(function(queryField) {
+        return queryField.field === node.field;
+      });
+      if (foundQueryField) {
+        node.name =  foundQueryField.name;
+        node.type = foundQueryField.type;
+
+        // TODO this could probably be done better
+        var foundQueryKey = Object.keys(initialQuery).find(function(key) {
+          return initialQuery[key].field === node.field &&
+            initialQuery[key].term === node.term &&
+            typeof initialQuery[key].transformer === 'string';
+        })
+
+        console.log('foundObjectInQuery', foundQueryKey);
+
+        node.transformer = foundQueryKey && initialQuery[foundQueryKey].transformer ?
+          initialQuery[foundQueryKey].transformer :
+           _.first(fieldTypeTransformers[foundQueryField.type]);
+        // node.transformer = node.transformer ? node.transformer : '+';
+      }
+      return node;
+    })
+    return group;
+  });
+
+  console.log('newGroupNodes', newGroupNodes);
+  // var group = {
+  //   type: 'group',
+  //   operator: initialQuery.operator,
+  //   nodes: [
+  //     {
+  //       field: initialQuery.left.field,
+  //       name: 'title',
+  //       term: initialQuery.left.term,
+  //       fieldType: 'tokenized-string',
+  //       transformer: '+'
+  //     }
+  //   ]
+  // };
+  // root.nodes.push(group);
+
+  root.nodes = newGroupNodes;
+
+  /* jshint ignore:end */
 
   // Holds options for both term and choice query-field types
   qe.transformers = {};
@@ -24088,6 +24157,8 @@ function QueryEditorController(
         }
       ]
     };
+
+    console.log('subgroup', group);
 
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
   };
@@ -24553,9 +24624,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
   };
 
   this.parseQueryString = function (query) {
+    console.log('parse query', query);
     try {
       query.queryTree = LuceneQueryParser.parse(query.queryString);
     } catch (e) {
+      console.log('e', e);
       query.errors.push(e.message);
     }
 
@@ -24567,6 +24640,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {string} queryString
    */
   this.createQuery = function (queryString) {
+    console.log('createQuery', queryString);
     var query = {
       originalQueryString: queryString,
       queryString: queryString,
@@ -24853,7 +24927,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    *
    * @return  {object}              - A grouped field information tree
    */
+
+  // probably use this?
   this.groupQueryTree = function (queryTree) {
+    console.log('in group query tree?');
     var groupedFieldTree = {
       type: 'root',
       nodes: [],
@@ -24877,6 +24954,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       };
       groupedFieldTree.nodes.push(group);
     } else {
+      console.log('in else of groupQueryTree');
       this.groupNode(queryTree, groupedFieldTree);
       this.cleanUpGroupedFieldTree(groupedFieldTree);
     }
@@ -25033,6 +25111,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
   this.groupNode = function (branch, fieldTree, fieldGroup) {
+    console.log('in group node');
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';
@@ -26288,6 +26367,7 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   var queryTree = null;
 
   this.clearQueryTree = function () {
+    console.log('clearQueryTree');
     queryTree = null;
   };
 
@@ -26314,6 +26394,7 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
+    console.log('setQueryTree', groupedQueryTree);
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
     var newQuery = LuceneQueryBuilder.createQuery(queryString);
     LuceneQueryBuilder.isValid(newQuery);
@@ -26332,6 +26413,7 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.getQueryTree = function () {
+    console.log('getQueryTree?');
     return angular.copy(queryTree);
   };
 }
@@ -33020,7 +33102,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
     "        <div class=\"modal-body\">\n" +
-    "            <p>Bestaande zoekopdracht</p>\n" +
+    "            <label>Kies een bestaande zoekopdracht</label>\n" +
     "            <select class=\"form-control\">\n" +
     "                <option ng-repeat=\"search in savedSearches\" value=\"{{search.id}}\">{{search.name}}</option>\n" +
     "            </select>\n" +
