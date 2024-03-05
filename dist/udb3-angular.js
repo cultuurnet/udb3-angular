@@ -23221,12 +23221,17 @@ angular
 /* @ngInject */
 function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
-  var ok = function () {
+  var ok = function (type) {
+    console.log('in ok', type);
     var name = $scope.queryName;
     $scope.wasSubmitted = true;
 
+    if (type === 'existing') {
+      $uibModalInstance.close({name: name, type: type});
+    }
+
     if (name) {
-      $uibModalInstance.close(name);
+      $uibModalInstance.close({name: name, type: type});
     }
   };
 
@@ -23305,10 +23310,17 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
         controller: 'SaveSearchModalController'
       });
 
-      modal.result.then(function (name) {
-        savedSearchesService
-          .createSavedSearch(name, scope.queryString)
+      modal.result.then(function (params) {
+        if (params.type === 'new') {
+          savedSearchesService
+          .createSavedSearch(params.name, scope.queryString)
           .catch(displayErrorModal);
+        }
+
+        if (params.type === 'existing') {
+          console.log('should edit the existing query');
+        }
+
       });
     };
   }
@@ -32982,8 +32994,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <ul class=\"nav nav-tabs\">\n" +
-    "        <li  ng-class=\"{active: isTabActive('new')}\"><a ng-click=\"makeTabActive('new')\">Nieuwe zoekopdracht</a></li>\n" +
-    "        <li  ng-class=\"{active: isTabActive('existing')}\"><a ng-click=\"makeTabActive('existing')\">Bestaande zoekopdracht</a></li>\n" +
+    "        <li  ng-class=\"{active: isTabActive('new')}\" role=\"tab\"><a ng-click=\"makeTabActive('new')\" role=\"tab\">Nieuwe zoekopdracht</a></li>\n" +
+    "        <li  ng-class=\"{active: isTabActive('existing')}\"role=\"tab\"><a ng-click=\"makeTabActive('existing')\" role=\"tab\">Bestaande zoekopdracht</a></li>\n" +
     "    </ul>\n" +
     "\n" +
     "    \n" +
@@ -33002,21 +33014,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('new')\">Bewaren</button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
     "        <div class=\"modal-body\">\n" +
     "            <p>Bestaande zoekopdracht</p>\n" +
-    "            <select>\n" +
+    "            <select class=\"form-control\">\n" +
     "                <option ng-repeat=\"search in savedSearches\" value=\"{{search.id}}\">{{search.name}}</option>\n" +
     "            </select>\n" +
     "        </div>\n" +
     "  \n" +
     "        <div class=\"modal-footer\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancelExisting()\">Annuleren</button>\n" +
-    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"saveExisting()\">Bewaren</button>\n" +
+    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('existing')\">Bewaren</button>\n" +
     "        </div>\n" +
     "\n" +
     "    </div>\n" +

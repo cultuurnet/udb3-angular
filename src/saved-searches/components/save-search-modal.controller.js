@@ -14,12 +14,16 @@ angular
 /* @ngInject */
 function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
-  var ok = function () {
+  var ok = function (type) {
     var name = $scope.queryName;
     $scope.wasSubmitted = true;
 
+    if (type === 'existing') {
+      $uibModalInstance.close({name: name, type: type});
+    }
+
     if (name) {
-      $uibModalInstance.close(name);
+      $uibModalInstance.close({name: name, type: type});
     }
   };
 

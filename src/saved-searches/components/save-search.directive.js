@@ -29,10 +29,17 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
         controller: 'SaveSearchModalController'
       });
 
-      modal.result.then(function (name) {
-        savedSearchesService
-          .createSavedSearch(name, scope.queryString)
+      modal.result.then(function (params) {
+        if (params.type === 'new') {
+          savedSearchesService
+          .createSavedSearch(params.name, scope.queryString)
           .catch(displayErrorModal);
+        }
+
+        if (params.type === 'existing') {
+          console.log('should edit the existing query');
+        }
+
       });
     };
   }
