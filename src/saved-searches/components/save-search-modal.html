@@ -1,19 +1,19 @@
 <form name="saveQueryForm" novalidate class="save-search-modal">
 
     <div class="modal-header">
-        <h5 class="modal-title">Zoekopdracht opslaan</h5>
+        <h5 class="modal-title" translate-once="search.savedSearches.modal.mainTitle"></h5>
     </div>
 
     <ul class="nav nav-tabs">
-        <li  ng-class="{active: isTabActive('new')}"><a ng-click="makeTabActive('new')">Nieuwe zoekopdracht</a></li>
-        <li  ng-class="{active: isTabActive('existing')}"><a ng-click="makeTabActive('existing')">Bestaande zoekopdracht</a></li>
+        <li  ng-class="{active: isTabActive('new')}"><a ng-click="makeTabActive('new')" translate-once="search.savedSearches.modal.newTab"></a></li>
+        <li  ng-class="{active: isTabActive('existing')}"><a ng-click="makeTabActive('existing')" translate-once="search.savedSearches.modal.existingTab"></a></li>
     </ul>
 
     
     <div class="tab-pane" ng-show="isTabActive('new')" role="tabpanel">
         <div class="modal-body">
 
-            <label>Geef je zoekopdracht een naam</label>
+            <label translate-once="search.savedSearches.modal.giveName"></label>
 
             <div class="row">
                 <div class="col-lg-12">
@@ -24,22 +24,22 @@
         </div>
 
         <div class="modal-footer">
-        <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
-        <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('new')">Bewaren</button>
+        <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()" translate-once="search.savedSearches.modal.cancel"></button>
+        <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('new')" translate-once="search.savedSearches.modal.save"></button>
         </div>
     </div>
 
     <div class="tab-pane"  ng-show="isTabActive('existing')"  role="tabpanel">
         <div class="modal-body">
-            <p>Bestaande zoekopdracht</p>
+            <label translate-once="search.savedSearches.modal.selectSavedSearch"></label>
             <select class="form-control" ng-model="queryId" ng-change="setQueryName()">
                 <option ng-repeat="search in savedSearches" value="{{search.id}}">{{search.name}}</option>
             </select>
         </div>
   
         <div class="modal-footer">
-            <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
-            <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('existing')">Bewaren</button>
+            <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()" translate-once="search.savedSearches.modal.cancel"></button>
+            <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('existing')" translate-once="search.savedSearches.modal.save"></button>
         </div>
 
     </div>

@@ -1243,6 +1243,15 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'viewResults': 'Ergebnisse ansehen',
       'yourSearch': 'Ihre Suchanfrage',
       'save': 'Speichern',
+      'modal': {
+        'mainTitle': 'Suche speichern',
+        'newTab': 'Neue Suche',
+        'existingTab': 'Vorhandene Suche',
+        'giveName': 'Gib deiner Suche einen Namen',
+        'selectSavedSearch': 'Wähle eine vorhandene Suche',
+        'save': 'Speichern',
+        'cancel': 'Abbrechen'
+      }
     },
     'manage': 'Verwalten',
     'oneResult': '1 Ergebnis',
