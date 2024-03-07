@@ -138,7 +138,7 @@ function UdbApi(
     return $http
       .put(appConfig.baseUrl + 'saved-searches/v3/' + searchId, {name: name, query: query}, defaultApiConfig)
       .then(returnUnwrappedData);
-  }
+  };
 
   /**
    * @param {string} queryString - The query used to find offers.
