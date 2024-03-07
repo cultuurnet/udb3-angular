@@ -49,6 +49,16 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
     });
   };
 
+  ss.editSavedSearch = function (searchId, name, query) {
+    return udbApi.editSavedSearch(searchId, name, query).then(function () {
+      var savedSearch = _.find(savedSearches, {id: searchId});
+      savedSearch.query = query;
+      savedSearchesChanged();
+
+      return $q.resolve();
+    });
+  };
+
   function savedSearchesChanged () {
     $rootScope.$emit('savedSearchesChanged', savedSearches);
   }
