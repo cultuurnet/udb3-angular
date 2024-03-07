@@ -6581,6 +6581,12 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
+  this.editSavedSearch = function (searchId, name, query) {
+    return $http
+      .put(appConfig.baseUrl + 'saved-searches/v3/' + searchId, {name: name, query: query}, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {string} queryString - The query used to find offers.
    * @param {number} [start] - From which offset the result set should start.
@@ -23221,13 +23227,19 @@ angular
 /* @ngInject */
 function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
-  var ok = function () {
+  var ok = function (type) {
     var name = $scope.queryName;
+    var id = $scope.queryId;
     $scope.wasSubmitted = true;
 
-    if (name) {
-      $uibModalInstance.close(name);
+    if (type === 'existing') {
+      $uibModalInstance.close({id: id, name: name, type: type});
     }
+
+    if (type === 'new' && name) {
+      $uibModalInstance.close({name: name, type: type});
+    }
+
   };
 
   var cancel = function () {
@@ -23260,12 +23272,24 @@ function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $trans
     $scope.savedSearches = savedSearches;
   });
 
+  var setQueryName = function() {
+    var selectedSavedSearch = $scope.savedSearches.find(function(savedSearch) {
+      return savedSearch.id === $scope.queryId;
+    });
+
+    if (selectedSavedSearch) {
+      $scope.queryName = selectedSavedSearch.name;
+    }
+  };
+
   $scope.savedSearches = [];
   $scope.cancel = cancel;
   $scope.ok = ok;
   $scope.isTabActive = isTabActive;
   $scope.makeTabActive = makeTabActive;
+  $scope.setQueryName = setQueryName;
   $scope.queryName = '';
+  $scope.queryId = '';
   $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }
@@ -23305,10 +23329,20 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
         controller: 'SaveSearchModalController'
       });
 
-      modal.result.then(function (name) {
-        savedSearchesService
-          .createSavedSearch(name, scope.queryString)
-          .catch(displayErrorModal);
+      modal.result.then(function (params) {
+
+        if (params.type === 'new') {
+          savedSearchesService
+            .createSavedSearch(params.name, scope.queryString)
+            .catch(displayErrorModal);
+        }
+
+        if (params.type === 'existing') {
+          savedSearchesService
+            .editSavedSearch(params.id, params.name, scope.queryString)
+            .catch(displayErrorModal);
+        }
+
       });
     };
   }
@@ -23378,6 +23412,16 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   ss.deleteSavedSearch = function (searchId) {
     return udbApi.deleteSavedSearch(searchId).then(function () {
       _.remove(savedSearches, {id: searchId});
+      savedSearchesChanged();
+
+      return $q.resolve();
+    });
+  };
+
+  ss.editSavedSearch = function (searchId, name, query) {
+    return udbApi.editSavedSearch(searchId, name, query).then(function () {
+      var savedSearch = _.find(savedSearches, {id: searchId});
+      savedSearch.query = query;
       savedSearchesChanged();
 
       return $q.resolve();
@@ -33002,21 +33046,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "        <div class=\"modal-footer\">\n" +
     "        <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('new')\">Bewaren</button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
     "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
     "        <div class=\"modal-body\">\n" +
     "            <p>Bestaande zoekopdracht</p>\n" +
-    "            <select>\n" +
+    "            <select class=\"form-control\" ng-model=\"queryId\" ng-change=\"setQueryName()\">\n" +
     "                <option ng-repeat=\"search in savedSearches\" value=\"{{search.id}}\">{{search.name}}</option>\n" +
     "            </select>\n" +
     "        </div>\n" +
     "  \n" +
     "        <div class=\"modal-footer\">\n" +
-    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancelExisting()\">Annuleren</button>\n" +
-    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"saveExisting()\">Bewaren</button>\n" +
+    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('existing')\">Bewaren</button>\n" +
     "        </div>\n" +
     "\n" +
     "    </div>\n" +
