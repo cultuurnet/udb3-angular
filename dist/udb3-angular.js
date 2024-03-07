@@ -23933,72 +23933,220 @@ function QueryEditorController(
 
   qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
 
-  // init query modal?
-  var queryString = window.location.search;
-  console.log('queryString', queryString);
-  console.log('queryBuilder', queryBuilder);
-  /* jshint ignore:start */
-  var urlParams = new URLSearchParams(queryString);
-  console.log('urlParams', urlParams);
-  var currentQuery = {};
-  currentQuery.queryString = urlParams.get('query');
-  console.log('currentQuery', currentQuery);
-  var initialQuery = queryBuilder.parseQueryString(currentQuery);
-  console.log('initialQuery', initialQuery);
-  var root = qe.groupedQueryTree;
-  console.log('old root', root);
+  function getGroupsFromLuceneSyntax(query) {
+    var groups = [];
+    var match;
+    var regex = /\(([^)]+)\)|([^()]+)/g;
 
-  var groups = queryBuilder.groupQueryTree(initialQuery);
-  console.log('initialGroups', groups);
-  console.log('fieldTypeTransformers', fieldTypeTransformers);
+    while ((match = regex.exec(query)) !== null) {
+      var group = match[1] ? match[1] : match[2];
+      groups.push(group.trim());
+    }
 
-  var newGroupNodes = groups.nodes.map(function(group) {
-    group.nodes = group.nodes.map(function(node) {
-      const foundQueryField = queryFields.find(function(queryField) {
-        return queryField.field === node.field;
-      });
-      if (foundQueryField) {
-        node.name =  foundQueryField.name;
-        node.type = foundQueryField.type;
+    return groups;
+  }
 
-        // TODO this could probably be done better
-        var foundQueryKey = Object.keys(initialQuery).find(function(key) {
-          return initialQuery[key].field === node.field &&
-            initialQuery[key].term === node.term &&
-            typeof initialQuery[key].transformer === 'string';
-        })
+  // Create a mapping from the 'field' value in the definitions to the corresponding object
+  const fieldMapping = queryFields.filter(function(queryField) {
+    return !['startdate', 'enddate'].includes(queryField.name);
+  }).reduce(function(map, def) {
+    map[def.field] = def;
+    return map;
+  }, {});
 
-        console.log('foundObjectInQuery', foundQueryKey);
+  function splitQuery(query) {
+    // Splitting the query by AND and OR, while keeping the separators
+    const parts = query.split(/ (AND|OR) /);
 
-        node.transformer = foundQueryKey && initialQuery[foundQueryKey].transformer ?
-          initialQuery[foundQueryKey].transformer :
-           _.first(fieldTypeTransformers[foundQueryField.type]);
-        // node.transformer = node.transformer ? node.transformer : '+';
+    // Grouping parts into [[part, operator], ...]
+    const groupedParts = [];
+    for (let i = 0; i < parts.length; i += 2) {
+      groupedParts.push([parts[i], parts[i + 1] || 'OR']);
+    }
+    return groupedParts;
+  }
+
+  function parseRange(rangeString) {
+    const matches = rangeString.match(/\[(.*?) TO (.*?)\]/);
+    if (matches && matches.length === 3) {
+      return {lowerBound: matches[1], upperBound: matches[2]};
+    }
+    return {lowerBound: '', upperBound: ''};
+  }
+
+  function getFieldTransformer(fieldNode) {
+    if (fieldNode.fieldType === 'date-range') {
+      if (fieldNode.upperBound === '*') {
+        return '>';
       }
-      return node;
+      if (fieldNode.lowerBound === '*') {
+        return '<';
+      }
+      return '=';
+    }
+
+    if (fieldNode.fieldType === 'choice') {
+      return '=';
+    }
+
+    if (fieldNode.fieldType === 'term') {
+      return '=';
+    }
+
+    // default
+    return '+';
+
+  }
+
+  function parseQueryPart(part) {
+    console.log('part', part);
+    // Extract field and term from the part (assuming format "field:term")
+    const parts = part.split(':', 1);
+    console.log('parts', parts);
+    const field = parts[0].replace('(', '');
+    console.log('field', field);
+    const term = part.replace(field + ':', '').replaceAll('(', '').replaceAll(')', '');
+    console.log('term', term);
+
+    // Find the field definition in the mapping
+    const fieldDef = fieldMapping[field] || {};
+    // Implement parsing logic similar to the Python version
+    // This is a placeholder and needs to be adapted based on the query format and requirements
+    // ...
+
+    console.log('fieldDef', fieldDef);
+    console.log('fieldDef name', fieldDef.name);
+
+    var fieldNode = {
+      field: fieldDef.field || field,
+      fieldType: fieldDef.type || 'unknown',
+      name: fieldDef.name || field,
+      term: term || '',
+      // TODO add transformer logic
+      transformer: '+'
+    };
+
+    if (fieldNode.fieldType === 'date-range') {
+      const range = parseRange(term);
+      fieldNode.lowerBound = range.lowerBound === '*' ?  '*' :  new Date(range.lowerBound);
+      fieldNode.upperBound = range.upperBound === '*' ? '*' :  new Date(range.upperBound);
+    }
+
+    fieldNode.transformer = getFieldTransformer(fieldNode);
+
+    // Example return structure
+    return fieldNode;
+  }
+
+  function parseQuery(queryParts) {
+    const nodes = queryParts.map(function(queryParts) {
+      const part = queryParts[0];
+      const operator = queryParts[1];
+      const parsedNode = parseQueryPart(part);
+      return {
+        type: 'group',
+        operator: operator,
+        nodes: [parsedNode]
+      };
+    });
+    return nodes;
+  }
+
+  // Example usage
+  const decodedQuery = 'dateRange:[2024-03-06T00:00:00+01:00 TO 2024-03-06T23:59:59+01:00] OR name.\\*:test';
+  // name.\*:test OR (dateRange:[2024-03-07T00:00:00%2B01:00 TO *] OR (terms.id:1.7.1.0.0 OR audienceType:everyone))
+  // const decodedQuery = 'dateRange:[* TO 2024-03-07T23:59:59+01:00] OR name.\\*:test';
+  // const decodedQuery = 'name.\*:test OR (dateRange:[2024-03-07T00:00:00+01:00 TO *] OR (terms.id:3.14.0.0.0 OR audienceType:everyone))';
+
+  // TODO make multiple queries and write tests for it
+
+  const parsedQueryParts = splitQuery(decodedQuery);
+  const jsonNodes = parseQuery(parsedQueryParts);
+
+  const jsonStructure = {
+    type: 'root',
+    nodes: jsonNodes
+  };
+
+  console.log('jsonStructure', jsonStructure);
+
+  function fillModalWithValuesFromQuery() {
+    // init query modal?
+    var queryString = window.location.search;
+    console.log('queryString', queryString);
+    console.log('queryBuilder', queryBuilder);
+    /* jshint ignore:start */
+    var urlParams = new URLSearchParams(queryString);
+    var query = urlParams.get('query');
+
+    if (!query) {
+      return;
+    }
+
+    var currentQuery = {};
+    currentQuery.queryString = query;
+    var initialQuery = queryBuilder.parseQueryString(currentQuery);
+    console.log('initialQuery', initialQuery);
+    var root = qe.groupedQueryTree;
+
+    // (name.\*:"test 1" OR name.\*:"test 2") OR name.\*:"test 3"
+    // array with items
+    var luceneGroupQueries = getGroupsFromLuceneSyntax(query);
+    var rootGroups = []
+
+    luceneGroupQueries.forEach(function(groupQuery) {
+      var group = queryBuilder.groupQueryTree(queryBuilder.parseQueryString({queryString: groupQuery}));
+      group.operator = 'OR';
+      group.type = 'group';
+      rootGroups.push(group);
     })
-    return group;
-  });
 
-  console.log('newGroupNodes', newGroupNodes);
-  // var group = {
-  //   type: 'group',
-  //   operator: initialQuery.operator,
-  //   nodes: [
-  //     {
-  //       field: initialQuery.left.field,
-  //       name: 'title',
-  //       term: initialQuery.left.term,
-  //       fieldType: 'tokenized-string',
-  //       transformer: '+'
-  //     }
-  //   ]
-  // };
-  // root.nodes.push(group);
+    console.log('rootGroups', rootGroups);
 
-  root.nodes = newGroupNodes;
+    var groups = queryBuilder.groupQueryTree(initialQuery);
 
-  /* jshint ignore:end */
+    var newGroupNodes = groups.nodes.map(function(group) {
+      group.nodes = group.nodes.map(function(node) {
+        const foundQueryField = queryFields.find(function(queryField) {
+          return queryField.field === node.field;
+        });
+        if (foundQueryField) {
+          node.name =  foundQueryField.name;
+          node.type = foundQueryField.type;
+          node.fieldType = foundQueryField.type;
+
+          if (node.type === 'date-range') {
+            node.lowerBound = new Date(node.lowerBound);
+            node.upperBound = new Date(node.upperBound);
+          }
+
+          // TODO this could probably be done better
+          var foundQueryKey = Object.keys(initialQuery).find(function(key) {
+            return initialQuery[key].field === node.field &&
+              initialQuery[key].term === node.term &&
+              typeof initialQuery[key].transformer === 'string';
+          })
+
+          console.log('foundObjectInQuery', foundQueryKey);
+
+          node.transformer = foundQueryKey && initialQuery[foundQueryKey].transformer ?
+            initialQuery[foundQueryKey].transformer :
+            _.first(fieldTypeTransformers[foundQueryField.type]);
+          // node.transformer = node.transformer ? node.transformer : '+';
+        }
+        return node;
+      })
+      return group;
+    });
+
+    console.log('newGroupNodes', newGroupNodes);
+    root = JSON.parse(JSON.stringify(root));
+    /* jshint ignore:end */
+  }
+
+  // fillModalWithValuesFromQuery();
+
+  qe.groupedQueryTree = jsonStructure;
 
   // Holds options for both term and choice query-field types
   qe.transformers = {};
@@ -24608,6 +24756,8 @@ angular.module('udb.search')
 function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
   var implicitToken = '<implicit>';
 
+  console.log('luceneQueryParser', LuceneQueryParser);
+
   this.translate = function (query) {
     QueryTreeTranslator.translateQueryTree(query.queryTree);
   };
@@ -24940,7 +25090,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     // If the query tree of an empty search is used, add a default field and group
     if (!queryTree.left) {
       var group = {
-        type: 'field',
+        type: 'group',
         operator: 'OR',
         nodes: [
           {
