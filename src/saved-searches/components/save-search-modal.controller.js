@@ -14,13 +14,19 @@ angular
 /* @ngInject */
 function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
-  var ok = function () {
+  var ok = function (type) {
     var name = $scope.queryName;
+    var id = $scope.queryId;
     $scope.wasSubmitted = true;
 
-    if (name) {
-      $uibModalInstance.close(name);
+    if (type === 'existing') {
+      $uibModalInstance.close({id: id, name: name, type: type});
     }
+
+    if (type === 'new' && name) {
+      $uibModalInstance.close({name: name, type: type});
+    }
+
   };
 
   var cancel = function () {
@@ -53,12 +59,24 @@ function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $trans
     $scope.savedSearches = savedSearches;
   });
 
+  var setQueryName = function() {
+    var selectedSavedSearch = $scope.savedSearches.find(function(savedSearch) {
+      return savedSearch.id === $scope.queryId;
+    });
+
+    if (selectedSavedSearch) {
+      $scope.queryName = selectedSavedSearch.name;
+    }
+  };
+
   $scope.savedSearches = [];
   $scope.cancel = cancel;
   $scope.ok = ok;
   $scope.isTabActive = isTabActive;
   $scope.makeTabActive = makeTabActive;
+  $scope.setQueryName = setQueryName;
   $scope.queryName = '';
+  $scope.queryId = '';
   $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }

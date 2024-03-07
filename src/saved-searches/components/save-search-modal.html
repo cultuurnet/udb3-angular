@@ -25,21 +25,21 @@
 
         <div class="modal-footer">
         <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
-        <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok()">Bewaren</button>
+        <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('new')">Bewaren</button>
         </div>
     </div>
 
     <div class="tab-pane"  ng-show="isTabActive('existing')"  role="tabpanel">
         <div class="modal-body">
             <p>Bestaande zoekopdracht</p>
-            <select>
+            <select class="form-control" ng-model="queryId" ng-change="setQueryName()">
                 <option ng-repeat="search in savedSearches" value="{{search.id}}">{{search.name}}</option>
             </select>
         </div>
   
         <div class="modal-footer">
-            <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancelExisting()">Annuleren</button>
-            <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="saveExisting()">Bewaren</button>
+            <button type="button" class="btn btn-default udb-save-query-cancel-button" ng-click="cancel()">Annuleren</button>
+            <button type="submit" class="btn btn-primary udb-save-query-ok-button" ng-click="ok('existing')">Bewaren</button>
         </div>
 
     </div>
