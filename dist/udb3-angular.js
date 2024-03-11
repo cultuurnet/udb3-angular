@@ -3936,6 +3936,15 @@ angular.module('udb.core')
         viewResults: 'Resultaten bekijken',
         yourSearch: 'Jouw zoekopdracht',
         save: 'Bewaren',
+        modal: {
+          mainTitle: 'Zoekopdracht opslaan',
+          newTab: 'Nieuwe zoekopdracht',
+          existingTab: 'Bestaande zoekopdracht',
+          giveName: 'Geef je zoekopdracht een naam',
+          selectSavedSearch: 'Kies een bewaarde zoekopdracht',
+          save: 'Bewaren',
+          cancel: 'Annuleren'
+        }
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',
@@ -5127,6 +5136,15 @@ angular.module('udb.core')
         viewResults: 'Consulter résultats',
         yourSearch: 'Votre recherche',
         save: 'Conserver',
+        modal: {
+          mainTitle: 'Enregistrer la recherche',
+          newTab: 'Nouvelle recherche',
+          existingTab: 'Recherche existante',
+          giveName: 'Donnez un nom à votre recherche',
+          selectSavedSearch: 'Choisissez une recherche existante',
+          save: 'Enregistrer',
+          cancel: 'Annuler'
+        }
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
@@ -6408,6 +6426,15 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'viewResults': 'Ergebnisse ansehen',
       'yourSearch': 'Ihre Suchanfrage',
       'save': 'Speichern',
+      'modal': {
+        'mainTitle': 'Suche speichern',
+        'newTab': 'Neue Suche',
+        'existingTab': 'Vorhandene Suche',
+        'giveName': 'Gib deiner Suche einen Namen',
+        'selectSavedSearch': 'Wähle eine vorhandene Suche',
+        'save': 'Speichern',
+        'cancel': 'Abbrechen'
+      }
     },
     'manage': 'Verwalten',
     'oneResult': '1 Ergebnis',
@@ -6578,6 +6605,12 @@ function UdbApi(
   this.deleteSavedSearch = function (searchId) {
     return $http
       .delete(appConfig.baseUrl + 'saved-searches/v3/' + searchId, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
+  this.editSavedSearch = function (searchId, name, query) {
+    return $http
+      .put(appConfig.baseUrl + 'saved-searches/v3/' + searchId, {name: name, query: query}, defaultApiConfig)
       .then(returnUnwrappedData);
   };
 
@@ -23219,27 +23252,76 @@ angular
   .controller('SaveSearchModalController', SaveSearchModalController);
 
 /* @ngInject */
-function SaveSearchModalController($scope, $uibModalInstance) {
+function SaveSearchModalController($scope, udbApi, $q, $uibModalInstance, $translate) {
 
-  var ok = function () {
+  var ok = function (type) {
     var name = $scope.queryName;
+    var id = $scope.queryId;
     $scope.wasSubmitted = true;
 
-    if (name) {
-      $uibModalInstance.close(name);
+    if (type === 'existing') {
+      $uibModalInstance.close({id: id, name: name, type: type});
     }
+
+    if (type === 'new' && name) {
+      $uibModalInstance.close({name: name, type: type});
+    }
+
   };
 
   var cancel = function () {
     $uibModalInstance.dismiss('cancel');
   };
 
+  var isTabActive = function (tabId) {
+    return tabId === $scope.activeTabId;
+  };
+
+  var getSavedSearches = function () {
+    return udbApi.getSavedSearches().then(function (data) {
+      var withTranslation = data.map(function (savedSearch) {
+        var key = 'search.savedSearches.items.' + savedSearch.name.toString();
+        var translated = $translate.instant(key);
+        if (translated !== key) {
+          savedSearch.name = translated;
+        }
+        return savedSearch;
+      });
+      return $q.resolve(withTranslation);
+    });
+  };
+
+  var makeTabActive = function (tabId) {
+    $scope.activeTabId = tabId;
+    if (tabId === 'existing') {
+      getSavedSearches().then(function (savedSearches) {
+        $scope.savedSearches = savedSearches;
+      });
+    }
+  };
+
+  var setQueryName = function() {
+    var selectedSavedSearch = $scope.savedSearches.find(function(savedSearch) {
+      return savedSearch.id === $scope.queryId;
+    });
+
+    if (selectedSavedSearch) {
+      $scope.queryName = selectedSavedSearch.name;
+    }
+  };
+
+  $scope.savedSearches = [];
   $scope.cancel = cancel;
   $scope.ok = ok;
+  $scope.isTabActive = isTabActive;
+  $scope.makeTabActive = makeTabActive;
+  $scope.setQueryName = setQueryName;
   $scope.queryName = '';
+  $scope.queryId = '';
+  $scope.activeTabId = 'new';
   $scope.wasSubmitted = false;
 }
-SaveSearchModalController.$inject = ["$scope", "$uibModalInstance"];
+SaveSearchModalController.$inject = ["$scope", "udbApi", "$q", "$uibModalInstance", "$translate"];
 })();
 
 // Source: src/saved-searches/components/save-search.directive.js
@@ -23275,10 +23357,20 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
         controller: 'SaveSearchModalController'
       });
 
-      modal.result.then(function (name) {
-        savedSearchesService
-          .createSavedSearch(name, scope.queryString)
-          .catch(displayErrorModal);
+      modal.result.then(function (params) {
+
+        if (params.type === 'new') {
+          savedSearchesService
+            .createSavedSearch(params.name, scope.queryString)
+            .catch(displayErrorModal);
+        }
+
+        if (params.type === 'existing') {
+          savedSearchesService
+            .editSavedSearch(params.id, params.name, scope.queryString)
+            .catch(displayErrorModal);
+        }
+
       });
     };
   }
@@ -23348,6 +23440,16 @@ function SavedSearchesService($q, $http, $cookies, appConfig, $rootScope, udbApi
   ss.deleteSavedSearch = function (searchId) {
     return udbApi.deleteSavedSearch(searchId).then(function () {
       _.remove(savedSearches, {id: searchId});
+      savedSearchesChanged();
+
+      return $q.resolve();
+    });
+  };
+
+  ss.editSavedSearch = function (searchId, name, query) {
+    return udbApi.editSavedSearch(searchId, name, query).then(function () {
+      var savedSearch = _.find(savedSearches, {id: searchId});
+      savedSearch.query = query;
       savedSearchesChanged();
 
       return $q.resolve();
@@ -32946,22 +33048,52 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/save-search-modal.html',
     "<form name=\"saveQueryForm\" novalidate class=\"save-search-modal\">\n" +
-    "    <div class=\"modal-body\">\n" +
     "\n" +
-    "        <label>Geef je zoekopdracht een naam</label>\n" +
+    "    <div class=\"modal-header\">\n" +
+    "        <h5 class=\"modal-title\" translate-once=\"search.savedSearches.modal.mainTitle\"></h5>\n" +
+    "    </div>\n" +
     "\n" +
-    "        <div class=\"row\">\n" +
-    "            <div class=\"col-lg-12\">\n" +
-    "                <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
-    "                <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "    <ul class=\"nav nav-tabs\">\n" +
+    "        <li  ng-class=\"{active: isTabActive('new')}\"><a ng-click=\"makeTabActive('new')\" translate-once=\"search.savedSearches.modal.newTab\"></a></li>\n" +
+    "        <li  ng-class=\"{active: isTabActive('existing')}\"><a ng-click=\"makeTabActive('existing')\" translate-once=\"search.savedSearches.modal.existingTab\"></a></li>\n" +
+    "    </ul>\n" +
+    "\n" +
+    "    \n" +
+    "    <div class=\"tab-pane\" ng-show=\"isTabActive('new')\" role=\"tabpanel\">\n" +
+    "        <div class=\"modal-body\">\n" +
+    "\n" +
+    "            <label translate-once=\"search.savedSearches.modal.giveName\"></label>\n" +
+    "\n" +
+    "            <div class=\"row\">\n" +
+    "                <div class=\"col-lg-12\">\n" +
+    "                    <p class=\"alert alert-danger\" role=\"alert\" ng-show=\"wasSubmitted && saveQueryForm.queryName.$error.required\">Een naam is verplicht.</p>\n" +
+    "                    <input type=\"text\" ng-required=\"'true'\" name=\"queryName\" ng-model=\"queryName\" class=\"form-control\"/>\n" +
+    "                </div>\n" +
     "            </div>\n" +
+    "        </div>\n" +
+    "\n" +
+    "        <div class=\"modal-footer\">\n" +
+    "        <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\" translate-once=\"search.savedSearches.modal.cancel\"></button>\n" +
+    "        <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('new')\" translate-once=\"search.savedSearches.modal.save\"></button>\n" +
     "        </div>\n" +
     "    </div>\n" +
     "\n" +
-    "    <div class=\"modal-footer\">\n" +
-    "      <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\">Annuleren</button>\n" +
-    "      <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok()\">Bewaren</button>\n" +
+    "    <div class=\"tab-pane\"  ng-show=\"isTabActive('existing')\"  role=\"tabpanel\">\n" +
+    "        <div class=\"modal-body\">\n" +
+    "            <label translate-once=\"search.savedSearches.modal.selectSavedSearch\"></label>\n" +
+    "            <select class=\"form-control\" ng-model=\"queryId\" ng-change=\"setQueryName()\">\n" +
+    "                <option ng-repeat=\"search in savedSearches\" value=\"{{search.id}}\">{{search.name}}</option>\n" +
+    "            </select>\n" +
+    "        </div>\n" +
+    "  \n" +
+    "        <div class=\"modal-footer\">\n" +
+    "            <button type=\"button\" class=\"btn btn-default udb-save-query-cancel-button\" ng-click=\"cancel()\" translate-once=\"search.savedSearches.modal.cancel\"></button>\n" +
+    "            <button type=\"submit\" class=\"btn btn-primary udb-save-query-ok-button\" ng-click=\"ok('existing')\" translate-once=\"search.savedSearches.modal.save\"></button>\n" +
+    "        </div>\n" +
+    "\n" +
     "    </div>\n" +
+    "\n" +
+    "\n" +
     "</form>\n"
   );
 

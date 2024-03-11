@@ -134,6 +134,12 @@ function UdbApi(
       .then(returnUnwrappedData);
   };
 
+  this.editSavedSearch = function (searchId, name, query) {
+    return $http
+      .put(appConfig.baseUrl + 'saved-searches/v3/' + searchId, {name: name, query: query}, defaultApiConfig)
+      .then(returnUnwrappedData);
+  };
+
   /**
    * @param {string} queryString - The query used to find offers.
    * @param {number} [start] - From which offset the result set should start.

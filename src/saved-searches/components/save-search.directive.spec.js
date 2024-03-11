@@ -41,7 +41,7 @@ describe('Directive: udbSaveSearch', function () {
   });
 
   it('saves the search when confirming the modal', function () {
-    modalInstance.close(name);
+    modalInstance.close({name: name, type: 'new'});
     $rootScope.$digest();
     apiRequest.resolve();
     expect(savedSearchesService.createSavedSearch).toHaveBeenCalledWith(name, 'city:leuven');
@@ -54,7 +54,7 @@ describe('Directive: udbSaveSearch', function () {
   });
 
   it('shows an error modal when the search cannot be saved', function () {
-    modalInstance.close('some name');
+    modalInstance.close({name: 'some name', type: 'new'});
     $rootScope.$digest();
     apiRequest.reject();
     $rootScope.$digest();
