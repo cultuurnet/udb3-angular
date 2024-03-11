@@ -24010,15 +24010,14 @@ function QueryEditorController(
   }
 
   // Create a mapping from the 'field' value in the definitions to the corresponding object
-  const fieldMapping = queryFields.filter(function(queryField) {
-    return !['startdate', 'enddate'].includes(queryField.name);
+  var fieldMapping = queryFields.filter(function(queryField) {
+    return queryField.hasOwnProperty('name');
   }).reduce(function(map, def) {
     map[def.field] = def;
     return map;
   }, {});
 
-
-  const fieldMappingByName = queryFields.filter(function(queryField) {
+  var fieldMappingByName = queryFields.filter(function(queryField) {
     return !['startdate', 'enddate'].includes(queryField.name);
   }).reduce(function(map, def) {
     map[def.name] = def;
@@ -24027,25 +24026,26 @@ function QueryEditorController(
 
   function splitQuery(query) {
     // Splitting the query by AND and OR, while keeping the separators
-    const parts = query.split(/ (AND|OR) /);
+    var parts = query.split(/ (AND|OR) /);
 
     // Grouping parts into [[part, operator], ...]
-    const groupedParts = [];
-    for (let i = 0; i < parts.length; i += 2) {
-      groupedParts.push([parts[i], parts[i + 1] || 'OR']);
-    }
+    var groupedParts = [];
+    // for (let i = 0; i < parts.length; i += 2) {
+    //   groupedParts.push([parts[i], parts[i + 1] || 'OR']);
+    // }
     return groupedParts;
   }
 
   function parseRange(rangeString) {
-    const matches = rangeString.match(/\[(.*?) TO (.*?)\]/);
+    var matches = rangeString.match(/\[(.*?) TO (.*?)\]/);
     if (matches && matches.length === 3) {
       return {lowerBound: matches[1], upperBound: matches[2]};
     }
     return {lowerBound: '', upperBound: ''};
   }
 
-  function getFieldTransformer(fieldNode) {
+  function getFieldTransformer(fieldNode, isFieldExcluded) {
+
     if (fieldNode.fieldType === 'date-range') {
       if (fieldNode.upperBound === '*') {
         return '>';
@@ -24057,20 +24057,32 @@ function QueryEditorController(
     }
 
     if (fieldNode.fieldType === 'choice') {
-      return '=';
+      return isFieldExcluded ? '!' : '=';
     }
 
     if (fieldNode.fieldType === 'term') {
-      return '=';
+      return isFieldExcluded ? '!' : '=';
+    }
+
+    if (fieldNode.fieldType === 'string') {
+      return isFieldExcluded ? '!' : '=';
+    }
+
+    if (fieldNode.fieldType === 'tokenized-string') {
+      return isFieldExcluded ? '-' : '+';
+    }
+
+    if (fieldNode.fieldType === 'check') {
+      return isFieldExcluded ? '!' : '=';
     }
 
     // default
-    return '+';
+    return '=';
 
   }
 
   function getFieldNameForTermsId(id) {
-    const term  = taxonomyTerms.find(function(term) {
+    var term = taxonomyTerms.find(function(term) {
       return term.id === id;
     });
 
@@ -24087,26 +24099,37 @@ function QueryEditorController(
     }
   }
 
+  function getIsFieldExcluded(part) {
+    var cleanedPart = part.replace('(', '');
+    return cleanedPart.startsWith('!') || cleanedPart.startsWith('-');
+  }
+
+  function getCleanedField(field) {
+    return field.replace(/[\(\)!-]/g, '');
+  }
+
   function parseQueryPart(part) {
     console.log('part', part);
     // Extract field and term from the part (assuming format "field:term")
-    const parts = part.split(':', 1);
+    var parts = part.split(':', 1);
     console.log('parts', parts);
-    const field = parts[0].replace('(', '');
+    var isFieldExcluded = getIsFieldExcluded(parts[0]);
+    var field = getCleanedField(parts[0]);
     console.log('field', field);
 
+    console.log('isFieldExcluded', isFieldExcluded);
 
-    const term = part.replace(field + ':', '').replaceAll('(', '').replaceAll(')', '');
-    console.log('term', term);
+    var term = part.replace(field + ':', '').replace('-', '').replaceAll('(', '').replaceAll(')', '');
+
+    term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
 
     // Find the field definition in the mapping
-    let fieldDef = fieldMapping[field] || {};
+    var fieldDef = fieldMapping[field] || {};
 
     if (field === 'terms.id') {
-      const fieldName =  getFieldNameForTermsId(term);
+      var fieldName =  getFieldNameForTermsId(term);
       fieldDef = fieldMappingByName[fieldName] || {};
     }
-
 
     console.log('fieldDef', fieldDef);
     console.log('fieldDef name', fieldDef.name);
@@ -24115,28 +24138,27 @@ function QueryEditorController(
       field: fieldDef.field || field,
       fieldType: fieldDef.type || 'unknown',
       name: fieldDef.name || field,
-      term: term || '',
-      // TODO add transformer logic
-      transformer: '+'
+      term: term,
+      transformer: '='
     };
 
     if (fieldNode.fieldType === 'date-range') {
-      const range = parseRange(term);
+      var range = parseRange(term);
       fieldNode.lowerBound = range.lowerBound === '*' ?  '*' :  new Date(range.lowerBound);
       fieldNode.upperBound = range.upperBound === '*' ? '*' :  new Date(range.upperBound);
     }
 
-    fieldNode.transformer = getFieldTransformer(fieldNode);
+    fieldNode.transformer = getFieldTransformer(fieldNode, isFieldExcluded);
 
     // Example return structure
     return fieldNode;
   }
 
   function parseQuery(queryParts) {
-    const nodes = queryParts.map(function(queryParts) {
-      const part = queryParts[0];
-      const operator = queryParts[1];
-      const parsedNode = parseQueryPart(part);
+    var nodes = queryParts.map(function(queryParts) {
+      var part = queryParts[0];
+      var operator = queryParts[1];
+      var parsedNode = parseQueryPart(part);
       return {
         type: 'group',
         operator: operator,
@@ -24146,20 +24168,14 @@ function QueryEditorController(
     return nodes;
   }
 
-  // Example usage
-  // const decodedQuery = 'dateRange:[2024-03-06T00:00:00+01:00 TO 2024-03-06T23:59:59+01:00] OR name.\\*:test';
-  // name.\*:test OR (dateRange:[2024-03-07T00:00:00%2B01:00 TO *] OR (terms.id:1.7.1.0.0 OR audienceType:everyone))
-  // const decodedQuery = 'dateRange:[* TO 2024-03-07T23:59:59+01:00] OR name.\\*:test';
-  // const decodedQuery = 'name.\*:test OR (dateRange:[2024-03-07T00:00:00+01:00 TO *] OR (terms.id:3.14.0.0.0 OR audienceType:everyone))';  
-  // const decodedQuery = 'terms.id:0.50.4.0.0 OR (location.labels:test OR (attendanceMode:mixed OR (bookingAvailability:available OR regions:nis-21004-Z)))';
-  const decodedQuery = 'terms.id:0.50.4.0.0 OR (location.labels:test OR (attendanceMode:mixed OR (bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR (terms.id:1.7.12.0.0 OR terms.id:3.33.0.0.0)))))'
+  var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
+    '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
+    '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
 
-  // TODO make multiple queries and write tests for it
+  var parsedQueryParts = splitQuery(decodedQuery);
+  var jsonNodes = parseQuery(parsedQueryParts);
 
-  const parsedQueryParts = splitQuery(decodedQuery);
-  const jsonNodes = parseQuery(parsedQueryParts);
-
-  const jsonStructure = {
+  var jsonStructure = {
     type: 'root',
     nodes: jsonNodes
   };
@@ -24203,7 +24219,7 @@ function QueryEditorController(
 
     var newGroupNodes = groups.nodes.map(function(group) {
       group.nodes = group.nodes.map(function(node) {
-        const foundQueryField = queryFields.find(function(queryField) {
+        var foundQueryField = queryFields.find(function(queryField) {
           return queryField.field === node.field;
         });
         if (foundQueryField) {
@@ -24239,8 +24255,6 @@ function QueryEditorController(
     root = JSON.parse(JSON.stringify(root));
     /* jshint ignore:end */
   }
-
-  // fillModalWithValuesFromQuery();
 
   qe.groupedQueryTree = jsonStructure;
 
