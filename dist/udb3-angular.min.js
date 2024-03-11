@@ -23931,6 +23931,8 @@ function QueryEditorController(
 
   console.log('queryFields', queryFields);
 
+  console.log('taxonomyTerms', taxonomyTerms);
+
   qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
 
   function getGroupsFromLuceneSyntax(query) {
@@ -23951,6 +23953,14 @@ function QueryEditorController(
     return !['startdate', 'enddate'].includes(queryField.name);
   }).reduce(function(map, def) {
     map[def.field] = def;
+    return map;
+  }, {});
+
+
+  const fieldMappingByName = queryFields.filter(function(queryField) {
+    return !['startdate', 'enddate'].includes(queryField.name);
+  }).reduce(function(map, def) {
+    map[def.name] = def;
     return map;
   }, {});
 
@@ -23998,6 +24008,26 @@ function QueryEditorController(
 
   }
 
+  function getFieldNameForTermsId(id) {
+
+    const term  = taxonomyTerms.find(function(term) {
+      return term.id === id;
+    });
+
+    if (term.domain === 'theme') {
+      return 'category_theme_name';
+    }
+
+    if (term.domain === 'facility') {
+      return 'category_facility_name';
+    }
+
+    if (term.domain === 'eventtype') {
+      return term.scope.includes('events') ?  'category_eventtype_name' : 'locationtype';
+    }
+
+  }
+
   function parseQueryPart(part) {
     console.log('part', part);
     // Extract field and term from the part (assuming format "field:term")
@@ -24005,14 +24035,19 @@ function QueryEditorController(
     console.log('parts', parts);
     const field = parts[0].replace('(', '');
     console.log('field', field);
+
+
     const term = part.replace(field + ':', '').replaceAll('(', '').replaceAll(')', '');
     console.log('term', term);
 
     // Find the field definition in the mapping
-    const fieldDef = fieldMapping[field] || {};
-    // Implement parsing logic similar to the Python version
-    // This is a placeholder and needs to be adapted based on the query format and requirements
-    // ...
+    let fieldDef = fieldMapping[field] || {};
+
+    if (field === 'terms.id') {
+      const fieldName =  getFieldNameForTermsId(term);
+      fieldDef = fieldMappingByName[fieldName] || {};
+    }
+
 
     console.log('fieldDef', fieldDef);
     console.log('fieldDef name', fieldDef.name);
@@ -24053,10 +24088,12 @@ function QueryEditorController(
   }
 
   // Example usage
-  const decodedQuery = 'dateRange:[2024-03-06T00:00:00+01:00 TO 2024-03-06T23:59:59+01:00] OR name.\\*:test';
+  // const decodedQuery = 'dateRange:[2024-03-06T00:00:00+01:00 TO 2024-03-06T23:59:59+01:00] OR name.\\*:test';
   // name.\*:test OR (dateRange:[2024-03-07T00:00:00%2B01:00 TO *] OR (terms.id:1.7.1.0.0 OR audienceType:everyone))
   // const decodedQuery = 'dateRange:[* TO 2024-03-07T23:59:59+01:00] OR name.\\*:test';
-  // const decodedQuery = 'name.\*:test OR (dateRange:[2024-03-07T00:00:00+01:00 TO *] OR (terms.id:3.14.0.0.0 OR audienceType:everyone))';
+  // const decodedQuery = 'name.\*:test OR (dateRange:[2024-03-07T00:00:00+01:00 TO *] OR (terms.id:3.14.0.0.0 OR audienceType:everyone))';  
+  // const decodedQuery = 'terms.id:0.50.4.0.0 OR (location.labels:test OR (attendanceMode:mixed OR (bookingAvailability:available OR regions:nis-21004-Z)))';
+  const decodedQuery = 'terms.id:0.50.4.0.0 OR (location.labels:test OR (attendanceMode:mixed OR (bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR (terms.id:1.7.12.0.0 OR terms.id:3.33.0.0.0)))))'
 
   // TODO make multiple queries and write tests for it
 
@@ -24756,8 +24793,6 @@ angular.module('udb.search')
 function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTranslator, queryFields, taxonomyTerms) {
   var implicitToken = '<implicit>';
 
-  console.log('luceneQueryParser', LuceneQueryParser);
-
   this.translate = function (query) {
     QueryTreeTranslator.translateQueryTree(query.queryTree);
   };
@@ -25090,7 +25125,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     // If the query tree of an empty search is used, add a default field and group
     if (!queryTree.left) {
       var group = {
-        type: 'group',
+        type: 'field',
         operator: 'OR',
         nodes: [
           {
