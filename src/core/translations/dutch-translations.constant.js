@@ -1160,6 +1160,15 @@ angular.module('udb.core')
         viewResults: 'Resultaten bekijken',
         yourSearch: 'Jouw zoekopdracht',
         save: 'Bewaren',
+        modal: {
+          mainTitle: 'Zoekopdracht opslaan',
+          newTab: 'Nieuwe zoekopdracht',
+          existingTab: 'Bestaande zoekopdracht',
+          giveName: 'Geef je zoekopdracht een naam',
+          selectSavedSearch: 'Kies een bewaarde zoekopdracht',
+          save: 'Bewaren',
+          cancel: 'Annuleren'
+        }
       },
       manage: 'Beheren',
       oneResult: '1 resultaat',

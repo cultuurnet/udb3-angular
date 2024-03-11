@@ -1153,6 +1153,15 @@ angular.module('udb.core')
         viewResults: 'Consulter résultats',
         yourSearch: 'Votre recherche',
         save: 'Conserver',
+        modal: {
+          mainTitle: 'Enregistrer la recherche',
+          newTab: 'Nouvelle recherche',
+          existingTab: 'Recherche existante',
+          giveName: 'Donnez un nom à votre recherche',
+          selectSavedSearch: 'Choisissez une recherche existante',
+          save: 'Enregistrer',
+          cancel: 'Annuler'
+        }
       },
       manage: 'Gérer',
       oneResult: '1 résultat',
