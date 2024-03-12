@@ -148,4 +148,33 @@ describe('QueryEditorController', function() {
 
     });
 
+    it('Should parse query: calendarType NOT equal to "permanent"', function(){
+        var $scope = $rootScope.$new();
+        var controller = $controller('QueryEditorController', { $scope: $scope });
+
+        var expectedResult = {
+                "type": "root",
+                "nodes": [
+                  {
+                    "type": "group",
+                    "operator": "OR",
+                    "nodes": [
+                      {
+                        "field": "calendarType",
+                        "fieldType": "check",
+                        "name": "permanent",
+                        "term": "(!permanent)",
+                        "transformer": "=",
+                      }
+                    ],
+                  }
+                ]
+        }
+
+       var query = 'calendarType:(!permanent)';
+       var result = controller.parseModalValuesFromQuery(query);
+
+        expect(result).toEqual(expectedResult)
+    });
+
 });
