@@ -102,7 +102,7 @@ function QueryEditorController(
   }, {});
 
   var fieldMappingByName = queryFields.filter(function(queryField) {
-    return !['startdate', 'enddate'].includes(queryField.name);
+    return ['startdate', 'enddate'].indexOf(queryField.name) === -1;
   }).reduce(function(map, def) {
     map[def.name] = def;
     return map;
@@ -114,9 +114,9 @@ function QueryEditorController(
 
     // Grouping parts into [[part, operator], ...]
     var groupedParts = [];
-    // for (let i = 0; i < parts.length; i += 2) {
-    //   groupedParts.push([parts[i], parts[i + 1] || 'OR']);
-    // }
+    for (var i = 0; i < parts.length; i += 2) {
+      groupedParts.push([parts[i], parts[i + 1] || 'OR']);
+    }
     return groupedParts;
   }
 
@@ -166,9 +166,11 @@ function QueryEditorController(
   }
 
   function getFieldNameForTermsId(id) {
-    var term = taxonomyTerms.find(function(term) {
+    var foundTerms = taxonomyTerms.filter(function(term) {
       return term.id === id;
     });
+
+    var term = foundTerms[0];
 
     if (term.domain === 'theme') {
       return 'category_theme_name';
@@ -179,13 +181,13 @@ function QueryEditorController(
     }
 
     if (term.domain === 'eventtype') {
-      return term.scope.includes('events') ?  'category_eventtype_name' : 'locationtype';
+      return term.scope && term.scope.indexOf('events') !== -1 ?  'category_eventtype_name' : 'locationtype';
     }
   }
 
   function getIsFieldExcluded(part) {
     var cleanedPart = part.replace('(', '');
-    return cleanedPart.startsWith('!') || cleanedPart.startsWith('-');
+    return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
   }
 
   function getCleanedField(field) {
@@ -203,7 +205,7 @@ function QueryEditorController(
 
     console.log('isFieldExcluded', isFieldExcluded);
 
-    var term = part.replace(field + ':', '').replace('-', '').replaceAll('(', '').replaceAll(')', '');
+    var term = part.replace(field + ':', '').replace('-', '').replace(/\(/g, '').replace(/\)/g, '');
 
     term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
 
@@ -239,6 +241,7 @@ function QueryEditorController(
   }
 
   function parseQuery(queryParts) {
+    console.log('in parse query', queryParts);
     var nodes = queryParts.map(function(queryParts) {
       var part = queryParts[0];
       var operator = queryParts[1];
@@ -256,8 +259,12 @@ function QueryEditorController(
     '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
     '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
 
+  console.log('decodedQuery', decodedQuery);
+
   var parsedQueryParts = splitQuery(decodedQuery);
+  console.log('parsedQueryParts', parsedQueryParts);
   var jsonNodes = parseQuery(parsedQueryParts);
+  console.log('jsonNodes', jsonNodes);
 
   var jsonStructure = {
     type: 'root',
@@ -265,6 +272,10 @@ function QueryEditorController(
   };
 
   console.log('jsonStructure', jsonStructure);
+
+  qe.parseModalValuesFromQuery = function (query) {
+    return 'hello';
+  };
 
   function fillModalWithValuesFromQuery() {
     // init query modal?
