@@ -207,4 +207,88 @@ describe('QueryEditorController', function() {
 
     });
 
+
+    it('Should parse a complex query (with OR relation)', function(){
+    
+        var $scope = $rootScope.$new();
+        var controller = $controller('QueryEditorController', { $scope: $scope });
+
+        var expectedResult = {
+            "type": "root",
+            "nodes": [
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "regions",
+                    "fieldType": "termNis",
+                    "name": "nisRegions",
+                    "term": "nis-21001-Z",
+                    "transformer": "=",
+                  }
+                ],
+              },
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "terms.id",
+                    "name": "category_theme_name",
+                    "term": "1.7.11.0.0",
+                    "fieldType": "term",
+                    "transformer": "=",
+                  }
+                ],
+              },
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "attendanceMode",
+                    "name": "attendance_mode",
+                    "term": "online",
+                    "fieldType": "choice",
+                    "transformer": "=",
+                  }
+                ],
+              },
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "terms.id",
+                    "name": "category_facility_name",
+                    "term": "3.40.0.0.0",
+                    "fieldType": "term",
+                    "transformer": "!",
+                  }
+                ],
+              },
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "audienceType",
+                    "name": "category_targetaudience_name",
+                    "term": "education",
+                    "fieldType": "choice",
+                    "transformer": "=",
+                  }
+                ],
+              }
+            ]
+        }
+
+        var query = 'regions:nis-21001-Z OR (terms.id:1.7.11.0.0 OR (attendanceMode:online OR (!terms.id:3.40.0.0.0 OR audienceType:education)))';
+        var result = controller.parseModalValuesFromQuery(query);
+
+        expect(result).toEqual(expectedResult)
+
+    });
+
 });
