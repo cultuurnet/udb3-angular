@@ -291,4 +291,39 @@ describe('QueryEditorController', function() {
 
     });
 
+    it('Should parse a query with a date range', function(){
+
+        var $scope = $rootScope.$new();
+        var controller = $controller('QueryEditorController', { $scope: $scope });
+
+        var expectedResult = {
+            "type": "root",
+            "nodes": [
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "dateRange",
+                    "fieldType": "date-range",
+                    "name": "date",
+                    "term": "[2024-03-12T00:00:00+01:00 TO 2024-03-12T23:59:59+01:00]",
+                    "transformer": "=",
+                    "lowerBound": new Date("2024-03-11T23:00:00.000Z"),
+                    "upperBound": new Date("2024-03-12T22:59:59.000Z"),
+                  }
+                ],
+              }
+            ]
+          }
+
+
+          
+        var query = 'dateRange:[2024-03-12T00:00:00+01:00 TO 2024-03-12T23:59:59+01:00]';
+
+        var result = controller.parseModalValuesFromQuery(query);
+        expect(result).toEqual(expectedResult)
+
+    });
+
 });

@@ -24011,14 +24011,14 @@ function QueryEditorController(
 
   // Create a mapping from the 'field' value in the definitions to the corresponding object
   var fieldMapping = queryFields.filter(function(queryField) {
-    return queryField.hasOwnProperty('name');
+    return queryField.hasOwnProperty('name') && queryField.name !== 'startdate' && queryField.name !== 'enddate';
   }).reduce(function(map, def) {
     map[def.field] = def;
     return map;
   }, {});
 
   var fieldMappingByName = queryFields.filter(function(queryField) {
-    return ['startdate', 'enddate'].indexOf(queryField.name) === -1;
+    return queryField.name !== 'startdate' && queryField.name !== 'enddate';
   }).reduce(function(map, def) {
     map[def.name] = def;
     return map;
@@ -24123,12 +24123,13 @@ function QueryEditorController(
 
     var term = part.replace(field + ':', '').replace(/\(/g, '').replace(/\)/g, '');
 
-    // if term starts with nis don't replace '-'
-    term = term.indexOf('nis') === 0 ? term : term.replace('-', '');
+    var fieldDef = fieldMapping[field] || {};
+
+    if (term.indexOf('nis') === -1 && fieldDef.type !== 'date-range') {
+      term = term.replace('-', '');
+    }
 
     term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
-
-    var fieldDef = fieldMapping[field] || {};
 
     if (field === 'terms.id') {
       var fieldName =  getFieldNameForTermsId(term);
@@ -24148,6 +24149,7 @@ function QueryEditorController(
 
     if (fieldNode.fieldType === 'date-range') {
       var range = parseRange(term);
+      console.log('range', range);
       fieldNode.lowerBound = range.lowerBound === '*' ?  '*' :  new Date(range.lowerBound);
       fieldNode.upperBound = range.upperBound === '*' ? '*' :  new Date(range.upperBound);
     }
