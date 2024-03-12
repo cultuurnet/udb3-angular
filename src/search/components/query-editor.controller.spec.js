@@ -93,7 +93,7 @@ describe('QueryEditorController', function() {
         var $scope = $rootScope.$new();
         var controller = $controller('QueryEditorController', { $scope: $scope });
 
-       const expectedResult  =  {
+       var expectedResult  =  {
             type: "root",
             nodes: [
               {
@@ -116,6 +116,36 @@ describe('QueryEditorController', function() {
         var result = controller.parseModalValuesFromQuery(query);
 
         expect(result).toEqual(expectedResult);
+    });
+
+    it('Should parse query name is NOT equal to "test"', function(){
+        var $scope = $rootScope.$new();
+        var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "name.\\*",
+                "fieldType": "tokenized-string",
+                "name": "title",
+                "term": "test",
+                "transformer": "-",
+              }
+            ],
+          }
+        ]
+      }
+
+      var query = '-name.\\*:test';
+      var result = controller.parseModalValuesFromQuery(query);
+
+      expect(result).toEqual(expectedResult);
+
     });
 
 });

@@ -283,7 +283,16 @@ function QueryEditorController(
     };
   };
 
-  qe.groupedQueryTree = jsonStructure;
+  var currentUrl = new URL(window.location.href);
+  var advancedSearchQuery =  currentUrl.searchParams ? currentUrl.searchParams.get('query') : undefined;
+
+  console.log('advancedSearchQuery', advancedSearchQuery);
+
+  if (advancedSearchQuery) {
+    var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
+    console.log('modalValues', modalValues);
+    qe.groupedQueryTree = modalValues;
+  }
 
   // Holds options for both term and choice query-field types
   qe.transformers = {};
