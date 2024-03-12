@@ -177,4 +177,34 @@ describe('QueryEditorController', function() {
         expect(result).toEqual(expectedResult)
     });
 
+    it('Should parse query: municipality equals nis-21001-Z (Brussel)', function(){
+        var $scope = $rootScope.$new();
+        var controller = $controller('QueryEditorController', { $scope: $scope });
+
+        var expectedResult = {
+            "type": "root",
+            "nodes": [
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "regions",
+                    "fieldType": "termNis",
+                    "name": "nisRegions",
+                    "term": "nis-21004-Z",
+                    "transformer": "=",
+                  }
+                ],
+              }
+            ]
+          }
+
+        var query = 'regions:nis-21004-Z';
+        var result = controller.parseModalValuesFromQuery(query);
+   
+        expect(result).toEqual(expectedResult)
+
+    });
+
 });

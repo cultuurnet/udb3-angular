@@ -24018,7 +24018,7 @@ function QueryEditorController(
   }, {});
 
   var fieldMappingByName = queryFields.filter(function(queryField) {
-    return !['startdate', 'enddate'].includes(queryField.name);
+    return ['startdate', 'enddate'].indexOf(queryField.name) === -1;
   }).reduce(function(map, def) {
     map[def.name] = def;
     return map;
@@ -24030,9 +24030,9 @@ function QueryEditorController(
 
     // Grouping parts into [[part, operator], ...]
     var groupedParts = [];
-    // for (let i = 0; i < parts.length; i += 2) {
-    //   groupedParts.push([parts[i], parts[i + 1] || 'OR']);
-    // }
+    for (var i = 0; i < parts.length; i += 2) {
+      groupedParts.push([parts[i], parts[i + 1] || 'OR']);
+    }
     return groupedParts;
   }
 
@@ -24082,9 +24082,11 @@ function QueryEditorController(
   }
 
   function getFieldNameForTermsId(id) {
-    var term = taxonomyTerms.find(function(term) {
+    var foundTerms = taxonomyTerms.filter(function(term) {
       return term.id === id;
     });
+
+    var term = foundTerms[0];
 
     if (term.domain === 'theme') {
       return 'category_theme_name';
@@ -24095,13 +24097,13 @@ function QueryEditorController(
     }
 
     if (term.domain === 'eventtype') {
-      return term.scope.includes('events') ?  'category_eventtype_name' : 'locationtype';
+      return term.scope && term.scope.indexOf('events') !== -1 ?  'category_eventtype_name' : 'locationtype';
     }
   }
 
   function getIsFieldExcluded(part) {
     var cleanedPart = part.replace('(', '');
-    return cleanedPart.startsWith('!') || cleanedPart.startsWith('-');
+    return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
   }
 
   function getCleanedField(field) {
@@ -24119,11 +24121,13 @@ function QueryEditorController(
 
     console.log('isFieldExcluded', isFieldExcluded);
 
-    var term = part.replace(field + ':', '').replace('-', '').replaceAll('(', '').replaceAll(')', '');
+    var term = part.replace(field + ':', '').replace(/\(/g, '').replace(/\)/g, '');
+
+    // if term starts with nis don't replace '-'
+    term = term.indexOf('nis') === 0 ? term : term.replace('-', '');
 
     term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
 
-    // Find the field definition in the mapping
     var fieldDef = fieldMapping[field] || {};
 
     if (field === 'terms.id') {
@@ -24155,6 +24159,7 @@ function QueryEditorController(
   }
 
   function parseQuery(queryParts) {
+    console.log('in parse query', queryParts);
     var nodes = queryParts.map(function(queryParts) {
       var part = queryParts[0];
       var operator = queryParts[1];
@@ -24168,12 +24173,17 @@ function QueryEditorController(
     return nodes;
   }
 
-  var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
-    '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
-    '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
+  // var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
+  //   '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
+  //   '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
+
+  var decodedQuery = 'terms.id:0.50.4.0.0';
+  console.log('decodedQuery', decodedQuery);
 
   var parsedQueryParts = splitQuery(decodedQuery);
+  console.log('parsedQueryParts', parsedQueryParts);
   var jsonNodes = parseQuery(parsedQueryParts);
+  console.log('jsonNodes', jsonNodes);
 
   var jsonStructure = {
     type: 'root',
@@ -24182,81 +24192,25 @@ function QueryEditorController(
 
   console.log('jsonStructure', jsonStructure);
 
-  function fillModalWithValuesFromQuery() {
-    // init query modal?
-    var queryString = window.location.search;
-    console.log('queryString', queryString);
-    console.log('queryBuilder', queryBuilder);
-    /* jshint ignore:start */
-    var urlParams = new URLSearchParams(queryString);
-    var query = urlParams.get('query');
+  qe.parseModalValuesFromQuery = function (query) {
+    var parsedQueryParts = splitQuery(query);
+    var jsonNodes = parseQuery(parsedQueryParts);
+    return {
+      type: 'root',
+      nodes: jsonNodes
+    };
+  };
 
-    if (!query) {
-      return;
-    }
+  var currentUrl = new URL(window.location.href);
+  var advancedSearchQuery =  currentUrl.searchParams ? currentUrl.searchParams.get('query') : undefined;
 
-    var currentQuery = {};
-    currentQuery.queryString = query;
-    var initialQuery = queryBuilder.parseQueryString(currentQuery);
-    console.log('initialQuery', initialQuery);
-    var root = qe.groupedQueryTree;
+  console.log('advancedSearchQuery', advancedSearchQuery);
 
-    // (name.\*:"test 1" OR name.\*:"test 2") OR name.\*:"test 3"
-    // array with items
-    var luceneGroupQueries = getGroupsFromLuceneSyntax(query);
-    var rootGroups = []
-
-    luceneGroupQueries.forEach(function(groupQuery) {
-      var group = queryBuilder.groupQueryTree(queryBuilder.parseQueryString({queryString: groupQuery}));
-      group.operator = 'OR';
-      group.type = 'group';
-      rootGroups.push(group);
-    })
-
-    console.log('rootGroups', rootGroups);
-
-    var groups = queryBuilder.groupQueryTree(initialQuery);
-
-    var newGroupNodes = groups.nodes.map(function(group) {
-      group.nodes = group.nodes.map(function(node) {
-        var foundQueryField = queryFields.find(function(queryField) {
-          return queryField.field === node.field;
-        });
-        if (foundQueryField) {
-          node.name =  foundQueryField.name;
-          node.type = foundQueryField.type;
-          node.fieldType = foundQueryField.type;
-
-          if (node.type === 'date-range') {
-            node.lowerBound = new Date(node.lowerBound);
-            node.upperBound = new Date(node.upperBound);
-          }
-
-          // TODO this could probably be done better
-          var foundQueryKey = Object.keys(initialQuery).find(function(key) {
-            return initialQuery[key].field === node.field &&
-              initialQuery[key].term === node.term &&
-              typeof initialQuery[key].transformer === 'string';
-          })
-
-          console.log('foundObjectInQuery', foundQueryKey);
-
-          node.transformer = foundQueryKey && initialQuery[foundQueryKey].transformer ?
-            initialQuery[foundQueryKey].transformer :
-            _.first(fieldTypeTransformers[foundQueryField.type]);
-          // node.transformer = node.transformer ? node.transformer : '+';
-        }
-        return node;
-      })
-      return group;
-    });
-
-    console.log('newGroupNodes', newGroupNodes);
-    root = JSON.parse(JSON.stringify(root));
-    /* jshint ignore:end */
+  if (advancedSearchQuery) {
+    var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
+    console.log('modalValues', modalValues);
+    qe.groupedQueryTree = modalValues;
   }
-
-  qe.groupedQueryTree = jsonStructure;
 
   // Holds options for both term and choice query-field types
   qe.transformers = {};

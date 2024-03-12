@@ -205,11 +205,13 @@ function QueryEditorController(
 
     console.log('isFieldExcluded', isFieldExcluded);
 
-    var term = part.replace(field + ':', '').replace('-', '').replace(/\(/g, '').replace(/\)/g, '');
+    var term = part.replace(field + ':', '').replace(/\(/g, '').replace(/\)/g, '');
+
+    // if term starts with nis don't replace '-'
+    term = term.indexOf('nis') === 0 ? term : term.replace('-', '');
 
     term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
 
-    // Find the field definition in the mapping
     var fieldDef = fieldMapping[field] || {};
 
     if (field === 'terms.id') {
