@@ -1,5 +1,5 @@
 describe('QueryEditorController', function() {
-    var $controller, $rootScope, queryFields, queryFieldTranslations, fieldTypeTransformers, eventTypes, placeTypes;
+    var $controller, $rootScope, queryFields, queryFieldTranslations;
 
     beforeEach(module('udb.search'));
 
@@ -77,22 +77,10 @@ describe('QueryEditorController', function() {
             {name: 'startdate', field:'dateRange', type: 'date-range'},
             {name: 'enddate', field:'dateRange', type: 'date-range'}
         ];
-        queryFieldTranslations = {
-            // Mock methods and properties as needed
-        };
-        fieldTypeTransformers = {
-            // Mock methods and properties as needed
-        };
-        eventTypes = {
-            // Mock methods and properties as needed
-        };
-        placeTypes = {
-            // Mock methods and properties as needed
-        };
         $provide.value('queryFieldTranslations', queryFieldTranslations);
-        $provide.value('fieldTypeTransformers', fieldTypeTransformers);
-        $provide.value('eventTypes', eventTypes);
-        $provide.value('placeTypes', placeTypes);
+        $provide.value('fieldTypeTransformers', {});
+        $provide.value('eventTypes', {});
+        $provide.value('placeTypes', {});
         $provide.value('queryFields', queryFields);
     }));
     
@@ -129,4 +117,5 @@ describe('QueryEditorController', function() {
 
         expect(result).toEqual(expectedResult);
     });
+
 });
