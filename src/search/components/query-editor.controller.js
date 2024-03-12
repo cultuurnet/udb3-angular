@@ -255,10 +255,11 @@ function QueryEditorController(
     return nodes;
   }
 
-  var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
-    '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
-    '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
+  // var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
+  //   '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
+  //   '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
 
+  var decodedQuery = 'terms.id:0.50.4.0.0';
   console.log('decodedQuery', decodedQuery);
 
   var parsedQueryParts = splitQuery(decodedQuery);
@@ -274,82 +275,13 @@ function QueryEditorController(
   console.log('jsonStructure', jsonStructure);
 
   qe.parseModalValuesFromQuery = function (query) {
-    return 'hello';
+    var parsedQueryParts = splitQuery(query);
+    var jsonNodes = parseQuery(parsedQueryParts);
+    return {
+      type: 'root',
+      nodes: jsonNodes
+    };
   };
-
-  function fillModalWithValuesFromQuery() {
-    // init query modal?
-    var queryString = window.location.search;
-    console.log('queryString', queryString);
-    console.log('queryBuilder', queryBuilder);
-    /* jshint ignore:start */
-    var urlParams = new URLSearchParams(queryString);
-    var query = urlParams.get('query');
-
-    if (!query) {
-      return;
-    }
-
-    var currentQuery = {};
-    currentQuery.queryString = query;
-    var initialQuery = queryBuilder.parseQueryString(currentQuery);
-    console.log('initialQuery', initialQuery);
-    var root = qe.groupedQueryTree;
-
-    // (name.\*:"test 1" OR name.\*:"test 2") OR name.\*:"test 3"
-    // array with items
-    var luceneGroupQueries = getGroupsFromLuceneSyntax(query);
-    var rootGroups = []
-
-    luceneGroupQueries.forEach(function(groupQuery) {
-      var group = queryBuilder.groupQueryTree(queryBuilder.parseQueryString({queryString: groupQuery}));
-      group.operator = 'OR';
-      group.type = 'group';
-      rootGroups.push(group);
-    })
-
-    console.log('rootGroups', rootGroups);
-
-    var groups = queryBuilder.groupQueryTree(initialQuery);
-
-    var newGroupNodes = groups.nodes.map(function(group) {
-      group.nodes = group.nodes.map(function(node) {
-        var foundQueryField = queryFields.find(function(queryField) {
-          return queryField.field === node.field;
-        });
-        if (foundQueryField) {
-          node.name =  foundQueryField.name;
-          node.type = foundQueryField.type;
-          node.fieldType = foundQueryField.type;
-
-          if (node.type === 'date-range') {
-            node.lowerBound = new Date(node.lowerBound);
-            node.upperBound = new Date(node.upperBound);
-          }
-
-          // TODO this could probably be done better
-          var foundQueryKey = Object.keys(initialQuery).find(function(key) {
-            return initialQuery[key].field === node.field &&
-              initialQuery[key].term === node.term &&
-              typeof initialQuery[key].transformer === 'string';
-          })
-
-          console.log('foundObjectInQuery', foundQueryKey);
-
-          node.transformer = foundQueryKey && initialQuery[foundQueryKey].transformer ?
-            initialQuery[foundQueryKey].transformer :
-            _.first(fieldTypeTransformers[foundQueryField.type]);
-          // node.transformer = node.transformer ? node.transformer : '+';
-        }
-        return node;
-      })
-      return group;
-    });
-
-    console.log('newGroupNodes', newGroupNodes);
-    root = JSON.parse(JSON.stringify(root));
-    /* jshint ignore:end */
-  }
 
   qe.groupedQueryTree = jsonStructure;
 
