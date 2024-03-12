@@ -101,16 +101,32 @@ describe('QueryEditorController', function() {
         $rootScope = _$rootScope_;
     }));
 
-    it('should parse modal values from the query', function() {
+    it('Should parse eventType from query', function() {
         var $scope = $rootScope.$new();
         var controller = $controller('QueryEditorController', { $scope: $scope });
 
-        var query = 'name.*:test';
-        var result = controller.parseModalValuesFromQuery(query);
-        console.log('result', result);
+       const expectedResult  =  {
+            type: "root",
+            nodes: [
+              {
+                "type": "group",
+                "operator": "OR",
+                "nodes": [
+                  {
+                    "field": "terms.id",
+                    "fieldType": "term",
+                    "name": "category_eventtype_name",
+                    "term": "0.50.4.0.0",
+                    "transformer": "=",
+                  }
+                ],
+              }
+            ]
+        };
 
-        // Add assertions here based on the expected behavior of parseModalValuesFromQuery
-        // For example:
-        expect(result).toEqual('hello');
+        var query = 'terms.id:0.50.4.0.0';
+        var result = controller.parseModalValuesFromQuery(query);
+
+        expect(result).toEqual(expectedResult);
     });
 });
