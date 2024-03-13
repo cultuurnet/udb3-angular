@@ -343,6 +343,7 @@ function QueryEditorController(
 
   if (advancedSearchQuery) {
     var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
+    console.log('modalValues', modalValues);
     qe.groupedQueryTree = modalValues;
   }
 

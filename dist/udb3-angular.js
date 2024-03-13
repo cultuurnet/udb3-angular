@@ -24073,13 +24073,6 @@ function QueryEditorController(
     //   return isFieldExcluded ? '-' : '+';
     // }
 
-    // if (fieldNode.fieldType === 'check') {
-    //   return isFieldExcluded ? '!' : '=';
-    // }
-
-    // // default
-    // return '=';
-
   }
 
   function getFieldNameForTermsId(id) {
@@ -24266,6 +24259,7 @@ function QueryEditorController(
 
   if (advancedSearchQuery) {
     var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
+    console.log('modalValues', modalValues);
     qe.groupedQueryTree = modalValues;
   }
 
