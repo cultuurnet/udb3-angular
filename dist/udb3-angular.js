@@ -23991,10 +23991,6 @@ function QueryEditorController(
     };
   };
 
-  console.log('queryFields', queryFields);
-
-  console.log('taxonomyTerms', taxonomyTerms);
-
   qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
 
   // Create a mapping from the 'field' value in the definitions to the corresponding object
@@ -24091,8 +24087,6 @@ function QueryEditorController(
       return term.id === id;
     });
 
-    console.log('foundTerms', foundTerms);
-
     var term = foundTerms[0];
 
     if (term.domain === 'theme') {
@@ -24121,16 +24115,10 @@ function QueryEditorController(
   }
 
   function parseQueryPart(part) {
-    console.log('part', part);
     // Extract field and term from the part (assuming format "field:term")
     var parts = part.split(':', 1);
-    console.log('parts', parts);
     var isFieldExcluded = getIsFieldExcluded(parts[0]);
     var field = getCleanedField(parts[0]);
-    console.log('field', field);
-
-    console.log('isFieldExcluded', isFieldExcluded);
-
     var term = part.replace(field + ':', '').replace(/\(/g, '').replace(/\)/g, '');
 
     var fieldDef = fieldMapping[field] || {};
@@ -24146,9 +24134,6 @@ function QueryEditorController(
       fieldDef = fieldMappingByName[fieldName] || {};
     }
 
-    console.log('fieldDef', fieldDef);
-    console.log('fieldDef name', fieldDef.name);
-
     var fieldNode = {
       field: fieldDef.field || field,
       fieldType: fieldDef.type || 'unknown',
@@ -24159,7 +24144,6 @@ function QueryEditorController(
 
     if (fieldNode.fieldType === 'date-range') {
       var range = parseRange(term);
-      console.log('range', range);
       fieldNode.lowerBound = range.lowerBound === '*' ?  '*' :  new Date(range.lowerBound);
       fieldNode.upperBound = range.upperBound === '*' ? '*' :  new Date(range.upperBound);
     }
@@ -24189,24 +24173,18 @@ function QueryEditorController(
   //   '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
 
   var decodedQuery = 'terms.id:0.50.4.0.0';
-  console.log('decodedQuery', decodedQuery);
 
   var parsedQueryParts = splitQuery(decodedQuery);
   var jsonNodes = parseQuery(parsedQueryParts);
-  console.log('jsonNodes', jsonNodes);
 
   var jsonStructure = {
     type: 'root',
     nodes: jsonNodes
   };
 
-  console.log('jsonStructure', jsonStructure);
-
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
-    console.log('parsedLuceneQuery', parsedLuceneQuery);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
-    console.log('groupedTree', groupedTree);
     var parsedQueryParts = splitQuery(query);
     // var jsonNodes = parseQuery(parsedQueryParts);
     var jsonNodes = [
@@ -24250,23 +24228,21 @@ function QueryEditorController(
     // });
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
-      console.log('node', node);
       if (node.type === 'field') {
         node.type = 'group';
       }
       node.nodes = node.nodes.map(function(subNode) {
-        console.log('subNode', subNode);
         subNode.name = fieldMapping[subNode.field].name;
         subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
 
         if (subNode.fieldType === 'date-range') {
           subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
           subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound);
+          delete subNode.term;
         }
 
         if (subNode.field === 'terms.id') {
           var fieldName =  getFieldNameForTermsId(subNode.term);
-          console.log('fieldName', fieldName);
           var fieldDef = fieldMappingByName[fieldName] || {};
           subNode.name = fieldDef.name;
         }
@@ -24288,11 +24264,8 @@ function QueryEditorController(
   var currentUrl = new URL(window.location.href);
   var advancedSearchQuery =  currentUrl.searchParams ? currentUrl.searchParams.get('query') : undefined;
 
-  console.log('advancedSearchQuery', advancedSearchQuery);
-
   if (advancedSearchQuery) {
     var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
-    console.log('modalValues', modalValues);
     qe.groupedQueryTree = modalValues;
   }
 
@@ -24454,11 +24427,7 @@ function QueryEditorController(
       ]
     };
 
-    console.log('subgroup', group);
-
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
-
-    console.log('tree?', qe.groupedQueryTree);
   };
 
   qe.fieldTypeSelected = function (field) {
