@@ -95,6 +95,7 @@ describe('QueryEditorController', function() {
 
        var expectedResult  =  {
             type: "root",
+            operator: "OR",
             nodes: [
               {
                 "type": "group",
@@ -124,6 +125,7 @@ describe('QueryEditorController', function() {
 
       var expectedResult = {
         "type": "root",
+        "operator": "OR",
         "nodes": [
           {
             "type": "group",
@@ -154,6 +156,7 @@ describe('QueryEditorController', function() {
 
         var expectedResult = {
                 "type": "root",
+                "operator": "OR",
                 "nodes": [
                   {
                     "type": "group",
@@ -183,6 +186,7 @@ describe('QueryEditorController', function() {
 
         var expectedResult = {
             "type": "root",
+            "operator": "OR",
             "nodes": [
               {
                 "type": "group",
@@ -207,7 +211,6 @@ describe('QueryEditorController', function() {
 
     });
 
-
     it('Should parse a complex query (with OR relation)', function(){
     
         var $scope = $rootScope.$new();
@@ -215,6 +218,7 @@ describe('QueryEditorController', function() {
 
         var expectedResult = {
             "type": "root",
+            "operator": "OR",
             "nodes": [
               {
                 "type": "group",
@@ -223,66 +227,42 @@ describe('QueryEditorController', function() {
                   {
                     "field": "regions",
                     "fieldType": "termNis",
-                    "name": "nisRegions",
-                    "term": "nis-21001-Z",
                     "transformer": "=",
-                  }
-                ],
-              },
-              {
-                "type": "group",
-                "operator": "OR",
-                "nodes": [
+                    "term": "nis-21001-Z",
+                    "name": "nisRegions",
+                  },
                   {
                     "field": "terms.id",
-                    "name": "category_theme_name",
-                    "term": "1.7.11.0.0",
                     "fieldType": "term",
                     "transformer": "=",
-                  }
-                ],
-              },
-              {
-                "type": "group",
-                "operator": "OR",
-                "nodes": [
+                    "term": "1.7.11.0.0",
+                    "name": "category_theme_name",
+                  },
                   {
                     "field": "attendanceMode",
-                    "name": "attendance_mode",
-                    "term": "online",
                     "fieldType": "choice",
                     "transformer": "=",
-                  }
-                ],
-              },
-              {
-                "type": "group",
-                "operator": "OR",
-                "nodes": [
+                    "term": "online",
+                    "name": "attendance_mode",
+                  },
                   {
                     "field": "terms.id",
-                    "name": "category_facility_name",
-                    "term": "3.40.0.0.0",
                     "fieldType": "term",
                     "transformer": "!",
-                  }
-                ],
-              },
-              {
-                "type": "group",
-                "operator": "OR",
-                "nodes": [
+                    "term": "3.40.0.0.0",
+                    "name": "category_facility_name",
+                  },
                   {
                     "field": "audienceType",
-                    "name": "category_targetaudience_name",
-                    "term": "education",
                     "fieldType": "choice",
                     "transformer": "=",
+                    "term": "education",
+                    "name": "category_targetaudience_name",
                   }
                 ],
               }
-            ]
-        }
+            ],
+          }
 
         var query = 'regions:nis-21001-Z OR (terms.id:1.7.11.0.0 OR (attendanceMode:online OR (!terms.id:3.40.0.0.0 OR audienceType:education)))';
         var result = controller.parseModalValuesFromQuery(query);
@@ -298,6 +278,7 @@ describe('QueryEditorController', function() {
 
         var expectedResult = {
             "type": "root",
+            "operator": "OR",
             "nodes": [
               {
                 "type": "group",
@@ -307,8 +288,8 @@ describe('QueryEditorController', function() {
                     "field": "dateRange",
                     "fieldType": "date-range",
                     "name": "date",
-                    "term": "[2024-03-12T00:00:00+01:00 TO 2024-03-12T23:59:59+01:00]",
                     "transformer": "=",
+                    "inclusive": true,
                     "lowerBound": new Date("2024-03-11T23:00:00.000Z"),
                     "upperBound": new Date("2024-03-12T22:59:59.000Z"),
                   }
@@ -316,8 +297,6 @@ describe('QueryEditorController', function() {
               }
             ]
           }
-
-
           
         var query = 'dateRange:[2024-03-12T00:00:00+01:00 TO 2024-03-12T23:59:59+01:00]';
 
@@ -334,6 +313,7 @@ describe('QueryEditorController', function() {
 
         var expectedResult = {
                 "type": "root",
+                "operator": "OR",
                 "nodes": [
                   {
                     "type": "group",
@@ -342,8 +322,8 @@ describe('QueryEditorController', function() {
                       {
                         "field": "dateRange",
                         "fieldType": "date-range",
+                        "inclusive": true,
                         "name": "date",
-                        "term": "[2024-03-13T00:00:00+01:00 TO 2024-03-23T23:59:59+01:00]",
                         "transformer": "><",
                         "lowerBound": new Date("2024-03-12T23:00:00.000Z"),
                         "upperBound": new Date("2024-03-23T22:59:59.000Z"),

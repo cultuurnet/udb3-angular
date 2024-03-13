@@ -517,7 +517,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
   this.groupNode = function (branch, fieldTree, fieldGroup) {
-    console.log('in group node');
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';

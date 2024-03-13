@@ -23934,6 +23934,7 @@ angular
 
 /* @ngInject */
 function QueryEditorController(
+  LuceneQueryParser,
   queryFields,
   LuceneQueryBuilder,
   taxonomyTerms,
@@ -24039,6 +24040,10 @@ function QueryEditorController(
 
   function getFieldTransformer(fieldNode, isFieldExcluded) {
 
+    if (fieldNode.fieldType === 'tokenized-string') {
+      return fieldNode.transformer === '=' ? '+' : '-';
+    }
+
     if (fieldNode.fieldType === 'date-range') {
       if (fieldNode.upperBound === '*') {
         return '>';
@@ -24048,35 +24053,36 @@ function QueryEditorController(
       }
 
       if (!isSameDay(fieldNode.lowerBound, fieldNode.upperBound)) {
-        console.log('should show range');
         return '><';
       }
 
       return '=';
     }
 
-    if (fieldNode.fieldType === 'choice') {
-      return isFieldExcluded ? '!' : '=';
-    }
-
-    if (fieldNode.fieldType === 'term') {
-      return isFieldExcluded ? '!' : '=';
-    }
-
-    if (fieldNode.fieldType === 'string') {
-      return isFieldExcluded ? '!' : '=';
-    }
-
-    if (fieldNode.fieldType === 'tokenized-string') {
-      return isFieldExcluded ? '-' : '+';
-    }
-
     if (fieldNode.fieldType === 'check') {
-      return isFieldExcluded ? '!' : '=';
+      return '=';
     }
 
-    // default
-    return '=';
+    return fieldNode.transformer;
+
+    // if (fieldNode.fieldType === 'term') {
+    //   return isFieldExcluded ? '!' : '=';
+    // }
+
+    // if (fieldNode.fieldType === 'string') {
+    //   return isFieldExcluded ? '!' : '=';
+    // }
+
+    // if (fieldNode.fieldType === 'tokenized-string') {
+    //   return isFieldExcluded ? '-' : '+';
+    // }
+
+    // if (fieldNode.fieldType === 'check') {
+    //   return isFieldExcluded ? '!' : '=';
+    // }
+
+    // // default
+    // return '=';
 
   }
 
@@ -24084,6 +24090,8 @@ function QueryEditorController(
     var foundTerms = taxonomyTerms.filter(function(term) {
       return term.id === id;
     });
+
+    console.log('foundTerms', foundTerms);
 
     var term = foundTerms[0];
 
@@ -24101,6 +24109,9 @@ function QueryEditorController(
   }
 
   function getIsFieldExcluded(part) {
+    if (!part) {
+      return false;
+    }
     var cleanedPart = part.replace('(', '');
     return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
   }
@@ -24160,7 +24171,6 @@ function QueryEditorController(
   }
 
   function parseQuery(queryParts) {
-    console.log('in parse query', queryParts);
     var nodes = queryParts.map(function(queryParts) {
       var part = queryParts[0];
       var operator = queryParts[1];
@@ -24182,7 +24192,6 @@ function QueryEditorController(
   console.log('decodedQuery', decodedQuery);
 
   var parsedQueryParts = splitQuery(decodedQuery);
-  console.log('parsedQueryParts', parsedQueryParts);
   var jsonNodes = parseQuery(parsedQueryParts);
   console.log('jsonNodes', jsonNodes);
 
@@ -24194,12 +24203,86 @@ function QueryEditorController(
   console.log('jsonStructure', jsonStructure);
 
   qe.parseModalValuesFromQuery = function (query) {
+    var parsedLuceneQuery = LuceneQueryParser.parse(query);
+    console.log('parsedLuceneQuery', parsedLuceneQuery);
+    var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
+    console.log('groupedTree', groupedTree);
     var parsedQueryParts = splitQuery(query);
-    var jsonNodes = parseQuery(parsedQueryParts);
-    return {
-      type: 'root',
-      nodes: jsonNodes
-    };
+    // var jsonNodes = parseQuery(parsedQueryParts);
+    var jsonNodes = [
+        {
+          'type': 'group',
+          'operator': 'OR',
+          'nodes': [
+            {
+              'name': 'title',
+              'field': 'name.\\*',
+              'term': 'test',
+              'fieldType': 'tokenized-string',
+              'transformer': '+',
+            },
+            {
+              'type': 'group',
+              'operator': 'AND',
+              'nodes': [
+                {
+                  'field': 'name.\\*',
+                  'name': 'title',
+                  'term': 'test 2',
+                  'fieldType': 'tokenized-string',
+                  'transformer': '+',
+                }
+              ],
+            }
+          ],
+          'treeGroupId': '1'
+        }
+    ];
+
+    // groupedTree.nodes = groupedTree.nodes.map(function(node) {
+    //   if (node.nodes.length > 1) {
+    //     node.nodes = node.nodes.map(function(subNode) {
+    //       return subNode;
+    //     });
+    //   }
+
+    //   return node;
+    // });
+
+    groupedTree.nodes = groupedTree.nodes.map(function(node) {
+      console.log('node', node);
+      if (node.type === 'field') {
+        node.type = 'group';
+      }
+      node.nodes = node.nodes.map(function(subNode) {
+        console.log('subNode', subNode);
+        subNode.name = fieldMapping[subNode.field].name;
+        subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
+
+        if (subNode.fieldType === 'date-range') {
+          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
+          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound);
+        }
+
+        if (subNode.field === 'terms.id') {
+          var fieldName =  getFieldNameForTermsId(subNode.term);
+          console.log('fieldName', fieldName);
+          var fieldDef = fieldMappingByName[fieldName] || {};
+          subNode.name = fieldDef.name;
+        }
+
+        if (subNode.name === 'permanent' && subNode.transformer === '!') {
+          subNode.term = '(!permanent)';
+        }
+
+        var isFieldExcluded = getIsFieldExcluded(subNode.term);
+        subNode.transformer = getFieldTransformer(subNode, isFieldExcluded);
+        return subNode;
+      });
+      return node;
+    });
+
+    return groupedTree;
   };
 
   var currentUrl = new URL(window.location.href);
@@ -24374,6 +24457,8 @@ function QueryEditorController(
     console.log('subgroup', group);
 
     parentGroup.nodes.splice(fieldIndex + 1, 0, group);
+
+    console.log('tree?', qe.groupedQueryTree);
   };
 
   qe.fieldTypeSelected = function (field) {
@@ -24419,7 +24504,7 @@ function QueryEditorController(
     return (qe.groupedQueryTree.nodes.length === 1);
   };
 }
-QueryEditorController.$inject = ["queryFields", "LuceneQueryBuilder", "taxonomyTerms", "sapi3CitiesBE", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope", "eventTypes", "placeTypes"];
+QueryEditorController.$inject = ["LuceneQueryParser", "queryFields", "LuceneQueryBuilder", "taxonomyTerms", "sapi3CitiesBE", "fieldTypeTransformers", "searchHelper", "$translate", "$rootScope", "eventTypes", "placeTypes"];
 })();
 
 // Source: src/search/components/query-editor.directive.js
@@ -25324,7 +25409,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
   this.groupNode = function (branch, fieldTree, fieldGroup) {
-    console.log('in group node');
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';
