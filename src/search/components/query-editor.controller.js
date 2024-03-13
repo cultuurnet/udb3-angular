@@ -108,11 +108,17 @@ function QueryEditorController(
   }
 
   function parseRange(rangeString) {
-    var matches = rangeString.match(/\[(.*?) TO (.*?)\]/);
+    var matches = rangeString.match(/[\[\{](.*?) TO (.*?)[\]\}]/);
     if (matches && matches.length === 3) {
       return {lowerBound: matches[1], upperBound: matches[2]};
     }
     return {lowerBound: '', upperBound: ''};
+  }
+
+  function isSameDay(date1, date2) {
+    return date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear();
   }
 
   function getFieldTransformer(fieldNode, isFieldExcluded) {
@@ -124,6 +130,11 @@ function QueryEditorController(
       if (fieldNode.lowerBound === '*') {
         return '<';
       }
+
+      if (!isSameDay(fieldNode.lowerBound, fieldNode.upperBound)) {
+        return '><';
+      }
+
       return '=';
     }
 
