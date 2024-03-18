@@ -517,6 +517,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
   this.groupNode = function (branch, fieldTree, fieldGroup) {
+  this.groupNode = function (branch, fieldTree, fieldGroup, rootOperator) {
+    console.log('fieldTree', fieldTree);
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';
@@ -525,8 +527,13 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       var newFieldGroup = {
         type: 'group',
         operator: branch.operator || 'OR',
+        operator: rootOperator === 'NOT' ? 'NOT' : branch.operator || 'OR',
         nodes: []
       };
+
+      if (rootOperator === 'NOT') {
+        newFieldGroup.excluded = true;
+      }
 
       fieldTree.nodes.push(newFieldGroup);
       fieldGroup = newFieldGroup;
@@ -555,9 +562,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     if (branch.left) {
       this.groupNode(branch.left, fieldTree, fieldGroup);
       if (branch.right) {
-        this.groupNode(branch.right, fieldTree, fieldGroup);
+        var passFieldGroup = branch.operator !== 'NOT' ? fieldGroup : undefined;
+        this.groupNode(branch.right, fieldTree, passFieldGroup, branch.operator);
       }
     }
+
   };
 
   /**

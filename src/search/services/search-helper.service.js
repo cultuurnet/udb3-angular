@@ -17,7 +17,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   var queryTree = null;
 
   this.clearQueryTree = function () {
-    console.log('clearQueryTree');
     queryTree = null;
   };
 
@@ -44,7 +43,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
-    console.log('setQueryTree', groupedQueryTree);
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
     var newQuery = LuceneQueryBuilder.createQuery(queryString);
     LuceneQueryBuilder.isValid(newQuery);
@@ -63,7 +61,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.getQueryTree = function () {
-    console.log('getQueryTree?');
     return angular.copy(queryTree);
   };
 }
