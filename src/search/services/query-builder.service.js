@@ -467,6 +467,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
                 field.transformer = '<';
               } else if (field.lowerBound && field.upperBound === '*') {
                 field.transformer = '>';
+              } else if (field.lowerBound && field.upperBound) {
+                field.transformer = '><';
+                field.lowerBound = field.lowerBound;
+                field.upperBound = field.upperBound;
               } else {
                 field.transformer = '=';
                 field.term = field.lowerBound || field.upperBound;

@@ -23952,6 +23952,8 @@ function QueryEditorController(
 
   qe.fieldOptions = _.filter(queryFields, 'editable');
 
+  console.log('queryFields', queryFields);
+
   // use the first occurrence of a group name to order it against the other groups
   var orderedGroups = _.chain(qe.fieldOptions)
     .map(function (field) {
@@ -24075,7 +24077,6 @@ function QueryEditorController(
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
-    console.log('parsed groupedTree', groupedTree);
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
       if (node.type === 'field') {
@@ -24084,6 +24085,8 @@ function QueryEditorController(
       node.nodes = node.nodes.map(function(subNode) {
         subNode.name = fieldMapping[subNode.field].name;
         subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
+
+        console.log('subNode', subNode);
 
         if (subNode.fieldType === 'date-range') {
           subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
@@ -24746,11 +24749,9 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
   };
 
   this.parseQueryString = function (query) {
-    console.log('parse query', query);
     try {
       query.queryTree = LuceneQueryParser.parse(query.queryString);
     } catch (e) {
-      console.log('e', e);
       query.errors.push(e.message);
     }
 
@@ -24762,7 +24763,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {string} queryString
    */
   this.createQuery = function (queryString) {
-    console.log('createQuery', queryString);
     var query = {
       originalQueryString: queryString,
       queryString: queryString,
@@ -25052,7 +25052,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   // probably use this?
   this.groupQueryTree = function (queryTree) {
-    console.log('in group query tree?');
+    console.log('queryTree', queryTree);
     var groupedFieldTree = {
       type: 'root',
       nodes: [],
@@ -25076,7 +25076,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       };
       groupedFieldTree.nodes.push(group);
     } else {
-      console.log('in else of groupQueryTree');
       this.groupNode(queryTree, groupedFieldTree);
       this.cleanUpGroupedFieldTree(groupedFieldTree);
     }
@@ -25188,6 +25187,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
                 field.transformer = '<';
               } else if (field.lowerBound && field.upperBound === '*') {
                 field.transformer = '>';
+              } else if (field.lowerBound && field.upperBound) {
+                field.transformer = '><';
+                field.lowerBound = field.lowerBound;
+                field.upperBound = field.upperBound;
               } else {
                 field.transformer = '=';
                 field.term = field.lowerBound || field.upperBound;
