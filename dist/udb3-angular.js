@@ -24015,7 +24015,7 @@ function QueryEditorController(
         date1.getFullYear() === date2.getFullYear();
   }
 
-  function getFieldTransformer(fieldNode, isFieldExcluded) {
+  function getFieldTransformer(fieldNode) {
 
     if (fieldNode.fieldType === 'tokenized-string') {
       return fieldNode.transformer === '=' ? '+' : '-';
@@ -24041,18 +24041,6 @@ function QueryEditorController(
     }
 
     return fieldNode.transformer;
-
-    // if (fieldNode.fieldType === 'term') {
-    //   return isFieldExcluded ? '!' : '=';
-    // }
-
-    // if (fieldNode.fieldType === 'string') {
-    //   return isFieldExcluded ? '!' : '=';
-    // }
-
-    // if (fieldNode.fieldType === 'tokenized-string') {
-    //   return isFieldExcluded ? '-' : '+';
-    // }
 
   }
 
@@ -24113,8 +24101,7 @@ function QueryEditorController(
           subNode.term = '(!permanent)';
         }
 
-        var isFieldExcluded = getIsFieldExcluded(subNode.term);
-        subNode.transformer = getFieldTransformer(subNode, isFieldExcluded);
+        subNode.transformer = getFieldTransformer(subNode);
         return subNode;
       });
       return node;
