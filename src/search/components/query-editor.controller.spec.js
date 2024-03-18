@@ -207,7 +207,7 @@ describe('QueryEditorController', function() {
         var query = 'regions:nis-21004-Z';
         var result = controller.parseModalValuesFromQuery(query);
    
-        expect(result).toEqual(expectedResult)
+        expect(result).toEqual(expectedResult);
 
     });
 
@@ -346,7 +346,7 @@ describe('QueryEditorController', function() {
       var query = '(labels:uitpas AND name.\\*:monologen) AND terms.id:0.3.1.0.0';
       var result = controller.parseModalValuesFromQuery(query);
  
-      expect(result).toEqual(expectedResult)
+      expect(result).toEqual(expectedResult);
 
     });
 
@@ -403,7 +403,7 @@ describe('QueryEditorController', function() {
 
       var query = '(labels:uitpas AND name.\\*:monologen) OR (name.\\*:test AND terms.id:0.50.4.0.0)';
       var result = controller.parseModalValuesFromQuery(query);
-      expect(result).toEqual(expectedResult)
+      expect(result).toEqual(expectedResult);
 
     });
 
@@ -454,7 +454,39 @@ describe('QueryEditorController', function() {
 
       var query = 'labels:uitpas NOT (name.\\*:monologen OR terms.id:0.50.4.0.0)';
       var result = controller.parseModalValuesFromQuery(query);
-      expect(result).toEqual(expectedResult)
+      expect(result).toEqual(expectedResult);
+
+    });
+
+
+    it ('Should parse a query with implicit text', function(){
+
+    var $scope = $rootScope.$new();
+    var controller = $controller('QueryEditorController', { $scope: $scope });
+
+    var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "<implicit>",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "test",
+                "name": "text",
+              }
+            ],
+          }
+        ],
+        "operator": "OR"
+      }
+
+      var query = 'test';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult);
 
     });
 
