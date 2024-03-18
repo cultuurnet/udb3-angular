@@ -331,7 +331,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @return  {object}              - A grouped field information tree
    */
 
-  // probably use this?
   this.groupQueryTree = function (queryTree) {
     var groupedFieldTree = {
       type: 'root',
