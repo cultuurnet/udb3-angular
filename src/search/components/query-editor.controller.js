@@ -158,7 +158,6 @@ function QueryEditorController(
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
-    console.log('parsed groupedTree', groupedTree);
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
       if (node.type === 'field') {
@@ -202,7 +201,6 @@ function QueryEditorController(
 
   if (advancedSearchQuery) {
     var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
-    console.log('modalValues', modalValues);
     qe.groupedQueryTree = modalValues;
   }
 

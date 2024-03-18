@@ -30,11 +30,9 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
   };
 
   this.parseQueryString = function (query) {
-    console.log('parse query', query);
     try {
       query.queryTree = LuceneQueryParser.parse(query.queryString);
     } catch (e) {
-      console.log('e', e);
       query.errors.push(e.message);
     }
 
@@ -46,7 +44,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {string} queryString
    */
   this.createQuery = function (queryString) {
-    console.log('createQuery', queryString);
     var query = {
       originalQueryString: queryString,
       queryString: queryString,
@@ -336,7 +333,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   // probably use this?
   this.groupQueryTree = function (queryTree) {
-    console.log('in group query tree?');
     var groupedFieldTree = {
       type: 'root',
       nodes: [],
@@ -360,7 +356,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
       };
       groupedFieldTree.nodes.push(group);
     } else {
-      console.log('in else of groupQueryTree');
       this.groupNode(queryTree, groupedFieldTree);
       this.cleanUpGroupedFieldTree(groupedFieldTree);
     }
