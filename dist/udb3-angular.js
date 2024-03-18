@@ -23952,8 +23952,6 @@ function QueryEditorController(
 
   qe.fieldOptions = _.filter(queryFields, 'editable');
 
-  console.log('queryFields', queryFields);
-
   // use the first occurrence of a group name to order it against the other groups
   var orderedGroups = _.chain(qe.fieldOptions)
     .map(function (field) {
@@ -24085,8 +24083,6 @@ function QueryEditorController(
       node.nodes = node.nodes.map(function(subNode) {
         subNode.name = fieldMapping[subNode.field].name;
         subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
-
-        console.log('subNode', subNode);
 
         if (subNode.fieldType === 'date-range') {
           subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
@@ -25052,7 +25048,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
 
   // probably use this?
   this.groupQueryTree = function (queryTree) {
-    console.log('queryTree', queryTree);
     var groupedFieldTree = {
       type: 'root',
       nodes: [],
@@ -25268,7 +25263,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         if (fieldGroup.implicitField) {
           field = fieldGroup.implicitField;
         } else {
-          throw 'Field name is implicit and not defined elsewhere.';
+          // throw 'Field name is implicit and not defined elsewhere.';
         }
       }
 

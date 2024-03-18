@@ -548,7 +548,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         if (fieldGroup.implicitField) {
           field = fieldGroup.implicitField;
         } else {
-          throw 'Field name is implicit and not defined elsewhere.';
+          // throw 'Field name is implicit and not defined elsewhere.';
         }
       }
 
