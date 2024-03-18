@@ -27,10 +27,11 @@ function QueryEditorFieldController($scope) {
 
   function getOperatorClass() {
     var operatorClass;
+    var parentGroup = getParentGroup();
     if (isSubGroup() && $scope.$index === 0) {
       operatorClass = 'AND';
     } else {
-      operatorClass = $scope.$index ? 'OR' : 'FIRST';
+      operatorClass = $scope.$index ? parentGroup.operator : 'FIRST';
     }
 
     return operatorClass;

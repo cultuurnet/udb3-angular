@@ -305,5 +305,157 @@ describe('QueryEditorController', function() {
         expect(result).toEqual(expectedResult)
     });
 
+    it('Should parse a query with AND condtion', function(){
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "AND",
+            "nodes": [
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "uitpas",
+                "name": "keywords",
+              },
+              {
+                "field": "name.\\*",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "monologen",
+                "name": "title",
+              },
+              {
+                "field": "terms.id",
+                "fieldType": "term",
+                "transformer": "=",
+                "term": "0.3.1.0.0",
+                "name": "category_eventtype_name",
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
+      }
+
+      var query = '(labels:uitpas AND name.\\*:monologen) AND terms.id:0.3.1.0.0';
+      var result = controller.parseModalValuesFromQuery(query);
+ 
+      expect(result).toEqual(expectedResult)
+
+    });
+
+    it ('Should parse a query with 2 groups with AND condition', function(){  
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "AND",
+            "nodes": [
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "uitpas",
+                "name": "keywords",
+              },
+              {
+                "field": "name.\\*",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "monologen",
+                "name": "title",
+              }
+            ],
+          },
+          {
+            "type": "group",
+            "operator": "AND",
+            "nodes": [
+              {
+                "field": "name.\\*",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "test",
+                "name": "title",
+              },
+              {
+                "field": "terms.id",
+                "fieldType": "term",
+                "transformer": "=",
+                "term": "0.50.4.0.0",
+                "name": "category_eventtype_name",
+              }
+            ],
+          }
+        ],
+        "operator": "OR"
+      }
+
+      var query = '(labels:uitpas AND name.\\*:monologen) OR (name.\\*:test AND terms.id:0.50.4.0.0)';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult)
+
+    });
+
+    it ('Should parse a query with NOT condition', function(){
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "NOT",
+            "nodes": [
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "uitpas",
+                "name": "keywords",
+              }
+            ],
+          },
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "name.\\*",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "monologen",
+                "name": "title",
+              },
+              {
+                "field": "terms.id",
+                "fieldType": "term",
+                "transformer": "=",
+                "term": "0.50.4.0.0",
+                "name": "category_eventtype_name",
+              }
+            ],
+            "excluded": true,
+          }
+        ],
+        "operator": "NOT"
+      }
+
+      var query = 'labels:uitpas NOT (name.\\*:monologen OR terms.id:0.50.4.0.0)';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult)
+
+    });
 
 });

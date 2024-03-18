@@ -23838,10 +23838,11 @@ function QueryEditorFieldController($scope) {
 
   function getOperatorClass() {
     var operatorClass;
+    var parentGroup = getParentGroup();
     if (isSubGroup() && $scope.$index === 0) {
       operatorClass = 'AND';
     } else {
-      operatorClass = $scope.$index ? 'OR' : 'FIRST';
+      operatorClass = $scope.$index ? parentGroup.operator : 'FIRST';
     }
 
     return operatorClass;
@@ -24008,26 +24009,6 @@ function QueryEditorController(
     return map;
   }, {});
 
-  function splitQuery(query) {
-    // Splitting the query by AND and OR, while keeping the separators
-    var parts = query.split(/ (AND|OR) /);
-
-    // Grouping parts into [[part, operator], ...]
-    var groupedParts = [];
-    for (var i = 0; i < parts.length; i += 2) {
-      groupedParts.push([parts[i], parts[i + 1] || 'OR']);
-    }
-    return groupedParts;
-  }
-
-  function parseRange(rangeString) {
-    var matches = rangeString.match(/[\[\{](.*?) TO (.*?)[\]\}]/);
-    if (matches && matches.length === 3) {
-      return {lowerBound: matches[1], upperBound: matches[2]};
-    }
-    return {lowerBound: '', upperBound: ''};
-  }
-
   function isSameDay(date1, date2) {
     return date1.getDate() === date2.getDate() &&
         date1.getMonth() === date2.getMonth() &&
@@ -24103,122 +24084,10 @@ function QueryEditorController(
     return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
   }
 
-  function getCleanedField(field) {
-    return field.replace(/[\(\)!-]/g, '');
-  }
-
-  function parseQueryPart(part) {
-    // Extract field and term from the part (assuming format "field:term")
-    var parts = part.split(':', 1);
-    var isFieldExcluded = getIsFieldExcluded(parts[0]);
-    var field = getCleanedField(parts[0]);
-    var term = part.replace(field + ':', '').replace(/\(/g, '').replace(/\)/g, '');
-
-    var fieldDef = fieldMapping[field] || {};
-
-    if (term.indexOf('nis') === -1 && fieldDef.type !== 'date-range') {
-      term = term.replace('-', '');
-    }
-
-    term = term === '!permanent' ? '(!permanent)' : term.replace('!', '');
-
-    if (field === 'terms.id') {
-      var fieldName =  getFieldNameForTermsId(term);
-      fieldDef = fieldMappingByName[fieldName] || {};
-    }
-
-    var fieldNode = {
-      field: fieldDef.field || field,
-      fieldType: fieldDef.type || 'unknown',
-      name: fieldDef.name || field,
-      term: term,
-      transformer: '='
-    };
-
-    if (fieldNode.fieldType === 'date-range') {
-      var range = parseRange(term);
-      fieldNode.lowerBound = range.lowerBound === '*' ?  '*' :  new Date(range.lowerBound);
-      fieldNode.upperBound = range.upperBound === '*' ? '*' :  new Date(range.upperBound);
-    }
-
-    fieldNode.transformer = getFieldTransformer(fieldNode, isFieldExcluded);
-
-    // Example return structure
-    return fieldNode;
-  }
-
-  function parseQuery(queryParts) {
-    var nodes = queryParts.map(function(queryParts) {
-      var part = queryParts[0];
-      var operator = queryParts[1];
-      var parsedNode = parseQueryPart(part);
-      return {
-        type: 'group',
-        operator: operator,
-        nodes: [parsedNode]
-      };
-    });
-    return nodes;
-  }
-
-  // var decodedQuery = 'terms.id:0.50.4.0.0 OR (!location.labels:test OR (attendanceMode:mixed OR ' +
-  //   '(bookingAvailability:available OR (terms.id:wwjRVmExI0w6xfQwT1KWpx OR ' +
-  //   '(terms.id:1.7.12.0.0 OR (terms.id:3.33.0.0.0 OR -name.\\*:"test 2"))))))';
-
-  var decodedQuery = 'terms.id:0.50.4.0.0';
-
-  var parsedQueryParts = splitQuery(decodedQuery);
-  var jsonNodes = parseQuery(parsedQueryParts);
-
-  var jsonStructure = {
-    type: 'root',
-    nodes: jsonNodes
-  };
-
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
-    var parsedQueryParts = splitQuery(query);
-    // var jsonNodes = parseQuery(parsedQueryParts);
-    var jsonNodes = [
-        {
-          'type': 'group',
-          'operator': 'OR',
-          'nodes': [
-            {
-              'name': 'title',
-              'field': 'name.\\*',
-              'term': 'test',
-              'fieldType': 'tokenized-string',
-              'transformer': '+',
-            },
-            {
-              'type': 'group',
-              'operator': 'AND',
-              'nodes': [
-                {
-                  'field': 'name.\\*',
-                  'name': 'title',
-                  'term': 'test 2',
-                  'fieldType': 'tokenized-string',
-                  'transformer': '+',
-                }
-              ],
-            }
-          ],
-          'treeGroupId': '1'
-        }
-    ];
-
-    // groupedTree.nodes = groupedTree.nodes.map(function(node) {
-    //   if (node.nodes.length > 1) {
-    //     node.nodes = node.nodes.map(function(subNode) {
-    //       return subNode;
-    //     });
-    //   }
-
-    //   return node;
-    // });
+    console.log('parsed groupedTree', groupedTree);
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
       if (node.type === 'field') {
@@ -24249,6 +24118,10 @@ function QueryEditorController(
         return subNode;
       });
       return node;
+    });
+
+    groupedTree.nodes = groupedTree.nodes.filter(function(node) {
+      return node.nodes.length > 0;
     });
 
     return groupedTree;
@@ -24312,6 +24185,7 @@ function QueryEditorController(
 
     if (group.nodes.length) {
       group.type = 'group';
+      group.operator = 'OR';
     }
   };
 
@@ -25371,7 +25245,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  fieldTree     - The field tree that will be returned
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
-  this.groupNode = function (branch, fieldTree, fieldGroup) {
+  this.groupNode = function (branch, fieldTree, fieldGroup, rootOperator) {
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';
@@ -25382,6 +25256,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         operator: branch.operator || 'OR',
         nodes: []
       };
+
+      if (rootOperator === 'NOT') {
+        newFieldGroup.excluded = true;
+      }
 
       fieldTree.nodes.push(newFieldGroup);
       fieldGroup = newFieldGroup;
@@ -25410,9 +25288,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     if (branch.left) {
       this.groupNode(branch.left, fieldTree, fieldGroup);
       if (branch.right) {
-        this.groupNode(branch.right, fieldTree, fieldGroup);
+        var passFieldGroup = branch.operator !== 'NOT' ? fieldGroup : undefined;
+        this.groupNode(branch.right, fieldTree, passFieldGroup, branch.operator);
       }
     }
+
   };
 
   /**
@@ -26627,7 +26507,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   var queryTree = null;
 
   this.clearQueryTree = function () {
-    console.log('clearQueryTree');
     queryTree = null;
   };
 
@@ -26654,7 +26533,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.setQueryTree = function (groupedQueryTree) {
-    console.log('setQueryTree', groupedQueryTree);
     var queryString = LuceneQueryBuilder.unparseGroupedTree(groupedQueryTree);
     var newQuery = LuceneQueryBuilder.createQuery(queryString);
     LuceneQueryBuilder.isValid(newQuery);
@@ -26673,7 +26551,6 @@ function SearchHelper(LuceneQueryBuilder, $rootScope) {
   };
 
   this.getQueryTree = function () {
-    console.log('getQueryTree?');
     return angular.copy(queryTree);
   };
 }
