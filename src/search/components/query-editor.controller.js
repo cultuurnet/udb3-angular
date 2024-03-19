@@ -147,14 +147,6 @@ function QueryEditorController(
     }
   }
 
-  function getIsFieldExcluded(part) {
-    if (!part) {
-      return false;
-    }
-    var cleanedPart = part.replace('(', '');
-    return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
-  }
-
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
