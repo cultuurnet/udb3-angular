@@ -185,6 +185,15 @@ function QueryEditorController(
       return node.nodes.length > 0;
     });
 
+    if (groupedTree.nodes[0].operator === 'AND' &&
+      groupedTree.nodes.length > 1 &&
+      groupedTree.nodes[0].nodes.length === 1
+    ) {
+      var firstGroup = groupedTree.nodes[0];
+      groupedTree.nodes.splice(0, 1);
+      groupedTree.nodes[0].nodes.push(firstGroup);
+    }
+
     return groupedTree;
   };
 
