@@ -168,8 +168,8 @@ function QueryEditorController(
         subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
 
         if (subNode.fieldType === 'date-range') {
-          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
-          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound);
+          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound.replace(/\\/g, ''));
+          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound.replace(/\\/g, ''));
           delete subNode.term;
         }
 

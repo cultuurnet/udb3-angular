@@ -490,4 +490,201 @@ describe('QueryEditorController', function() {
 
     });
 
+
+    it('Should parse the following query: regions:nis-70000 AND organizer.name.\*:museum', function(){
+
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "AND",
+            "nodes": [
+              {
+                "field": "regions",
+                "fieldType": "termNis",
+                "transformer": "=",
+                "term": "nis-70000",
+                "name": "nisRegions",
+              },
+              {
+                "field": "organizer.name.\\*",
+                "fieldType": "tokenized-string",
+                "transformer": "+",
+                "term": "museum",
+                "name": "organiser_label",
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
+      }
+
+      var query = 'regions:nis-70000 AND organizer.name.\\*:museum';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult);
+
+    });
+
+
+    it('Should parse the following query: address.\*.postalCode:2840 AND (dateRange:[2018-09-30T00:00:00%2B02:00 TO 2018-12-31T23:59:59%2B01:00] AND calendarType:(!permanent))', function(){
+
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult =  {
+          "type": "root",
+          "nodes": [
+            {
+              "type": "group",
+              "operator": "AND",
+              "nodes": [
+                {
+                  "field": "address.\\*.postalCode",
+                  "fieldType": "string",
+                  "transformer": "=",
+                  "term": "2840",
+                  "name": "zipcode",
+                },
+                {
+                  "field": "dateRange",
+                  "fieldType": "date-range",
+                  "transformer": "><",
+                  "lowerBound": new Date("2018-09-29T22:00:00.000Z"),
+                  "upperBound": new Date("2018-12-31T22:59:59.000Z"),
+                  "inclusive": true,
+                  "name": "date",
+                },
+                {
+                  "field": "calendarType",
+                  "fieldType": "check",
+                  "transformer": "=",
+                  "term": "(!permanent)",
+                  "name": "permanent",
+                }
+              ],
+            }
+          ],
+          "operator": "AND"
+        }
+
+        var query = 'address.\\*.postalCode:2840 AND (dateRange:[2018-09-30T00:00:00+02:00 TO 2018-12-31T23:59:59+01:00] AND calendarType:(!permanent))'
+        var result = controller.parseModalValuesFromQuery(query);
+        expect(result).toEqual(expectedResult);
+
+    });
+
+    it('Should parse the following query: address.\*.postalCode:3680 AND (calendarType:(!permanent) AND dateRange:[2020-11-01T00:00:00%2B01:00 TO 2020-12-06T23:59:59%2B01:00])', function(){
+
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "AND",
+            "nodes": [
+              {
+                "field": "address.\\*.postalCode",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "3680",
+                "name": "zipcode",
+              },
+              {
+                "field": "calendarType",
+                "fieldType": "check",
+                "transformer": "=",
+                "term": "(!permanent)",
+                "name": "permanent",
+              },
+              {
+                "field": "dateRange",
+                "fieldType": "date-range",
+                "transformer": "><",
+                "lowerBound": new Date("2020-10-31T23:00:00.000Z"),
+                "upperBound": new Date("2020-12-06T22:59:59.000Z"),
+                "inclusive": true,
+                "name": "date",
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
+      }
+
+      var query = 'address.\\*.postalCode:3680 AND (calendarType:(!permanent) AND dateRange:[2020-11-01T00:00:00+01:00 TO 2020-12-06T23:59:59+01:00])';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult);
+      
+    });
+
+
+    it('Should parse the following query labels:"Digitale week" AND (dateRange:[2016-10-07T22\:00\:00%2B00\:00 TO 2016-10-16T21\:59\:59%2B00\:00] OR (dateRange:[2016-10-07T22\:00\:00%2B00\:00 TO 2016-10-16T21\:59\:59%2B00\:00] OR calendarType:permanent))', function() {
+ 
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+          "type": "root",
+          "nodes": [
+            {
+              "type": "group",
+              "operator": "AND",
+              "nodes": [
+                {
+                  "field": "labels",
+                  "fieldType": "string",
+                  "transformer": "=",
+                  "term": "Digitale week",
+                  "name": "keywords",
+                },
+                {
+                  "field": "dateRange",
+                  "fieldType": "date-range",
+                  "transformer": "><",
+                  "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
+                  "upperBound": new Date("2016-10-16T21:59:59.000Z"),
+                  "inclusive": true,
+                  "name": "date",
+                }
+              ],
+            },
+            {
+              "type": "group",
+              "operator": "OR",
+              "nodes": [
+                {
+                  "field": "dateRange",
+                  "fieldType": "date-range",
+                  "transformer": "><",
+                  "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
+                  "upperBound": new Date("2016-10-16T21:59:59.000Z"),
+                  "inclusive": true,
+                  "name": "date",
+                },
+                {
+                  "field": "calendarType",
+                  "fieldType": "check",
+                  "transformer": "=",
+                  "term": "permanent",
+                  "name": "permanent",
+                }
+              ],
+            }
+          ],
+          "operator": "AND"
+      }
+
+      var query = 'labels:"Digitale week" AND (dateRange:[2016-10-07T22\:00\:00+00\:00 TO 2016-10-16T21\:59\:59+00\:00] OR (dateRange:[2016-10-07T22\:00\:00+00\:00 TO 2016-10-16T21\:59\:59+00\:00] OR calendarType:permanent))';
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult);
+
+    })
+
 });

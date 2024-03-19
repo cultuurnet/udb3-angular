@@ -24074,7 +24074,9 @@ function QueryEditorController(
 
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
+    console.log('parsedLuceneQuery', parsedLuceneQuery);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
+    console.log('groupedTree', groupedTree);
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
       if (node.type === 'field') {
@@ -24085,8 +24087,8 @@ function QueryEditorController(
         subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
 
         if (subNode.fieldType === 'date-range') {
-          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound);
-          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound);
+          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound.replace(/\\/g, ''));
+          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound.replace(/\\/g, ''));
           delete subNode.term;
         }
 
@@ -25046,7 +25048,6 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @return  {object}              - A grouped field information tree
    */
 
-  // probably use this?
   this.groupQueryTree = function (queryTree) {
     var groupedFieldTree = {
       type: 'root',
@@ -25246,8 +25247,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         newFieldGroup.excluded = true;
       }
 
-      fieldTree.nodes.push(newFieldGroup);
-      fieldGroup = newFieldGroup;
+      if (rootOperator !== 'AND') {
+        fieldTree.nodes.push(newFieldGroup);
+        fieldGroup = newFieldGroup;
+      }
     }
 
     // Track the last used field name to apply to implicitly defined terms
