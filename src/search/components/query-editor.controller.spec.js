@@ -631,54 +631,54 @@ describe('QueryEditorController', function() {
       var controller = $controller('QueryEditorController', { $scope: $scope });
 
       var expectedResult = {
-          "type": "root",
-          "nodes": [
-            {
-              "type": "group",
-              "operator": "AND",
-              "nodes": [
-                {
-                  "field": "labels",
-                  "fieldType": "string",
-                  "transformer": "=",
-                  "term": "Digitale week",
-                  "name": "keywords",
-                },
-                {
-                  "field": "dateRange",
-                  "fieldType": "date-range",
-                  "transformer": "><",
-                  "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
-                  "upperBound": new Date("2016-10-16T21:59:59.000Z"),
-                  "inclusive": true,
-                  "name": "date",
-                }
-              ],
-            },
-            {
-              "type": "group",
-              "operator": "OR",
-              "nodes": [
-                {
-                  "field": "dateRange",
-                  "fieldType": "date-range",
-                  "transformer": "><",
-                  "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
-                  "upperBound": new Date("2016-10-16T21:59:59.000Z"),
-                  "inclusive": true,
-                  "name": "date",
-                },
-                {
-                  "field": "calendarType",
-                  "fieldType": "check",
-                  "transformer": "=",
-                  "term": "permanent",
-                  "name": "permanent",
-                }
-              ],
-            }
-          ],
-          "operator": "AND"
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "dateRange",
+                "fieldType": "date-range",
+                "transformer": "><",
+                "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
+                "upperBound": new Date("2016-10-16T21:59:59.000Z"),
+                "inclusive": true,
+                "name": "date",
+              },
+              {
+                "field": "dateRange",
+                "fieldType": "date-range",
+                "transformer": "><",
+                "lowerBound": new Date("2016-10-07T22:00:00.000Z"),
+                "upperBound": new Date("2016-10-16T21:59:59.000Z"),
+                "inclusive": true,
+                "name": "date",
+              },
+              {
+                "field": "calendarType",
+                "fieldType": "check",
+                "transformer": "=",
+                "term": "permanent",
+                "name": "permanent",
+              },
+              {
+                "type": "group",
+                "operator": "AND",
+                "nodes": [
+                  {
+                    "field": "labels",
+                    "fieldType": "string",
+                    "transformer": "=",
+                    "term": "Digitale week",
+                    "name": "keywords",
+                  }
+                ],
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
       }
 
       var query = 'labels:"Digitale week" AND (dateRange:[2016-10-07T22\:00\:00+00\:00 TO 2016-10-16T21\:59\:59+00\:00] OR (dateRange:[2016-10-07T22\:00\:00+00\:00 TO 2016-10-16T21\:59\:59+00\:00] OR calendarType:permanent))';
@@ -686,5 +686,219 @@ describe('QueryEditorController', function() {
       expect(result).toEqual(expectedResult);
 
     })
+
+
+    it('Should parse a complex query', function() {
+
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Berlaar",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Grobbendonk",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Heist-op-den-berg",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Herentals",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Herenthout",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Hulshout",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Lier",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Lille",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Nijlen",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Olen",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Putte",
+                "name": "city",
+              },
+              {
+                "field": "address.\\*.addressLocality",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "Vorselaar",
+                "name": "city",
+              },
+              {
+                "type": "group",
+                "operator": "AND",
+                "nodes": [
+                  {
+                    "field": "dateRange",
+                    "fieldType": "date-range",
+                    "transformer": ">",
+                    "lowerBound": new Date("2019-02-26T22:00:00.000Z"),
+                    "upperBound": "*",
+                    "inclusive": true,
+                    "name": "date",
+                  }
+                ],
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
+      }
+
+      var query = '(address.\\*.addressLocality:Berlaar OR (address.\\*.addressLocality:Grobbendonk OR (address.\\*.addressLocality:Heist-op-den-berg OR (address.\\*.addressLocality:Herentals OR (address.\\*.addressLocality:Herenthout OR (address.\\*.addressLocality:Hulshout OR (address.\\*.addressLocality:Lier OR (address.\\*.addressLocality:Lille OR (address.\\*.addressLocality:Nijlen OR (address.\\*.addressLocality:Olen OR (address.\\*.addressLocality:Putte OR address.\\*.addressLocality:Vorselaar))))))))))) AND dateRange:[2019-02-26T22\:00\:00+00\:00 TO *]'
+      var result = controller.parseModalValuesFromQuery(query);
+      expect(result).toEqual(expectedResult);
+
+    });
+
+
+    it ('Should parse an advanced query', function(){
+
+      var $scope = $rootScope.$new();
+      var controller = $controller('QueryEditorController', { $scope: $scope });
+
+      var expectedResult = {
+        "type": "root",
+        "nodes": [
+          {
+            "type": "group",
+            "operator": "OR",
+            "nodes": [
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "streaming2020",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "virtueletoursmusea",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "uitpascoronaproof",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "workshopscoronaproof",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "liveonline",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "liveregistratie",
+                "name": "keywords",
+              },
+              {
+                "field": "labels",
+                "fieldType": "string",
+                "transformer": "=",
+                "term": "variacoronaproof",
+                "name": "keywords",
+              },
+              {
+                "type": "group",
+                "operator": "AND",
+                "nodes": [
+                  {
+                    "field": "dateRange",
+                    "fieldType": "date-range",
+                    "transformer": ">",
+                    "lowerBound": new Date("2020-02-29T23:00:00.000Z"),
+                    "upperBound": "*",
+                    "inclusive": true,
+                    "name": "date",
+                  }
+                ],
+              }
+            ],
+          }
+        ],
+        "operator": "AND"
+      }
+
+     var query =  '(labels:streaming2020 OR (labels:virtueletoursmusea OR (labels:uitpascoronaproof OR (labels:workshopscoronaproof OR (labels:liveonline OR (labels:liveregistratie OR labels:variacoronaproof)))))) AND dateRange:[2020-03-01T00:00:00+01:00 TO *]'
+     var result = controller.parseModalValuesFromQuery(query);
+     expect(result).toEqual(expectedResult);
+
+    });
+
 
 });
