@@ -24064,19 +24064,9 @@ function QueryEditorController(
     }
   }
 
-  function getIsFieldExcluded(part) {
-    if (!part) {
-      return false;
-    }
-    var cleanedPart = part.replace('(', '');
-    return cleanedPart && (cleanedPart.indexOf('!') === 0 || cleanedPart.indexOf('-') === 0);
-  }
-
   qe.parseModalValuesFromQuery = function (query) {
     var parsedLuceneQuery = LuceneQueryParser.parse(query);
-    console.log('parsedLuceneQuery', parsedLuceneQuery);
     var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
-    console.log('groupedTree', groupedTree);
 
     groupedTree.nodes = groupedTree.nodes.map(function(node) {
       if (node.type === 'field') {
@@ -24112,6 +24102,15 @@ function QueryEditorController(
       return node.nodes.length > 0;
     });
 
+    if (groupedTree.nodes[0].operator === 'AND' &&
+      groupedTree.nodes.length > 1 &&
+      groupedTree.nodes[0].nodes.length === 1
+    ) {
+      var firstGroup = groupedTree.nodes[0];
+      groupedTree.nodes.splice(0, 1);
+      groupedTree.nodes[0].nodes.push(firstGroup);
+    }
+
     return groupedTree;
   };
 
@@ -24120,7 +24119,6 @@ function QueryEditorController(
 
   if (advancedSearchQuery) {
     var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
-    console.log('modalValues', modalValues);
     qe.groupedQueryTree = modalValues;
   }
 
@@ -25247,10 +25245,8 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         newFieldGroup.excluded = true;
       }
 
-      if (rootOperator !== 'AND') {
-        fieldTree.nodes.push(newFieldGroup);
-        fieldGroup = newFieldGroup;
-      }
+      fieldTree.nodes.push(newFieldGroup);
+      fieldGroup = newFieldGroup;
     }
 
     // Track the last used field name to apply to implicitly defined terms
