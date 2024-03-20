@@ -23373,6 +23373,10 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
 
       });
     };
+
+    scope.openAnnouncementModal = function () {
+      window.parent.postMessage({source: 'UDB', type: 'OPEN_ANNOUNCEMENT_MODAL', id: '767524'}, '*');
+    };
   }
 
   function displayErrorModal() {
@@ -33104,6 +33108,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <button href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-default rv-action\">\n" +
     "        <i class=\"fa fa-save\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
     "    </button>\n" +
+    "    <span style=\"cursor:pointer;color:#999999;margin-left: 5px;\" ng-click=\"openAnnouncementModal()\">\n" +
+    "        <i class=\"fa fa-question-circle\"></i>\n" +
+    "    </span>\n" +
     "</p>\n"
   );
 
