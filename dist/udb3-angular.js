@@ -33054,8 +33054,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <ul class=\"nav nav-tabs\">\n" +
-    "        <li  ng-class=\"{active: isTabActive('new')}\"><a ng-click=\"makeTabActive('new')\" translate-once=\"search.savedSearches.modal.newTab\"></a></li>\n" +
-    "        <li  ng-class=\"{active: isTabActive('existing')}\"><a ng-click=\"makeTabActive('existing')\" translate-once=\"search.savedSearches.modal.existingTab\"></a></li>\n" +
+    "        <li ng-class=\"{active: isTabActive('new')}\"><a style=\"cursor: pointer;\" ng-click=\"makeTabActive('new')\" translate-once=\"search.savedSearches.modal.newTab\"></a></li>\n" +
+    "        <li ng-class=\"{active: isTabActive('existing')}\"><a style=\"cursor: pointer;\" ng-click=\"makeTabActive('existing')\" translate-once=\"search.savedSearches.modal.existingTab\"></a></li>\n" +
     "    </ul>\n" +
     "\n" +
     "    \n" +
