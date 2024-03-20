@@ -45,6 +45,10 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
 
       });
     };
+
+    scope.openAnnouncementModal = function () {
+      window.parent.postMessage({source: 'UDB', type: 'OPEN_ANNOUNCEMENT_MODAL', id: '767524'}, '*');
+    };
   }
 
   function displayErrorModal() {
