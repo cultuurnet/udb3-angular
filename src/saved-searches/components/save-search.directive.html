@@ -1,6 +1,9 @@
 <p>
     <strong translate-once="search.savedSearches.yourSearch"></strong>
-    <a href="#" ng-click="saveSearch()" class="btn btn-sm btn-default">
-        <i class="fa fa-bookmark-o"></i> <span translate-once="search.savedSearches.save"></span>
-    </a>
+    <button href="#" ng-click="saveSearch()" class="btn btn-default rv-action">
+        <i class="fa fa-save"></i> <span translate-once="search.savedSearches.save"></span>
+    </button>
+    <span style="cursor:pointer;color:#999999;margin-left: 5px;" ng-click="openAnnouncementModal()">
+        <i class="fa fa-question-circle"></i>
+    </span>
 </p>
