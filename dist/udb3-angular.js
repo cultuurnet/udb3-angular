@@ -23375,7 +23375,11 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
     };
 
     scope.openAnnouncementModal = function () {
-      window.parent.postMessage({source: 'UDB', type: 'OPEN_ANNOUNCEMENT_MODAL', id: '767524'}, '*');
+      window.parent.postMessage({
+        source: 'UDB',
+        type: 'OPEN_ANNOUNCEMENT_MODAL',
+        id: '2833ab49-cf44-4504-89d1-f6ba3f81aa63'
+      }, '*');
     };
   }
 
