@@ -29,7 +29,7 @@ describe('Directive: udbSaveSearch', function () {
     $rootScope.queryString = 'city:leuven';
     var element = $compile('<udb-save-search udb-query-string="queryString"></udb-save-search>')($rootScope);
     $rootScope.$digest();
-    element.find('a').triggerHandler('click');
+    element.find('button').triggerHandler('click');
     spyOn(savedSearchesService, 'createSavedSearch').and.callFake(function() {
       apiRequest = $q.defer();
       return apiRequest.promise;
