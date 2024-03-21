@@ -346,7 +346,8 @@ angular.module('udb.core')
       'sameAs': 'IDs externes',
       'typicalAgeRange': ' ge',
       'language': 'Langue',
-      'audience': 'Accès'
+      'audience': 'Accès',
+      'completeness': 'Intégralité'
     },
     preview: {
       tabs: {

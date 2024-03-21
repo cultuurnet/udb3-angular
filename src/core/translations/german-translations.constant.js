@@ -344,6 +344,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'typicalAgeRange': 'Alter',
     'language': 'Sprache',
     'audience': 'Zutritt',
+    'completeness': 'Integrität'
   },
   'preview': {
     'tabs': {
