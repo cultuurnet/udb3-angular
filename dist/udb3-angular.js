@@ -33107,7 +33107,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/save-search.directive.html',
-    "<p>\n" +
+    "<p style=\"margin-top: 12px;\">\n" +
     "    <strong translate-once=\"search.savedSearches.yourSearch\"></strong>\n" +
     "    <button href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-default rv-action\">\n" +
     "        <i class=\"fa fa-save\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
