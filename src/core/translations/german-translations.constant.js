@@ -838,6 +838,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'status': 'Status',
     'booking_availability': 'Tickets & Plätze',
     'organiser_label': 'Organisation (Name)',
+    'completeness': 'integrität',
     'add_facility': 'Ausstattung',
     'category_targetaudience_name': 'Zielgruppe',
     'startdate': 'Startdatum',

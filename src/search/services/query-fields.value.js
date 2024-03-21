@@ -53,6 +53,7 @@ angular
     {name: 'status', field: 'status', type: 'choice', group: 'other', editable: true, options: ['Available', 'Unavailable', 'TemporarilyUnavailable']},
     {name: 'booking_availability', field: 'bookingAvailability', type: 'choice', group: 'other', editable: true, options: ['available', 'unavailable']},
     {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
+    {name: 'completeness', field: 'completeness', type: 'number' , group: 'other', editable: true},
     {name: 'category_facility_name', field:'terms.id', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
 
