@@ -346,7 +346,8 @@ angular.module('udb.core')
       'sameAs': 'IDs externes',
       'typicalAgeRange': ' ge',
       'language': 'Langue',
-      'audience': 'Accès'
+      'audience': 'Accès',
+      'completeness': 'Intégralité'
     },
     preview: {
       tabs: {
@@ -782,6 +783,7 @@ angular.module('udb.core')
       'status': 'status',
       'booking_availability': 'billets & places',
       'organiser_label': 'organisation (nom)',
+      'completeness': 'intégralité',
       'category_facility_name': 'dispositions',
       'category_targetaudience_name': 'public cible',
       'startdate': 'date de début',

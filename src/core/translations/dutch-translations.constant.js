@@ -346,7 +346,8 @@ angular.module('udb.core')
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
       'language': 'Taal',
-      'audience': 'Toegang'
+      'audience': 'Toegang',
+      'completeness': 'Volledigheid'
     },
     preview: {
       tabs: {
@@ -787,6 +788,7 @@ angular.module('udb.core')
       'status': 'status',
       'booking_availability': 'tickets & plaatsen',
       'organiser_label': 'organisatie (naam)',
+      'completeness': 'volledigheid',
       'category_facility_name': 'voorzieningen',
       'category_targetaudience_name': 'doelgroep',
       'startdate': 'startdatum',

@@ -3122,7 +3122,8 @@ angular.module('udb.core')
       'sameAs': 'Externe IDs',
       'typicalAgeRange': 'Leeftijd',
       'language': 'Taal',
-      'audience': 'Toegang'
+      'audience': 'Toegang',
+      'completeness': 'Volledigheid'
     },
     preview: {
       tabs: {
@@ -3563,6 +3564,7 @@ angular.module('udb.core')
       'status': 'status',
       'booking_availability': 'tickets & plaatsen',
       'organiser_label': 'organisatie (naam)',
+      'completeness': 'volledigheid',
       'category_facility_name': 'voorzieningen',
       'category_targetaudience_name': 'doelgroep',
       'startdate': 'startdatum',
@@ -4329,7 +4331,8 @@ angular.module('udb.core')
       'sameAs': 'IDs externes',
       'typicalAgeRange': ' ge',
       'language': 'Langue',
-      'audience': 'Accès'
+      'audience': 'Accès',
+      'completeness': 'Intégralité'
     },
     preview: {
       tabs: {
@@ -4765,6 +4768,7 @@ angular.module('udb.core')
       'status': 'status',
       'booking_availability': 'billets & places',
       'organiser_label': 'organisation (nom)',
+      'completeness': 'intégralité',
       'category_facility_name': 'dispositions',
       'category_targetaudience_name': 'public cible',
       'startdate': 'date de début',
@@ -5527,6 +5531,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'typicalAgeRange': 'Alter',
     'language': 'Sprache',
     'audience': 'Zutritt',
+    'completeness': 'Integrität'
   },
   'preview': {
     'tabs': {
@@ -6020,6 +6025,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'status': 'Status',
     'booking_availability': 'Tickets & Plätze',
     'organiser_label': 'Organisation (Name)',
+    'completeness': 'integrität',
     'add_facility': 'Ausstattung',
     'category_targetaudience_name': 'Zielgruppe',
     'startdate': 'Startdatum',
@@ -18042,7 +18048,8 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     {name: 'sameAs', include: false, sortable: false, excludable: true},
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
     {name: 'language', include: false, sortable: false, excludable: true},
-    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML}
+    {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML},
+    {name: 'completeness', include: false, sortable: false, excludable: true}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);
@@ -23373,6 +23380,14 @@ function udbSaveSearch(savedSearchesService, $uibModal) {
 
       });
     };
+
+    scope.openAnnouncementModal = function () {
+      window.parent.postMessage({
+        source: 'UDB',
+        type: 'OPEN_ANNOUNCEMENT_MODAL',
+        id: '2833ab49-cf44-4504-89d1-f6ba3f81aa63'
+      }, '*');
+    };
   }
 
   function displayErrorModal() {
@@ -25477,6 +25492,7 @@ angular
     {name: 'status', field: 'status', type: 'choice', group: 'other', editable: true, options: ['Available', 'Unavailable', 'TemporarilyUnavailable']},
     {name: 'booking_availability', field: 'bookingAvailability', type: 'choice', group: 'other', editable: true, options: ['available', 'unavailable']},
     {name: 'organiser_label', field: 'organizer.name.\\*', type: 'tokenized-string', group: 'other', editable: true},
+    {name: 'completeness', field: 'completeness', type: 'number' , group: 'other', editable: true},
     {name: 'category_facility_name', field:'terms.id', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
 
@@ -33197,8 +33213,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    </div>\n" +
     "\n" +
     "    <ul class=\"nav nav-tabs\">\n" +
-    "        <li  ng-class=\"{active: isTabActive('new')}\"><a ng-click=\"makeTabActive('new')\" translate-once=\"search.savedSearches.modal.newTab\"></a></li>\n" +
-    "        <li  ng-class=\"{active: isTabActive('existing')}\"><a ng-click=\"makeTabActive('existing')\" translate-once=\"search.savedSearches.modal.existingTab\"></a></li>\n" +
+    "        <li ng-class=\"{active: isTabActive('new')}\"><a style=\"cursor: pointer;\" ng-click=\"makeTabActive('new')\" translate-once=\"search.savedSearches.modal.newTab\"></a></li>\n" +
+    "        <li ng-class=\"{active: isTabActive('existing')}\"><a style=\"cursor: pointer;\" ng-click=\"makeTabActive('existing')\" translate-once=\"search.savedSearches.modal.existingTab\"></a></li>\n" +
     "    </ul>\n" +
     "\n" +
     "    \n" +
@@ -33242,11 +33258,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/save-search.directive.html',
-    "<p>\n" +
+    "<p style=\"margin-top: 12px;\">\n" +
     "    <strong translate-once=\"search.savedSearches.yourSearch\"></strong>\n" +
-    "    <a href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-sm btn-default\">\n" +
-    "        <i class=\"fa fa-bookmark-o\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
-    "    </a>\n" +
+    "    <button href=\"#\" ng-click=\"saveSearch()\" class=\"btn btn-default rv-action\">\n" +
+    "        <i class=\"fa fa-save\"></i> <span translate-once=\"search.savedSearches.save\"></span>\n" +
+    "    </button>\n" +
+    "    <span style=\"cursor:pointer;color:#999999;margin-left: 5px;\" ng-click=\"openAnnouncementModal()\">\n" +
+    "        <i class=\"fa fa-question-circle\"></i>\n" +
+    "    </span>\n" +
     "</p>\n"
   );
 
