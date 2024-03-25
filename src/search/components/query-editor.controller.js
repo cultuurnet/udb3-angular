@@ -18,6 +18,7 @@ angular
 
 /* @ngInject */
 function QueryEditorController(
+  LuceneQueryParser,
   queryFields,
   LuceneQueryBuilder,
   taxonomyTerms,
@@ -73,7 +74,136 @@ function QueryEditorController(
       ]
     };
   };
+
   qe.groupedQueryTree = searchHelper.getQueryTree() || qe.getDefaultQueryTree();
+
+  // Create a mapping from the 'field' value in the definitions to the corresponding object
+  var fieldMapping = queryFields.filter(function(queryField) {
+    return queryField.hasOwnProperty('name') && queryField.name !== 'startdate' && queryField.name !== 'enddate';
+  }).reduce(function(map, def) {
+    map[def.field] = def;
+    return map;
+  }, {});
+
+  var fieldMappingByName = queryFields.filter(function(queryField) {
+    return queryField.name !== 'startdate' && queryField.name !== 'enddate';
+  }).reduce(function(map, def) {
+    map[def.name] = def;
+    return map;
+  }, {});
+
+  function isSameDay(date1, date2) {
+    return date1.getDate() === date2.getDate() &&
+        date1.getMonth() === date2.getMonth() &&
+        date1.getFullYear() === date2.getFullYear();
+  }
+
+  function getFieldTransformer(fieldNode) {
+
+    if (fieldNode.fieldType === 'tokenized-string') {
+      return fieldNode.transformer === '=' ? '+' : '-';
+    }
+
+    if (fieldNode.fieldType === 'date-range') {
+      if (fieldNode.upperBound === '*') {
+        return '>';
+      }
+      if (fieldNode.lowerBound === '*') {
+        return '<';
+      }
+
+      if (!isSameDay(fieldNode.lowerBound, fieldNode.upperBound)) {
+        return '><';
+      }
+
+      return '=';
+    }
+
+    if (fieldNode.fieldType === 'check') {
+      return '=';
+    }
+
+    return fieldNode.transformer;
+
+  }
+
+  function getFieldNameForTermsId(id) {
+    var foundTerms = taxonomyTerms.filter(function(term) {
+      return term.id === id;
+    });
+
+    var term = foundTerms[0];
+
+    if (term.domain === 'theme') {
+      return 'category_theme_name';
+    }
+
+    if (term.domain === 'facility') {
+      return 'category_facility_name';
+    }
+
+    if (term.domain === 'eventtype') {
+      return term.scope && term.scope.indexOf('events') !== -1 ?  'category_eventtype_name' : 'locationtype';
+    }
+  }
+
+  qe.parseModalValuesFromQuery = function (query) {
+    var parsedLuceneQuery = LuceneQueryParser.parse(query);
+    var groupedTree = queryBuilder.groupQueryTree(parsedLuceneQuery);
+
+    groupedTree.nodes = groupedTree.nodes.map(function(node) {
+      if (node.type === 'field') {
+        node.type = 'group';
+      }
+      node.nodes = node.nodes.map(function(subNode) {
+        subNode.name = fieldMapping[subNode.field].name;
+        subNode.fieldType = fieldMapping[subNode.field].type || 'unknown';
+
+        if (subNode.fieldType === 'date-range') {
+          subNode.lowerBound = subNode.lowerBound === '*' ?  '*' :  new Date(subNode.lowerBound.replace(/\\/g, ''));
+          subNode.upperBound = subNode.upperBound === '*' ? '*' :  new Date(subNode.upperBound.replace(/\\/g, ''));
+          delete subNode.term;
+        }
+
+        if (subNode.field === 'terms.id') {
+          var fieldName =  getFieldNameForTermsId(subNode.term);
+          var fieldDef = fieldMappingByName[fieldName] || {};
+          subNode.name = fieldDef.name;
+        }
+
+        if (subNode.name === 'permanent' && subNode.transformer === '!') {
+          subNode.term = '(!permanent)';
+        }
+
+        subNode.transformer = getFieldTransformer(subNode);
+        return subNode;
+      });
+      return node;
+    });
+
+    groupedTree.nodes = groupedTree.nodes.filter(function(node) {
+      return node.nodes.length > 0;
+    });
+
+    if (groupedTree.nodes[0].operator === 'AND' &&
+      groupedTree.nodes.length > 1 &&
+      groupedTree.nodes[0].nodes.length === 1
+    ) {
+      var firstGroup = groupedTree.nodes[0];
+      groupedTree.nodes.splice(0, 1);
+      groupedTree.nodes[0].nodes.push(firstGroup);
+    }
+
+    return groupedTree;
+  };
+
+  var currentUrl = new URL(window.location.href);
+  var advancedSearchQuery =  currentUrl.searchParams ? currentUrl.searchParams.get('query') : undefined;
+
+  if (advancedSearchQuery) {
+    var modalValues = qe.parseModalValuesFromQuery(advancedSearchQuery);
+    qe.groupedQueryTree = modalValues;
+  }
 
   // Holds options for both term and choice query-field types
   qe.transformers = {};
@@ -124,6 +254,7 @@ function QueryEditorController(
 
     if (group.nodes.length) {
       group.type = 'group';
+      group.operator = 'OR';
     }
   };
 

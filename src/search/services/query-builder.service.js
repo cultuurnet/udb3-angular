@@ -330,6 +330,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    *
    * @return  {object}              - A grouped field information tree
    */
+
   this.groupQueryTree = function (queryTree) {
     var groupedFieldTree = {
       type: 'root',
@@ -465,6 +466,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
                 field.transformer = '<';
               } else if (field.lowerBound && field.upperBound === '*') {
                 field.transformer = '>';
+              } else if (field.lowerBound && field.upperBound) {
+                field.transformer = '><';
+                field.lowerBound = field.lowerBound;
+                field.upperBound = field.upperBound;
               } else {
                 field.transformer = '=';
                 field.term = field.lowerBound || field.upperBound;
@@ -509,7 +514,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
    * @param {object}  fieldTree     - The field tree that will be returned
    * @param {object}  [fieldGroup]  - Keeps track of the current field group
    */
-  this.groupNode = function (branch, fieldTree, fieldGroup) {
+  this.groupNode = function (branch, fieldTree, fieldGroup, rootOperator) {
     // if the operator is implicit, you're dealing with grouped terms eg: field:(term1 term2)
     if (branch.operator === implicitToken) {
       branch.operator = 'OR';
@@ -520,6 +525,10 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         operator: branch.operator || 'OR',
         nodes: []
       };
+
+      if (rootOperator === 'NOT') {
+        newFieldGroup.excluded = true;
+      }
 
       fieldTree.nodes.push(newFieldGroup);
       fieldGroup = newFieldGroup;
@@ -538,7 +547,7 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
         if (fieldGroup.implicitField) {
           field = fieldGroup.implicitField;
         } else {
-          throw 'Field name is implicit and not defined elsewhere.';
+          // throw 'Field name is implicit and not defined elsewhere.';
         }
       }
 
@@ -548,9 +557,11 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     if (branch.left) {
       this.groupNode(branch.left, fieldTree, fieldGroup);
       if (branch.right) {
-        this.groupNode(branch.right, fieldTree, fieldGroup);
+        var passFieldGroup = branch.operator !== 'NOT' ? fieldGroup : undefined;
+        this.groupNode(branch.right, fieldTree, passFieldGroup, branch.operator);
       }
     }
+
   };
 
   /**
