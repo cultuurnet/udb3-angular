@@ -101,7 +101,8 @@
                     <span translate-once="preview.labels_success" translate-values="{ addedLabel: '{{addedLabel}}' }"></span>
                   </p>
                   <p ng-if="labelResponse === 'unlabelError'" class="alert alert-danger">
-                    <span ng-bind="labelsError"></span>
+                    <span ng-if="labelsError !== 'Label not allowed'" ng-bind="labelsError"></span>
+                    <span ng-if="labelsError === 'Label not allowed'" translate-once="errors.labelNotAllowed"></span>
                   </p>
                 </td>
               </tr>
