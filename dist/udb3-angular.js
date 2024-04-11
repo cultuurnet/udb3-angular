@@ -3125,6 +3125,9 @@ angular.module('udb.core')
       'audience': 'Toegang',
       'completeness': 'Volledigheid'
     },
+    errors: {
+      labelNotAllowed: 'Dit label is toegevoegd door een andere gebruiker of organisatie en kan je niet verwijderen.'
+    },
     preview: {
       tabs: {
         'data': 'Gegevens',
@@ -4334,6 +4337,9 @@ angular.module('udb.core')
       'audience': 'Accès',
       'completeness': 'Intégralité'
     },
+    errors: {
+      labelNotAllowed: 'Ce label a été ajouté par un autre utilisateur ou une autre organisation et ne peut pas être supprimé.'
+    },
     preview: {
       tabs: {
         'data': 'Données',
@@ -5532,6 +5538,9 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'language': 'Sprache',
     'audience': 'Zutritt',
     'completeness': 'Integrität'
+  },
+  'errors': {
+    'labelNotAllowed': 'Dieses Label wurde von einem anderen Benutzer oder einer anderen Organisation hinzugefügt und kann nicht entfernt werden.'
   },
   'preview': {
     'tabs': {
@@ -28901,7 +28910,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                    <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                  </p>\n" +
     "                  <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                    <span ng-bind=\"labelsError\"></span>\n" +
+    "                    <span ng-if=\"labelsError !== 'Label not allowed'\" ng-bind=\"labelsError\"></span>\n" +
+    "                    <span ng-if=\"labelsError === 'Label not allowed'\" translate-once=\"errors.labelNotAllowed\"></span>\n" +
     "                  </p>\n" +
     "                </td>\n" +
     "              </tr>\n" +
@@ -32925,7 +32935,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                              label-added=\"odc.addLabel(label)\"\n" +
     "                              label-removed=\"odc.deleteLabel(label)\"></udb-label-select>\n" +
     "            <div ng-if=\"odc.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                <span ng-bind=\"odc.labelsError\"></span>\n" +
+    "                <span ng-if=\"odc.labelsError !== 'Label not allowed'\" ng-bind=\"odc.labelsError\"></span>\n" +
+    "                <span ng-if=\"odc.labelsError === 'Label not allowed'\" translate-once=\"errors.labelNotAllowed\"></span>\n" +
     "            </div>\n" +
     "          </td>\n" +
     "        </tr>\n" +
@@ -33122,7 +33133,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                  <span translate-once=\"preview.labels_success\" translate-values=\"{ addedLabel: '{{addedLabel}}' }\"></span>\n" +
     "                </p>\n" +
     "                <p ng-if=\"labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "                  <span ng-bind=\"labelsError\"></span>\n" +
+    "                  <span ng-if=\"labelsError !== 'Label not allowed'\" ng-bind=\"labelsError\"></span>\n" +
+    "                  <span ng-if=\"labelsError === 'Label not allowed'\" translate-once=\"errors.labelNotAllowed\"></span>\n" +
     "                </p>\n" +
     "              </td>\n" +
     "            </tr>\n" +
@@ -33845,7 +33857,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
     "          </div>\n" +
     "          <div ng-if=\"eventCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "            <span ng-bind=\"eventCtrl.labelsError\"></span>\n" +
+    "            <span ng-if=\"eventCtrl.labelsError !== 'Label not allowed'\" ng-bind=\"eventCtrl.labelsError\"></span>\n" +
+    "            <span ng-if=\"eventCtrl.labelsError === 'Label not allowed'\" translate-once=\"errors.labelNotAllowed\"></span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
@@ -34023,7 +34036,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            Het label '{{placeCtrl.addedLabel}}' werd succesvol toegevoegd.\n" +
     "          </div>\n" +
     "          <div ng-if=\"placeCtrl.labelResponse === 'unlabelError'\" class=\"alert alert-danger\">\n" +
-    "            <span ng-bind=\"placeCtrl.labelsError\"></span>\n" +
+    "            <span ng-if=\"placeCtrl.labelsError !== 'Label not allowed'\" ng-bind=\"placeCtrl.labelsError\"></span>\n" +
+    "            <span ng-if=\"placeCtrl.labelsError === 'Label not allowed'\" translate-once=\"errors.labelNotAllowed\"></span>\n" +
     "          </div>\n" +
     "        </div>\n" +
     "      </div>\n" +
