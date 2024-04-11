@@ -155,7 +155,8 @@
             Het label '{{eventCtrl.addedLabel}}' werd succesvol toegevoegd.
           </div>
           <div ng-if="eventCtrl.labelResponse === 'unlabelError'" class="alert alert-danger">
-            <span ng-bind="eventCtrl.labelsError"></span>
+            <span ng-if="eventCtrl.labelsError !== 'Label not allowed'" ng-bind="eventCtrl.labelsError"></span>
+            <span ng-if="eventCtrl.labelsError === 'Label not allowed'" translate-once="errors.labelNotAllowed"></span>
           </div>
         </div>
       </div>
