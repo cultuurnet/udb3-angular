@@ -87,7 +87,8 @@
                               label-added="odc.addLabel(label)"
                               label-removed="odc.deleteLabel(label)"></udb-label-select>
             <div ng-if="odc.labelResponse === 'unlabelError'" class="alert alert-danger">
-                <span ng-bind="odc.labelsError"></span>
+                <span ng-if="odc.labelsError !== 'Label not allowed'" ng-bind="odc.labelsError"></span>
+                <span ng-if="odc.labelsError === 'Label not allowed'" translate-once="errors.labelNotAllowed"></span>
             </div>
           </td>
         </tr>

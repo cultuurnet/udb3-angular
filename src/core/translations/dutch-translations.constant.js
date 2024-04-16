@@ -349,6 +349,9 @@ angular.module('udb.core')
       'audience': 'Toegang',
       'completeness': 'Volledigheid'
     },
+    errors: {
+      labelNotAllowed: 'Dit label is toegevoegd door een andere gebruiker of organisatie en kan je niet verwijderen.'
+    },
     preview: {
       tabs: {
         'data': 'Gegevens',
