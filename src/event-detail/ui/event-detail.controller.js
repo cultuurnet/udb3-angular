@@ -21,6 +21,7 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
+  $location,
   offerLabeller,
   $translate,
   appConfig,
@@ -44,6 +45,8 @@ function EventDetail(
 
     $q.all([permission, offer])
       .then(grantPermissions);
+  }, function() {
+    $location.path('404');
   });
 
   /**

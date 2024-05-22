@@ -11737,6 +11737,7 @@ function EventDetail(
   $uibModal,
   $q,
   $window,
+  $location,
   offerLabeller,
   $translate,
   appConfig,
@@ -11760,6 +11761,8 @@ function EventDetail(
 
     $q.all([permission, offer])
       .then(grantPermissions);
+  }, function() {
+    $location.path('404');
   });
 
   /**
@@ -12135,7 +12138,7 @@ function EventDetail(
     return ($scope.event && $scope.permissions);
   };
 }
-EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "$state", "$uibModal", "$q", "$window", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
+EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "$state", "$uibModal", "$q", "$window", "$location", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
 
 // Source: src/event_form/calendar-labels.constant.js
