@@ -21,7 +21,7 @@ function OfferLanguagesModalCtrl($uibModalInstance) {
     {
       label: 'één taalicoon',
       value: 'één taalicoon',
-      text: 'om te kunnen deelnemen, moet je nog niet veel Nederlands spreken of gebruiken.'
+      text: 'deelnemers begrijpen en spreken nog niet veel Nederlands.'
     },
     {
       label: 'twee taaliconen',
