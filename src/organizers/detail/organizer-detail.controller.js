@@ -26,7 +26,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
   controller.canEdit = canEdit;
-  controller.isClaimOwnershipEnabled = isClaimOwnershipEnabled;
+  controller.isOwnershipEnabled = isOwnershipEnabled;
   controller.permissions = [];
 
   function loadOrganizer(organizerId) {
@@ -96,9 +96,9 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     openOrganizationDeleteConfirmModal(controller.organizer);
   }
 
-  function isClaimOwnershipEnabled () {
+  function isOwnershipEnabled () {
     var searchParams = $location.search();
-    return searchParams.claimOwnership === 'true';
+    return searchParams.ownership === 'true';
   }
 
   function openOrganizationDeleteConfirmModal(organizer) {

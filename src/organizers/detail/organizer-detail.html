@@ -18,7 +18,7 @@
       class="list-group-item"
       type="button"
       ui-sref="split.organizerOwnership({id: odc.organizer.id})"
-      ng-if="!odc.canEdit() && odc.isClaimOwnershipEnabled()"
+      ng-if="!odc.canEdit() && odc.isOwnershipEnabled()"
     >
       <span translate-once="organizer.manage.ownership"></span>
     </button>
