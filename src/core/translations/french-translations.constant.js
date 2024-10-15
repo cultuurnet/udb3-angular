@@ -931,6 +931,7 @@ angular.module('udb.core')
         'delete': 'Supprimer',
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
+        'ownership': 'Gestion des demandes',
         'name': 'Nom',
         'description': 'Description',
         'educational_description': 'Description de Cultuurkuur',
