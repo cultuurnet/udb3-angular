@@ -26,6 +26,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.isManageState = isManageState;
   controller.finishedLoading = finishedLoading;
   controller.canEdit = canEdit;
+  controller.isOwnershipEnabled = isOwnershipEnabled;
   controller.permissions = [];
 
   function loadOrganizer(organizerId) {
@@ -93,6 +94,11 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
 
   function deleteOrganization() {
     openOrganizationDeleteConfirmModal(controller.organizer);
+  }
+
+  function isOwnershipEnabled () {
+    var searchParams = $location.search();
+    return searchParams.ownership === 'true';
   }
 
   function openOrganizationDeleteConfirmModal(organizer) {
