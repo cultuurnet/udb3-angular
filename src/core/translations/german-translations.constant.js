@@ -1019,7 +1019,9 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'delete': 'Löschen',
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
-      'ownership': 'Anforderungsmanagement',
+      'ownerships': {
+        'manage': 'Anforderungsmanagement'
+      },
       'name': 'Name',
       'description': 'Beschreibung',
       'educational_description': 'Beschreibung für Cultuurkuur',
