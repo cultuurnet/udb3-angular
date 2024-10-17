@@ -939,7 +939,9 @@ angular.module('udb.core')
         'delete': 'Verwijderen',
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
-        'ownership': 'Beheer aanvragen',
+        'ownerships': {
+          'manage': 'Beheerders aanpassen'
+        },
         'name': 'Naam',
         'description': 'Beschrijving',
         'educational_description': 'Beschrijving Cultuurkuur',

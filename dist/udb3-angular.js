@@ -3715,7 +3715,9 @@ angular.module('udb.core')
         'delete': 'Verwijderen',
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
-        'ownership': 'Beheer aanvragen',
+        'ownerships': {
+          'manage': 'Beheerders aanpassen'
+        },
         'name': 'Naam',
         'description': 'Beschrijving',
         'educational_description': 'Beschrijving Cultuurkuur',
@@ -4920,7 +4922,9 @@ angular.module('udb.core')
         'delete': 'Supprimer',
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
-        'ownership': 'Gestion des demandes',
+        'ownerships': {
+          'manage': 'Gestion des demandes'
+        },
         'name': 'Nom',
         'description': 'Description',
         'educational_description': 'Description de Cultuurkuur',
@@ -6214,7 +6218,9 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'delete': 'Löschen',
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
-      'ownership': 'Anforderungsmanagement',
+      'ownerships': {
+        'manage': 'Anforderungsmanagement'
+      },
       'name': 'Name',
       'description': 'Beschreibung',
       'educational_description': 'Beschreibung für Cultuurkuur',
@@ -32878,9 +32884,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "      class=\"list-group-item\"\n" +
     "      type=\"button\"\n" +
     "      ui-sref=\"split.organizerOwnership({id: odc.organizer.id})\"\n" +
-    "      ng-if=\"!odc.canEdit() && odc.isOwnershipEnabled()\"\n" +
+    "      ng-if=\"odc.canEdit() && odc.isOwnershipEnabled()\"\n" +
     "    >\n" +
-    "      <span translate-once=\"organizer.manage.ownership\"></span>\n" +
+    "      <span translate-once=\"organizer.manage.ownerships.manage\"></span>\n" +
     "    </button>\n" +
     "      <span ng-if=\"odc.isManageState()\">\n" +
     "        <button class=\"list-group-item\"\n" +
