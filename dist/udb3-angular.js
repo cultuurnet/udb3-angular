@@ -27283,6 +27283,10 @@ function SearchController(
   $scope.currentPage = getCurrentPage();
   $scope.language = $translate.use() || 'nl';
 
+  this.$doCheck = function() {
+      $rootScope.$emit('searchComponentReady');
+    };
+
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
   ];
@@ -33687,7 +33691,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
 
   $templateCache.put('templates/search-bar.directive.html',
-    "<h1 class=\"title\" translate-once=\"search.search\">Zoeken</h1>\n" +
+    "\n" +
     "<form class=\"navbar-form navbar-left udb-header-search\" role=\"search\"\n" +
     "      ng-class=\"{'has-errors': sb.hasErrors, 'is-editing': sb.isEditing}\">\n" +
     "  <div class=\"form-group has-warning has-feedback\">\n" +
