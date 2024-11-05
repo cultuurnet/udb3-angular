@@ -1205,6 +1205,16 @@ angular.module('udb.core')
         search: 'Zoeken',
         syntaxError: 'Je query bevat een fout. Op <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">deze pagina</a> vind je meer informatie over hoe je een zoekopdracht kan samenstellen.',
         invalidField: '{{field}} is geen geldig zoekveld. Op <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">deze pagina</a> vind je meer informatie over hoe je een zoekopdracht kan samenstellen.',
+      },
+      organization: {
+        name: 'Naam',
+        address: 'Adres',
+        info: 'Invoerinformatie',
+        noAddress: 'Geen adres',
+        addOrganizer: 'Organisatie toevoegen',
+        searchOrganization: 'Zoeken op organisatie',
+        notFound: 'Geen organisaties gevonden',
+        error: 'Er ging iets mis tijdens het zoeken:'
       }
     }
   }
