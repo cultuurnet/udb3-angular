@@ -13409,6 +13409,7 @@ button.close {
 .query-search-bar .form-group {
   width: 100%;
   display: flex;
+  align-items: center;
 }
 .query-search-bar #user-search-input {
   width: 50%;
