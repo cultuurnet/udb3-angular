@@ -32075,7 +32075,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <th class=\"col-md-4\" style=\"padding-right: 30px\" translate-once=\"search.organization.info\"></th>\n" +
     "            </tr>\n" +
     "            </thead>\n" +
-    "            <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
+    "            <tbody udb-organization-search-item-new=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
     "            </tbody>\n" +
     "        </table>\n" +
     "        <div class=\"panel-footer\">\n" +
