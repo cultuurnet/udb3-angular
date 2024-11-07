@@ -19770,6 +19770,166 @@ function OrganizationDeleteModalController($uibModalInstance, OrganizerManager, 
 OrganizationDeleteModalController.$inject = ["$uibModalInstance", "OrganizerManager", "organization", "$rootScope"];
 })();
 
+// Source: src/management/organizers/new/organization-search-controller-new.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc function
+ * @name udb.management.organizers.controller:OrganizationSearchControllerNew
+ * @description
+ * # Organization Search Controller
+ */
+angular
+  .module('udb.management.organizers')
+  .controller('OrganizationSearchControllerNew', OrganizationSearchControllerNew);
+
+/* @ngInject */
+function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, OrganizerManager) {
+  var controller = this;
+
+  var itemsPerPage = 10;
+  var minQueryLength = 3;
+  var query$ = rx.createObservableFunction(controller, 'queryChanged');
+  var filteredQuery$ = query$.filter(ignoreShortQueries(minQueryLength));
+  var page$ = rx.createObservableFunction(controller, 'pageChanged');
+  var searchResultGenerator = new SearchResultGenerator(OrganizerManager, filteredQuery$, page$, itemsPerPage);
+  var searchResult$ = searchResultGenerator.getSearchResult$();
+
+  /**
+   * @param {number} minQueryLength
+   * @return {Function}
+   */
+  function ignoreShortQueries(minQueryLength) {
+    /**
+     * @param {string} query
+     */
+    return function (query) {
+      return query === '' || query.length >= minQueryLength;
+    };
+  }
+
+  /**
+   * @param {ApiProblem} problem
+   */
+  function showProblem(problem) {
+    controller.problem = problem;
+  }
+
+  function clearProblem()
+  {
+    controller.problem = false;
+  }
+
+  /**
+   * @param {(PagedCollection|ApiProblem)} searchResult
+   */
+  function showSearchResult(searchResult) {
+    var problem = searchResult.error;
+
+    if (problem) {
+      showProblem(problem);
+      controller.searchResult = {};
+    } else {
+      clearProblem();
+      controller.searchResult = searchResult;
+    }
+
+    controller.loading = false;
+  }
+
+  controller.loading = false;
+  controller.query = '';
+  controller.page = 0;
+  controller.minQueryLength = minQueryLength;
+
+  query$
+    .safeApply($scope, function (query) {
+      controller.query = query;
+    })
+    .subscribe();
+
+  searchResult$
+    .safeApply($scope, showSearchResult)
+    .subscribe();
+
+  filteredQuery$
+    .merge(page$)
+    .safeApply($scope, function () {
+      controller.loading = true;
+    })
+    .subscribe();
+}
+OrganizationSearchControllerNew.$inject = ["SearchResultGenerator", "rx", "$scope", "OrganizerManager"];
+})();
+
+// Source: src/management/organizers/new/organization-search-item-new.directive.js
+(function () {
+'use strict';
+
+/**
+ * @ngdoc directive
+ * @name udb.management.organizers.directive:udbOrganizationSearchItemNew
+ * @var udbOrganizationSearchItemNew osic
+ * @description
+ * # Organizer search item Directive
+ */
+angular
+  .module('udb.management.organizers')
+  .directive('udbOrganizationSearchItemNew', OrganizationSearchItemNew);
+
+function OrganizationSearchItemNew() {
+  return {
+    restrict: 'A',
+    templateUrl: 'templates/organization-search-item-new.html',
+    bindToController: {
+      organizationSearchItem: '<udbOrganizationSearchItemNew'
+    },
+    controller: OrganizationSearchItemControllerNew,
+    controllerAs: 'osic'
+  };
+}
+
+/* @ngInject */
+function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $translate) {
+  var controller = this;
+  var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
+  var defaultLanguage = $translate.use() || 'nl';
+
+  showOrganization(controller.organizationSearchItem);
+
+  /**
+   *
+   * @param {UdbOrganizer} organization
+   */
+  function showOrganization(organization) {
+    controller.organization = organization;
+    controller.organization.id = controller.organization['@id'].split('/').pop();
+    controller.organization = jsonLDLangFilter(controller.organization, defaultLanguage, true);
+  }
+
+  function markAsDeleted() {
+    organizationDeletedListener();
+    controller.organizationDeleted = true;
+  }
+
+  /**
+   * @param {Object} angularEvent
+   * @param {UdbOrganizer} deletedOrganization
+   */
+  function matchAndMarkAsDeleted(angularEvent, deletedOrganization) {
+    if (!controller.organization) {
+      return;
+    }
+
+    if (controller.organization.id === deletedOrganization.id) {
+      markAsDeleted();
+    }
+  }
+}
+OrganizationSearchItemControllerNew.$inject = ["$rootScope", "jsonLDLangFilter", "$translate"];
+})();
+
 // Source: src/management/organizers/search/organization-search-item.directive.js
 (function () {
 'use strict';
@@ -31854,7 +32014,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('templates/organization-search-item.html',
+  $templateCache.put('templates/organization-search-item-new.html',
     "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
     "    <td style=\"padding-left: 30px\"><strong><a ng-bind=\"::osic.organization.name\" ui-sref=\"split.organizerDetail({id: osic.organization.id})\"></a></strong></td>\n" +
     "    <td ng-if=\"::osic.organization.address.addressLocality\">\n" +
@@ -31877,42 +32037,141 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   );
 
 
-  $templateCache.put('templates/organization-search.html',
+  $templateCache.put('templates/organization-search-new.html',
     "<div class=\"row\" style=\"margin-top: 2rem\">\n" +
-    "        <div class=\"col-md-9\"> \n" +
-    "        <udb-query-search-bar search-label=\"search.organization.searchOrganization\"\n" +
-    "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
+    "    <div class=\"col-md-9\"> \n" +
+    "    <udb-query-search-bar search-label=\"search.organization.searchOrganization\"\n" +
+    "                          on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
+    "    </div>\n" +
+    "<div class=\"col-md-1\">\n" +
+    "    <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
+    "</div>\n" +
+    "<div class=\"col-md-2 text-right\">\n" +
+    "    <a class=\"btn btn-primary pull-right\" ui-sref=\"split.organizer\">\n" +
+    "        <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.organization.addOrganizer\"></span>\n" +
+    "    </a>\n" +
+    "</div>\n" +
+    "</div>\n" +
+    "<div class=\"row search-result-block\" ng-cloak>\n" +
+    "<div class=\"col-md-12\">\n" +
+    "    <div ng-show=\"$ctrl.query.length >= $ctrl.minQueryLength && $ctrl.searchResult.totalItems === 0\"\n" +
+    "         class=\"alert alert-warning\" role=\"alert\">\n" +
+    "        <p translate-once=\"search.organization.notFound\"></p>\n" +
+    "    </div>\n" +
+    "    <div ng-show=\"$ctrl.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
+    "        <span translate-once=\"search.organization.error\"></span>\n" +
+    "        <br>\n" +
+    "        <strong ng-bind=\"$ctrl.problem.title\"></strong>\n" +
+    "    </div>\n" +
+    "    <div class=\"query-search-result organization-search-results\"\n" +
+    "         ng-class=\"{'loading-search-result': $ctrl.loading}\"\n" +
+    "         ng-show=\"$ctrl.searchResult.totalItems > 0\">\n" +
+    "      <div class=\"table-responsive\">\n" +
+    "        <table class=\"table\">\n" +
+    "            <thead>\n" +
+    "            <tr>\n" +
+    "                <th class=\"col-md-5\" style=\"padding-left: 30px\" translate-once=\"search.organization.name\"></th>\n" +
+    "                <th class=\"col-md-3\" translate-once=\"search.organization.address\"></th>\n" +
+    "                <th class=\"col-md-4\" style=\"padding-right: 30px\" translate-once=\"search.organization.info\"></th>\n" +
+    "            </tr>\n" +
+    "            </thead>\n" +
+    "            <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
+    "            </tbody>\n" +
+    "        </table>\n" +
+    "        <div class=\"panel-footer\">\n" +
+    "            <uib-pagination\n" +
+    "                    total-items=\"$ctrl.searchResult.totalItems\"\n" +
+    "                    ng-model=\"$ctrl.page\"\n" +
+    "                    items-per-page=\"$ctrl.searchResult.itemsPerPage\"\n" +
+    "                    max-size=\"10\"\n" +
+    "                    ng-change=\"$ctrl.pageChanged($ctrl.page)\">\n" +
+    "            </uib-pagination>\n" +
     "        </div>\n" +
-    "    <div class=\"col-md-1\">\n" +
+    "      </div>\n" +
+    "    </div>\n" +
+    "</div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/organization-search-item.html',
+    "<tr class=\"organization-search-item\" ng-class=\"{'deleted': osic.organizationDeleted}\" ng-if=\"::osic.organization\">\n" +
+    "    <td><strong><a ng-bind=\"::osic.organization.name\" ui-sref=\"split.organizerDetail({id: osic.organization.id})\"></a></strong></td>\n" +
+    "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.address.streetAddress\"></span>\n" +
+    "        <br>\n" +
+    "        <span ng-bind=\"::osic.organization.address.addressLocality\"></span>\n" +
+    "    </td>\n" +
+    "    <td>\n" +
+    "        <span ng-bind=\"::osic.organization.created | amDateFormat:'DD/MM/YYYY HH:mm'\"></span>\n" +
+    "        <span class=\"organization-search-item-email\" ng-if=\"::osic.organization.email\">\n" +
+    "            <br><span ng-bind=\"::osic.organization.email\"></span>\n" +
+    "        </span>\n" +
+    "        <span class=\"organization-search-item-url\" ng-if=\"::osic.organization.url\">\n" +
+    "            <br><a ng-href=\"{{::osic.organization.url}}\" target=\"_blank\" ng-bind=\"::osic.organization.url\"></a>\n" +
+    "        </span>\n" +
+    "    </td>\n" +
+    "    <td class=\"text-right\">\n" +
+    "        <div class=\"pull-right btn-group\" uib-dropdown>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"split.organizerEdit({id: osic.organization.id})\">Bewerken</a>\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "            <ul uib-dropdown-menu role=\"menu\">\n" +
+    "                <li role=\"menuitem\">\n" +
+    "                    <a ui-sref=\"management.organizers.search.delete({id: osic.organization.id})\">Verwijderen</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </td>\n" +
+    "</tr>\n"
+  );
+
+
+  $templateCache.put('templates/organization-search.html',
+    "<h1 class=\"title\">Organisaties</h1>\n" +
+    "\n" +
+    "<div class=\"row\">\n" +
+    "    <div class=\"col-md-12\">\n" +
+    "        <udb-query-search-bar search-label=\"Zoeken op organisatie\"\n" +
+    "                              help-link=\"https://documentatie.uitdatabank.be/content/search_api_3/latest/searching-organizers.html\"\n" +
+    "                              help-label=\"via geavanceerde zoekopdracht\"\n" +
+    "                              on-change=\"$ctrl.queryChanged(query)\"></udb-query-search-bar>\n" +
+    "    </div>\n" +
+    "    <div class=\"col-md-2\">\n" +
     "        <i ng-show=\"$ctrl.loading\" class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "    </div>\n" +
-    "    <div class=\"col-md-2 text-right\">\n" +
-    "        <a class=\"btn btn-primary pull-right\" ui-sref=\"split.organizer\">\n" +
-    "            <i class=\"fa fa-plus-circle\"></i> <span translate-once=\"search.organization.addOrganizer\"></span>\n" +
+    "    <div class=\"col-md-12 text-right\">\n" +
+    "        <a class=\"btn btn-primary\" ui-sref=\"split.organizer\">\n" +
+    "            <i class=\"fa fa-plus-circle\"></i> Organisatie toevoegen\n" +
     "        </a>\n" +
     "    </div>\n" +
     "</div>\n" +
+    "\n" +
     "<div class=\"row search-result-block\" ng-cloak>\n" +
     "    <div class=\"col-md-12\">\n" +
+    "        <div class=\"alert alert-info\" role=\"alert\" ng-show=\"$ctrl.query.length < $ctrl.minQueryLength\">\n" +
+    "            <p>Schrijf een zoekopdracht van minstens 3 karakters in het veld hierboven om organisaties te zoeken.</p>\n" +
+    "            <p>Laat het veld leeg om alle organisaties op te vragen in alfabetische volgorde.</p>\n" +
+    "        </div>\n" +
     "        <div ng-show=\"$ctrl.query.length >= $ctrl.minQueryLength && $ctrl.searchResult.totalItems === 0\"\n" +
     "             class=\"alert alert-warning\" role=\"alert\">\n" +
-    "            <p translate-once=\"search.organization.notFound\"></p>\n" +
+    "            <p>Geen organisaties gevonden.</p>\n" +
     "        </div>\n" +
     "        <div ng-show=\"$ctrl.problem\" class=\"alert alert-warning\" role=\"alert\">\n" +
-    "            <span translate-once=\"search.organization.error\"></span>\n" +
+    "            <span>Er ging iets mis tijdens het zoeken:</span>\n" +
     "            <br>\n" +
     "            <strong ng-bind=\"$ctrl.problem.title\"></strong>\n" +
     "        </div>\n" +
     "        <div class=\"query-search-result organization-search-results\"\n" +
     "             ng-class=\"{'loading-search-result': $ctrl.loading}\"\n" +
     "             ng-show=\"$ctrl.searchResult.totalItems > 0\">\n" +
-    "          <div class=\"table-responsive\">\n" +
+    "          <div class=\"panel panel-default\">\n" +
     "            <table class=\"table\">\n" +
     "                <thead>\n" +
     "                <tr>\n" +
-    "                    <th class=\"col-md-5\" style=\"padding-left: 30px\" translate-once=\"search.organization.name\"></th>\n" +
-    "                    <th class=\"col-md-3\" translate-once=\"search.organization.address\"></th>\n" +
-    "                    <th class=\"col-md-4\" style=\"padding-right: 30px\" translate-once=\"search.organization.info\"></th>\n" +
+    "                    <th>Naam</th>\n" +
+    "                    <th>Adres</th>\n" +
+    "                    <th></th>\n" +
+    "                    <th class=\"text-right\">Opties</th>\n" +
     "                </tr>\n" +
     "                </thead>\n" +
     "                <tbody udb-organization-search-item=\"organization\" ng-repeat=\"organization in $ctrl.searchResult.member\">\n" +
