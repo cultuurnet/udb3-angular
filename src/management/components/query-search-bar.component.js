@@ -21,11 +21,17 @@ angular
   });
 
 /* @ngInject */
-function QuerySearchBarComponent() {
+function QuerySearchBarComponent($translate) {
   var qsb = this;
 
   qsb.queryString = '';
   qsb.find = find;
+
+  qsb.$onInit = function() {
+    $translate(qsb.searchLabel).then(function(translatedLabel) {
+      qsb.searchLabel = translatedLabel;
+    });
+  };
 
   /**
    * Search with a given query string and update the search bar or use the one currently displayed in the search bar

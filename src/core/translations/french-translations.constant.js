@@ -1198,6 +1198,16 @@ angular.module('udb.core')
         search: 'Rechercher',
         syntaxError: 'Votre requête contient une erreur. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
         invalidField: '{{field}} n\'est pas un paramètre valide. Sur <a href="https://helpdesk.publiq.be/hc/nl/articles/360008632440-Hoe-kan-ik-activiteiten-zoeken-op-basis-van-verschillende-parameters">cette page</a>, vous trouverez plus d\'informations sur la manière de rédiger une requête.',
+      },
+      organization: {
+        name: 'Nom',
+        address: 'Adresse',
+        info: 'Information encodage',
+        noAddress: 'Pas d\'adresse',
+        addOrganizer: 'Ajouter une organisation',
+        searchOrganization: 'Recherche par organisation',
+        notFound: 'Aucune organisation trouvée',
+        error: 'Une erreur s\'est produite lors de la recherche:'
       }
     }
   }
