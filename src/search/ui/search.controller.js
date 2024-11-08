@@ -51,6 +51,10 @@ function SearchController(
   $scope.currentPage = getCurrentPage();
   $scope.language = $translate.use() || 'nl';
 
+  this.$doCheck = function() {
+      $rootScope.$emit('searchComponentReady');
+    };
+
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
   ];
