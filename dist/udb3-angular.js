@@ -27447,6 +27447,7 @@ angular
 function SearchController(
   $scope,
   $timeout,
+  $document,
   udbApi,
   $window,
   $location,
@@ -27483,6 +27484,16 @@ function SearchController(
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
   $scope.language = $translate.use() || 'nl';
+
+  var handleClick = function() {
+    $rootScope.$emit('searchComponentReady');
+  };
+
+  $document.on('click', handleClick);
+
+  $scope.$on('$destroy', function() {
+    $document.off('click', handleClick);
+  });
 
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
@@ -27540,13 +27551,7 @@ function SearchController(
     if (LuceneQueryBuilder.isValid(query)) {
       var realQuery = LuceneQueryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findOffers(realQuery)
-      .then(function() {
-        $timeout(function() {
-          $rootScope.$emit('searchComponentReady');
-        });
-      });
-
+      findOffers(realQuery);
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
       } else {
@@ -27764,7 +27769,7 @@ function SearchController(
 
   initListeners();
 }
-SearchController.$inject = ["$scope", "$timeout", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "LuceneQueryBuilder", "authorization", "authorizationService"];
+SearchController.$inject = ["$scope", "$timeout", "$document", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "LuceneQueryBuilder", "authorization", "authorizationService"];
 })();
 
 // Source: src/search/ui/search.directive.js
