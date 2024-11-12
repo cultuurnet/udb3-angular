@@ -14,6 +14,7 @@ angular
 /* @ngInject */
 function SearchController(
   $scope,
+  $timeout,
   udbApi,
   $window,
   $location,
@@ -92,6 +93,9 @@ function SearchController(
         }
         offerLocator.addPagedCollection(pagedEvents);
         $scope.resultViewer.setResults(pagedEvents);
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
       });
   };
 
@@ -104,7 +108,12 @@ function SearchController(
     if (LuceneQueryBuilder.isValid(query)) {
       var realQuery = LuceneQueryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findOffers(realQuery);
+      findOffers(realQuery)
+      .then(function() {
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
+      });
 
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
@@ -285,7 +294,12 @@ function SearchController(
     } else {
       $scope.resultViewer.currentPage = newPageNumber;
 
-      findOffers($scope.activeQuery);
+      findOffers($scope.activeQuery)
+      .then(function() {
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
+      });
       $window.scroll(0, 0);
     }
   };
