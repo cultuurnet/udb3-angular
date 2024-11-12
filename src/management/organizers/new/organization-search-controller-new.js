@@ -11,7 +11,7 @@ angular
   .controller('OrganizationSearchControllerNew', OrganizationSearchControllerNew);
 
 /* @ngInject */
-function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, OrganizerManager) {
+function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, OrganizerManager, $rootScope, $timeout) {
   var controller = this;
 
   var itemsPerPage = 10;
@@ -59,6 +59,9 @@ function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, Orga
     } else {
       clearProblem();
       controller.searchResult = searchResult;
+      $timeout(function() {
+        $rootScope.$emit('searchComponentReady');
+      });
     }
 
     controller.loading = false;
