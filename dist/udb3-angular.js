@@ -19785,7 +19785,7 @@ angular
   .controller('OrganizationSearchControllerNew', OrganizationSearchControllerNew);
 
 /* @ngInject */
-function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, OrganizerManager) {
+function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, OrganizerManager, $rootScope, $timeout) {
   var controller = this;
 
   var itemsPerPage = 10;
@@ -19833,6 +19833,9 @@ function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, Orga
     } else {
       clearProblem();
       controller.searchResult = searchResult;
+      $timeout(function() {
+        $rootScope.$emit('searchComponentReady');
+      });
     }
 
     controller.loading = false;
@@ -19860,7 +19863,7 @@ function OrganizationSearchControllerNew(SearchResultGenerator, rx, $scope, Orga
     })
     .subscribe();
 }
-OrganizationSearchControllerNew.$inject = ["SearchResultGenerator", "rx", "$scope", "OrganizerManager"];
+OrganizationSearchControllerNew.$inject = ["SearchResultGenerator", "rx", "$scope", "OrganizerManager", "$rootScope", "$timeout"];
 })();
 
 // Source: src/management/organizers/new/organization-search-item-new.directive.js
@@ -27443,6 +27446,7 @@ angular
 /* @ngInject */
 function SearchController(
   $scope,
+  $timeout,
   udbApi,
   $window,
   $location,
@@ -27479,10 +27483,6 @@ function SearchController(
   $scope.queryEditorShown = false;
   $scope.currentPage = getCurrentPage();
   $scope.language = $translate.use() || 'nl';
-
-  this.$doCheck = function() {
-      $rootScope.$emit('searchComponentReady');
-    };
 
   var additionalSpecifics = [
     {id: 'accessibility', name: 'Toegankelijkheidsinformatie', permission: authorization.editFacilities}
@@ -27525,6 +27525,9 @@ function SearchController(
         }
         offerLocator.addPagedCollection(pagedEvents);
         $scope.resultViewer.setResults(pagedEvents);
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
       });
   };
 
@@ -27537,7 +27540,12 @@ function SearchController(
     if (LuceneQueryBuilder.isValid(query)) {
       var realQuery = LuceneQueryBuilder.unparse(query);
       $scope.resultViewer.queryChanged(realQuery);
-      findOffers(realQuery);
+      findOffers(realQuery)
+      .then(function() {
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
+      });
 
       if (realQuery !== query.originalQueryString) {
         $scope.realQuery = realQuery;
@@ -27718,7 +27726,12 @@ function SearchController(
     } else {
       $scope.resultViewer.currentPage = newPageNumber;
 
-      findOffers($scope.activeQuery);
+      findOffers($scope.activeQuery)
+      .then(function() {
+        $timeout(function() {
+          $rootScope.$emit('searchComponentReady');
+        });
+      });
       $window.scroll(0, 0);
     }
   };
@@ -27751,7 +27764,7 @@ function SearchController(
 
   initListeners();
 }
-SearchController.$inject = ["$scope", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "LuceneQueryBuilder", "authorization", "authorizationService"];
+SearchController.$inject = ["$scope", "$timeout", "udbApi", "$window", "$location", "$uibModal", "SearchResultViewer", "offerLabeller", "offerLocator", "searchHelper", "$rootScope", "eventExporter", "$translate", "LuceneQueryBuilder", "authorization", "authorizationService"];
 })();
 
 // Source: src/search/ui/search.directive.js
