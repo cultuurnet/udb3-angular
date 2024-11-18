@@ -932,7 +932,8 @@ angular.module('udb.core')
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
         'ownerships': {
-          'manage': 'Gestion des demandes'
+          'manage': 'Gestion des demandes',
+          'request': 'Demander gestion'
         },
         'name': 'Nom',
         'description': 'Description',

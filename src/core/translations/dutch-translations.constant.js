@@ -940,7 +940,8 @@ angular.module('udb.core')
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
         'ownerships': {
-          'manage': 'Beheerders aanpassen'
+          'manage': 'Beheerders aanpassen',
+          'request': 'Beheer aanvragen'
         },
         'name': 'Naam',
         'description': 'Beschrijving',

@@ -1020,7 +1020,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
       'ownerships': {
-        'manage': 'Anforderungsmanagement'
+        'manage': 'Anforderungsmanagement',
+        'request': 'Verwaltung anfordern'
       },
       'name': 'Name',
       'description': 'Beschreibung',
