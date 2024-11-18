@@ -3716,7 +3716,8 @@ angular.module('udb.core')
         'overview': 'Terug naar overzicht',
         'dashboard': 'Terug naar dashboard',
         'ownerships': {
-          'manage': 'Beheerders aanpassen'
+          'manage': 'Beheerders aanpassen',
+          'request': 'Beheer aanvragen'
         },
         'name': 'Naam',
         'description': 'Beschrijving',
@@ -4933,7 +4934,8 @@ angular.module('udb.core')
         'overview': 'Retourner à l\'aperçu',
         'dashboard': 'Retourner au tableau de bord',
         'ownerships': {
-          'manage': 'Gestion des demandes'
+          'manage': 'Gestion des demandes',
+          'request': 'Demander gestion'
         },
         'name': 'Nom',
         'description': 'Description',
@@ -6239,7 +6241,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'overview': 'Zurück zur Übersicht',
       'dashboard': 'Zurück zum Dashboard',
       'ownerships': {
-        'manage': 'Anforderungsmanagement'
+        'manage': 'Anforderungsmanagement',
+        'request': 'Verwaltung anfordern'
       },
       'name': 'Name',
       'description': 'Beschreibung',
@@ -22445,7 +22448,8 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi, $rootScope,
+$document, $scope) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
@@ -22462,6 +22466,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.canEdit = canEdit;
   controller.isOwnershipEnabled = isOwnershipEnabled;
   controller.permissions = [];
+  controller.handleOwnershipRequest = handleOwnershipRequest;
 
   function loadOrganizer(organizerId) {
     OrganizerManager
@@ -22535,6 +22540,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     return searchParams.ownership === 'true';
   }
 
+  function handleOwnershipRequest() {
+    $rootScope.$emit('ownershipRequestDialogOpened');
+  }
+
   function openOrganizationDeleteConfirmModal(organizer) {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/organization-delete.modal.html',
@@ -22581,14 +22590,25 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 
   function finishedLoading () {
+    $rootScope.$emit('organizerDetailPageReady');
     return (controller.organizer && !controller.loadingError);
   }
+
+  var handleClick = function() {
+    $rootScope.$emit('organizerDetailPageReady');
+  };
+
+  $document.on('click', handleClick);
+
+  $scope.$on('$destroy', function() {
+    $document.off('click', handleClick);
+  });
 
   function canEdit() {
     return controller.permissions.indexOf('Organisaties bewerken') !== -1;
   }
 }
-OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state", "udbApi"];
+OrganizerDetailController.$inject = ["OrganizerManager", "$uibModal", "$stateParams", "$location", "$state", "udbApi", "$rootScope", "$document", "$scope"];
 })();
 
 // Source: src/organizers/organizer-form.controller.js
@@ -33167,11 +33187,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <i class=\"fa fa-circle-o-notch fa-spin\"></i>\n" +
     "</div>\n" +
     "\n" +
-    "<h1 class=\"title\" ng-bind=\"odc.organizer.name\"></h1>\n" +
-    "\n" +
     "<div class=\"row\" ng-if=\"odc.finishedLoading()\">\n" +
     "  <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "    <div class=\"list-group\" ng-if=\"!odc.organizer.deleted\">\n" +
+    "      <button\n" +
+    "      class=\"list-group-item\"\n" +
+    "      type=\"button\"\n" +
+    "      ng-if=\"!odc.canEdit() && odc.isOwnershipEnabled()\"\n" +
+    "      ng-click=\"odc.handleOwnershipRequest()\"\n" +
+    "    >\n" +
+    "      <span translate-once=\"organizer.manage.ownerships.request\"></span>\n" +
+    "    </button>\n" +
     "      <button class=\"list-group-item\"\n" +
     "              type=\"button\"\n" +
     "              ui-sref=\"split.organizerEdit({id: odc.organizer.id})\"\n" +

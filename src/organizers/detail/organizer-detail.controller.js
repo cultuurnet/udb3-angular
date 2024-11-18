@@ -11,7 +11,8 @@ angular
   .controller('OrganizerDetailController', OrganizerDetailController);
 
 /* @ngInject */
-function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi) {
+function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $location, $state, udbApi, $rootScope,
+$document, $scope) {
   var controller = this;
   var organizerId = $stateParams.id;
   var stateName = $state.current.name;
@@ -28,6 +29,7 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   controller.canEdit = canEdit;
   controller.isOwnershipEnabled = isOwnershipEnabled;
   controller.permissions = [];
+  controller.handleOwnershipRequest = handleOwnershipRequest;
 
   function loadOrganizer(organizerId) {
     OrganizerManager
@@ -101,6 +103,10 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
     return searchParams.ownership === 'true';
   }
 
+  function handleOwnershipRequest() {
+    $rootScope.$emit('ownershipRequestDialogOpened');
+  }
+
   function openOrganizationDeleteConfirmModal(organizer) {
     var modalInstance = $uibModal.open({
       templateUrl: 'templates/organization-delete.modal.html',
@@ -147,8 +153,19 @@ function OrganizerDetailController(OrganizerManager, $uibModal, $stateParams, $l
   }
 
   function finishedLoading () {
+    $rootScope.$emit('organizerDetailPageReady');
     return (controller.organizer && !controller.loadingError);
   }
+
+  var handleClick = function() {
+    $rootScope.$emit('organizerDetailPageReady');
+  };
+
+  $document.on('click', handleClick);
+
+  $scope.$on('$destroy', function() {
+    $document.off('click', handleClick);
+  });
 
   function canEdit() {
     return controller.permissions.indexOf('Organisaties bewerken') !== -1;
