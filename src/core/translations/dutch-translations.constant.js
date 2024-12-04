@@ -426,7 +426,7 @@ angular.module('udb.core')
       'permanent': 'Permanent'
     },
     moderate: {
-      'infoAlert': '<p>Welkom op de validatiepagina. Op deze pagina kan je als decentrale validator evenementen goed -of afkeuren: <br/><br/><ul><li><strong>Afkeuren.</strong> Afgekeurde evenementen worden niet meer gepubliceerd op UiTinVlaanderen of andere UiTagenda\'s en kunnen niet meer bewerkt worden door de invoerder.</li><li><strong>Goedkeuren.</strong> Goedgekeurde evenementen blijven gepubliceerd op UiTinVlaanderen en de eigen UiTagenda en komen niet opnieuw ter validatie.</li></ul><br/>Een leidraad voor het valideren vind je in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">de contentregels van UiTdatabank.</a></p>',
+      'infoAlert': '<p>Welkom op de validatiepagina. Op deze pagina kan je evenementen goed -of afkeuren: <br/><br/><ul><li><strong>Afkeuren.</strong> Afgekeurde evenementen worden niet meer gepubliceerd op UiTinVlaanderen of andere UiTagenda\'s en kunnen niet meer bewerkt worden door de invoerder.</li><li><strong>Goedkeuren.</strong> Goedgekeurde evenementen blijven gepubliceerd op UiTinVlaanderen en de eigen UiTagenda en komen niet opnieuw ter validatie.</li></ul><br/>Een leidraad voor het valideren vind je in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">de contentregels van UiTdatabank.</a></p>',
       'validate': 'Valideren',
       'approve': 'Goedkeuren',
       'approved': 'Goedgekeurd',
