@@ -3202,7 +3202,7 @@ angular.module('udb.core')
       'permanent': 'Permanent'
     },
     moderate: {
-      'infoAlert': '<p>Welkom op de validatiepagina. Op deze pagina kan je als decentrale validator evenementen goed -of afkeuren: <br/><br/><ul><li><strong>Afkeuren.</strong> Afgekeurde evenementen worden niet meer gepubliceerd op UiTinVlaanderen of andere UiTagenda\'s en kunnen niet meer bewerkt worden door de invoerder.</li><li><strong>Goedkeuren.</strong> Goedgekeurde evenementen blijven gepubliceerd op UiTinVlaanderen en de eigen UiTagenda en komen niet opnieuw ter validatie.</li></ul><br/>Een leidraad voor het valideren vind je in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">de contentregels van UiTdatabank.</a></p>',
+      'infoAlert': '<p>Welkom op de validatiepagina. Op deze pagina kan je evenementen goed -of afkeuren: <br/><br/><ul><li><strong>Afkeuren.</strong> Afgekeurde evenementen worden niet meer gepubliceerd op UiTinVlaanderen of andere UiTagenda\'s en kunnen niet meer bewerkt worden door de invoerder.</li><li><strong>Goedkeuren.</strong> Goedgekeurde evenementen blijven gepubliceerd op UiTinVlaanderen en de eigen UiTagenda en komen niet opnieuw ter validatie.</li></ul><br/>Een leidraad voor het valideren vind je in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">de contentregels van UiTdatabank.</a></p>',
       'validate': 'Valideren',
       'approve': 'Goedkeuren',
       'approved': 'Goedgekeurd',
@@ -4424,7 +4424,7 @@ angular.module('udb.core')
       'permanent': 'Permanent'
     },
     moderate: {
-      'infoAlert': '<p>Bienvenue sur la page de validation. Sur cette page, vous pouvez approuver ou rejeter les événements en tant que validateur décentralisé : <br/><br/><ul><li><strong>Rejeter.</strong> Les événements rejetés ne sont plus publiés sur UiTinVlaanderen ou d\'autres agendas et ne peuvent plus être modifiés par l\'importateur.</li><li><strong>Approuver.</strong> Les événements approuvés resteront publiés sur UiTinVlaanderen et d\'autres calendriers UiT. Ils ne seront pas soumis à une nouvelle validation.</li></ul><br/>Vous trouverez des directives pour la validation dans <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">les règles de contenu de la base de données UiTdatabank.</a></p>',
+      'infoAlert': '<p>Bienvenue sur la page de validation. Sur cette page, vous pouvez approuver ou rejeter les événements : <br/><br/><ul><li><strong>Rejeter.</strong> Les événements rejetés ne sont plus publiés sur UiTinVlaanderen ou d\'autres agendas et ne peuvent plus être modifiés par l\'importateur.</li><li><strong>Approuver.</strong> Les événements approuvés resteront publiés sur UiTinVlaanderen et d\'autres calendriers UiT. Ils ne seront pas soumis à une nouvelle validation.</li></ul><br/>Vous trouverez des directives pour la validation dans <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">les règles de contenu de la base de données UiTdatabank.</a></p>',
       'validate': 'Valider',
       'approve': 'Approuver',
       'approved': 'Approuvé',
@@ -5641,7 +5641,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'permanent': 'Permanent',
   },
   'moderate': {
-    'infoAlert': '<p>Willkommen auf der Validierungsseite. Auf dieser Seite können Sie als dezentraler Validator Veranstaltungen genehmigen oder ablehnen: <br/><br/><ul><li><strong>Ablehnen.</strong> Abgelehnte Veranstaltungen werden nicht mehr auf UiTinVlaanderen oder anderen UiT-Agenden veröffentlicht und können vom Importeur nicht mehr bearbeitet werden.</li><li><strong>Genehmigen.</strong> Genehmigte Veranstaltungen bleiben auf UiTinVlaanderen und anderen UiTagenda-Plattformen veröffentlicht. Sie werden nicht erneut zur Validierung vorgelegt.</li></ul><br/>Eine Anleitung zur Validierung finden Sie in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">den Inhaltsregeln der UiTdatabank.</a></p>',
+    'infoAlert': '<p>Willkommen auf der Validierungsseite. Auf dieser Seite können Sie Veranstaltungen genehmigen oder ablehnen: <br/><br/><ul><li><strong>Ablehnen.</strong> Abgelehnte Veranstaltungen werden nicht mehr auf UiTinVlaanderen oder anderen UiT-Agenden veröffentlicht und können vom Importeur nicht mehr bearbeitet werden.</li><li><strong>Genehmigen.</strong> Genehmigte Veranstaltungen bleiben auf UiTinVlaanderen und anderen UiTagenda-Plattformen veröffentlicht. Sie werden nicht erneut zur Validierung vorgelegt.</li></ul><br/>Eine Anleitung zur Validierung finden Sie in <a href="https://helpdesk.publiq.be/hc/nl/articles/360008702459-Welke-activiteiten-mag-ik-invoeren-in-UiTdatabank" target="_blank">den Inhaltsregeln der UiTdatabank.</a></p>',
     'validate': 'Validieren',
     'approve': 'Genehmigen',
     'approved': 'Genehmigt',
