@@ -29,3 +29,5 @@ jobs:
 
       - name: Run tests
         run: grunt build && grunt test
+        env:
+          OPENSSL_CONF: "/etc/ssl/"
