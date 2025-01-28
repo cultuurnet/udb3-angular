@@ -24,7 +24,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
    *  A job type that's based on BaseJob.
    */
   function jobCreatorFactory(jobType) {
-    var args =  Array.prototype.slice.call(arguments);
+    var args = Array.prototype.slice.call(arguments);
     var info = args.shift(); // contains a function with argument info etc.
 
     function jobCreator(response) {
@@ -48,7 +48,7 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
   this.label = function (offer, labelName) {
     return udbApi
       .labelOffer(offer.apiUrl, labelName)
-      .then(function() {
+      .then(function () {
         offer.label(labelName);
       });
   };
@@ -64,6 +64,8 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
       .unlabelOffer(offer.apiUrl, labelName)
       .then(function () {
         offer.unlabel(labelName);
+      }).catch(function (error) {
+        throw error;
       });
   };
 
@@ -97,7 +99,8 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
    * @return {Promise.<Label[]>}
    */
   offerLabeller.getSuggestions = function (labelName, maxItems) {
-    var max = typeof maxItems !== 'undefined' ?  maxItems : 5;
+    var max = typeof maxItems !== 'undefined' ? maxItems : 5;
+
     /** @param {PagedCollection} pagedSearchResults */
     function returnSimilarLabels(pagedSearchResults) {
       return pagedSearchResults.member;
