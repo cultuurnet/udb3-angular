@@ -196,7 +196,7 @@ describe('Controller: Event Detail', function() {
       $translateProvider.translations('en', {
         errors: { labelNotAllowed: 'You do not have the required permission to unlabel this event.' },
       });
-    }),
+    })
   );
 
   beforeEach(module('udb.search'));
