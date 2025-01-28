@@ -27302,7 +27302,7 @@ function OfferController(
   function showUnlabelProblem(problem) {
     $scope.event.labels = angular.copy(cachedOffer.labels);
     controller.labelResponse = 'unlabelError';
-    controller.labelsError = problem.title;
+    controller.labelsError = $translate.instant('errors.labelNotAllowed');
   }
 
   /**
