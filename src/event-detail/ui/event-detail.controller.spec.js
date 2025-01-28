@@ -191,6 +191,14 @@ describe('Controller: Event Detail', function() {
 
   var appConfig = {};
 
+  beforeEach(
+    module('udb.core', function ($translateProvider) {
+      $translateProvider.translations('en', {
+        errors: { labelNotAllowed: 'You do not have the required permission to unlabel this event.' },
+      });
+    }),
+  );
+
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
   beforeEach(module('udb.event-detail', function ($provide) {
