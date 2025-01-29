@@ -10923,8 +10923,6 @@ function OfferLabeller(jobLogger, udbApi, OfferLabelBatchJob, QueryLabelJob, $q)
       .unlabelOffer(offer.apiUrl, labelName)
       .then(function () {
         offer.unlabel(labelName);
-      }).catch(function (error) {
-        throw error;
       });
   };
 
