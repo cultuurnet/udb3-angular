@@ -133,7 +133,16 @@ describe('Controller: Offer', function() {
       };
 
   var deferredEvent;
-  
+
+  beforeEach(module('udb.core', function ($translateProvider) {
+    $translateProvider.translations('en', {
+      errors: {
+        labelNotAllowed: 'You do not have the required permission to unlabel this event.',
+      }
+    });
+    $translateProvider.preferredLanguage('en');
+  }));
+
   beforeEach(module('udb.search'));
   beforeEach(module('udb.templates'));
 
