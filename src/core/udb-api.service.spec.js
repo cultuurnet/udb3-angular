@@ -862,7 +862,7 @@ describe('Service: UDB3 Api', function () {
     var expectedBody = {
       'query': query,
       'selection': selection,
-      'order': {},
+      'order': {availableTo:'asc'},
       'include': include,
       'perDay': true,
       'customizations': customizations,
@@ -891,7 +891,7 @@ describe('Service: UDB3 Api', function () {
     var expectedBody = {
       'query': query,
       'selection': selection,
-      'order': {},
+      'order': {availableTo: 'asc'},
       'include': include,
       'perDay': true,
       'customizations': {}
