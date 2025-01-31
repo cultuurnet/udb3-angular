@@ -7138,7 +7138,7 @@ function UdbApi(
       selection: _.map(selection, function (url) {
         return url.toString();
       }),
-      order: {},
+      order: format === 'pdf' ? {availableTo: 'asc'} : {},
       include: properties,
       perDay: perDay,
       customizations: customizations || {}
