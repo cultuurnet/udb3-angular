@@ -403,7 +403,11 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
-  $scope.isDeleted = function() {
+  $scope.isEditable = function() {
+    return $scope.event.workflowStatus !== 'DELETED' && $scope.event.workflowStatus !== 'REJECTED';
+  };
+
+  $scope.isDeletable = function() {
     return $scope.event.workflowStatus !== 'DELETED';
   };
 
