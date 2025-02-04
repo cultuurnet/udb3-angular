@@ -403,6 +403,10 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
+  $scope.isDeleted = function() {
+    return $scope.event.workflowStatus !== 'DELETED';
+  };
+
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
   };
