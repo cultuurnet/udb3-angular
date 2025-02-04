@@ -12138,9 +12138,15 @@ function EventDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedEvent, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   function hasContactPoint() {
@@ -23869,8 +23875,9 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   function onRemove(label) {
     select.currentLabel = '';
-    select.labelRemoved({label: label});
-    select.labels = _.without(select.labels, label);
+    select.labelRemoved({label: label}).then(function() {
+        select.labels = _.without(select.labels, label);
+      });
   }
 
   /**
