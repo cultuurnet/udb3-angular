@@ -151,6 +151,9 @@ function SearchResultViewerFactory($translate) {
         return selectedOffer['@id'] === offer['@id'];
       });
     },
+    isDifferentDate: function (startDate, endDate) {
+      return new Date(startDate).toDateString() !== new Date(endDate).toDateString();
+    },
     /**
      * @param {PagedCollection} pagedResults
      */

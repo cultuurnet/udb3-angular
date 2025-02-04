@@ -26940,6 +26940,9 @@ function SearchResultViewerFactory($translate) {
         return selectedOffer['@id'] === offer['@id'];
       });
     },
+    isDifferentDate: function (startDate, endDate) {
+      return new Date(startDate).toDateString() !== new Date(endDate).toDateString();
+    },
     /**
      * @param {PagedCollection} pagedResults
      */
@@ -34054,6 +34057,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <span ng-switch-when=\"permanent\">permanent</span>\n" +
     "    <span ng-switch-when=\"single\">\n" +
     "        <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "        <span ng-if=\"resultViewer.isDifferentDate(event.startDate, event.endDate)\">\n" +
+    "          <span class=\"udb-end-date\" ng-bind=\"event.endDate | date: 'dd/MM/yyyy'\"></span>\n" +
+    "        </span>\n" +
     "    </span>\n" +
     "    <span ng-switch-when=\"periodic\" class=\"udb-date-range\">\n" +
     "      <span class=\"udb-start-date\" ng-bind=\"event.startDate | date: 'dd/MM/yyyy'\"></span>\n" +

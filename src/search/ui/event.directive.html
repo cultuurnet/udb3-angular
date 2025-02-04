@@ -26,6 +26,9 @@
     <span ng-switch-when="permanent">permanent</span>
     <span ng-switch-when="single">
         <span class="udb-start-date" ng-bind="event.startDate | date: 'dd/MM/yyyy'"></span>
+        <span ng-if="resultViewer.isDifferentDate(event.startDate, event.endDate)">
+          <span class="udb-end-date" ng-bind="event.endDate | date: 'dd/MM/yyyy'"></span>
+        </span>
     </span>
     <span ng-switch-when="periodic" class="udb-date-range">
       <span class="udb-start-date" ng-bind="event.startDate | date: 'dd/MM/yyyy'"></span>
