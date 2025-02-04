@@ -407,6 +407,10 @@ function EventDetail(
     return $translate.instant('audience.' + type);
   };
 
+  $scope.translateWorkflowStatus = function (status) {
+    return $translate.instant('workflowStatus.' + status);
+  };
+
   $scope.translateType = function (type) {
     // Work around for III-2695
     var translatedString = $translate.instant('offerTypes.' + type);
