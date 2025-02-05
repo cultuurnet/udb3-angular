@@ -6692,8 +6692,10 @@ function UdbApi(
     }
 
     if (showUnavailable) {
-      searchParams.workflowStatus = 'DRAFT,REJECTED,DELETED,' + searchParams.workflowStatus;
+      var uniqueStatuses = new Set(['DRAFT', 'REJECTED', 'DELETED'].concat(searchParams.workflowStatus.split(',')));
+      searchParams.workflowStatus = uniqueStatuses.join(',');
     }
+
 
     return $http
       .get(appConfig.baseUrl + 'offers/', withoutAuthorization(requestOptions))
