@@ -403,8 +403,20 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
+  $scope.isEditable = function() {
+    return $scope.event.workflowStatus !== 'DELETED' && $scope.event.workflowStatus !== 'REJECTED';
+  };
+
+  $scope.isDeletable = function() {
+    return $scope.event.workflowStatus !== 'DELETED';
+  };
+
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
+  };
+
+  $scope.translateWorkflowStatus = function (status) {
+    return $translate.instant('workflowStatus.' + status);
   };
 
   $scope.translateType = function (type) {

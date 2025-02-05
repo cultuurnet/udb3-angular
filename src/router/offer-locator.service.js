@@ -72,10 +72,10 @@ function OfferLocator($q, udbApi) {
 
     var queryString = 'id:"' + uuid + '"';
     var startOffset = 0;
-    var showDrafts = true;
+    var showUnavailable = true;
 
     udbApi
-      .findOffers(queryString, startOffset, showDrafts)
+      .findOffers(queryString, startOffset, showUnavailable)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
