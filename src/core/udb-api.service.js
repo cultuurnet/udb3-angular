@@ -164,7 +164,9 @@ function UdbApi(
     }
 
     if (showUnavailable) {
-      searchParams.workflowStatus = 'DRAFT,REJECTED,DELETED,' + searchParams.workflowStatus;
+      searchParams.workflowStatus = [
+          ...(new Set(['DRAFT', 'REJECTED', 'DELETED', searchParams.workflowStatus]));
+      ].join(',');
     }
 
     return $http
