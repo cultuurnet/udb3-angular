@@ -9613,9 +9613,15 @@ function OrganizerController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
-        .unlabel(cachedOrganizer, label.name)
-        .catch(showUnlabelProblem);
+    return $q(function(resolve, reject) {
+      offerLabeller
+      .unlabel(cachedOrganizer, label.name)
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 }
 OrganizerController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "$q", "$translate"];
@@ -23337,9 +23343,15 @@ function PlaceDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedPlace, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   $scope.translateType = function (type) {
@@ -27319,9 +27331,15 @@ function OfferController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedOffer, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   /**

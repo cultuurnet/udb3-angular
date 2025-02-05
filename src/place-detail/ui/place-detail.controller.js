@@ -259,9 +259,15 @@ function PlaceDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedPlace, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   $scope.translateType = function (type) {
