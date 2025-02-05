@@ -193,8 +193,14 @@ function OrganizerController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
-        .unlabel(cachedOrganizer, label.name)
-        .catch(showUnlabelProblem);
+    return $q(function(resolve, reject) {
+      offerLabeller
+      .unlabel(cachedOrganizer, label.name)
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 }

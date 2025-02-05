@@ -259,9 +259,15 @@ function OfferController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedOffer, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   /**

@@ -51,8 +51,9 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   function onRemove(label) {
     select.currentLabel = '';
-    select.labelRemoved({label: label});
-    select.labels = _.without(select.labels, label);
+    select.labelRemoved({label: label}).then(function() {
+        select.labels = _.without(select.labels, label);
+      });
   }
 
   /**

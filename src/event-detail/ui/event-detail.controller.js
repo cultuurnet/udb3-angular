@@ -382,9 +382,15 @@ function EventDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedEvent, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   function hasContactPoint() {
