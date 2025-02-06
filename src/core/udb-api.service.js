@@ -564,6 +564,15 @@ function UdbApi(
     });
   };
 
+  this.getUserPermissions = function(offerLocation) {
+    return $http.get(
+      offerLocation + '/permissions',
+      defaultApiConfig
+    ).then(function (response) {
+      return response.data.permissions;
+    });
+  };
+
   /**
    * @param {OfferIdentifier[]} offers
    * @param {string} label
