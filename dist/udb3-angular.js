@@ -11848,7 +11848,7 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var offerPermissions = {};
+          var offerPermissions = {editing: false, moderate: false, delete: false};
 
           if (hasPermissions) {
             if (_.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser)) {
@@ -11867,8 +11867,8 @@ function EventDetail(
               history: canSeeHistory,
             });
           } else {
-            $scope.permissions = {editing: false, modarete: false, delete: false,
-              duplication: false, history: canSeeHistory};
+            $scope.permissions = {editing: false, moderate: false, delete: false,
+              editingMovies: canEditMovies, duplication: false, history: canSeeHistory};
           }
 
           setTabs();
@@ -23169,7 +23169,7 @@ function PlaceDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var offerPermissions = {};
+          var offerPermissions = {editing: false, moderate: false, delete: false};
 
           if (hasPermissions) {
             if (_.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser)) {
@@ -23186,7 +23186,7 @@ function PlaceDetail(
               duplication: true,
             });
           } else {
-            $scope.permissions = {editing: false, duplication: false};
+            $scope.permissions = {editing: false, moderate: false, delete: false, duplication: false};
           }
 
           setTabs();

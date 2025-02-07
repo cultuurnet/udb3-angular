@@ -82,7 +82,7 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var offerPermissions = {};
+          var offerPermissions = {editing: false, moderate: false, delete: false};
 
           if (hasPermissions) {
             if (_.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser)) {
@@ -101,8 +101,8 @@ function EventDetail(
               history: canSeeHistory,
             });
           } else {
-            $scope.permissions = {editing: false, modarete: false, delete: false,
-              duplication: false, history: canSeeHistory};
+            $scope.permissions = {editing: false, moderate: false, delete: false,
+              editingMovies: canEditMovies, duplication: false, history: canSeeHistory};
           }
 
           setTabs();

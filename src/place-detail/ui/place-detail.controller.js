@@ -63,7 +63,7 @@ function PlaceDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var offerPermissions = {};
+          var offerPermissions = {editing: false, moderate: false, delete: false};
 
           if (hasPermissions) {
             if (_.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser)) {
@@ -80,7 +80,7 @@ function PlaceDetail(
               duplication: true,
             });
           } else {
-            $scope.permissions = {editing: false, duplication: false};
+            $scope.permissions = {editing: false, moderate: false, delete: false, duplication: false};
           }
 
           setTabs();
