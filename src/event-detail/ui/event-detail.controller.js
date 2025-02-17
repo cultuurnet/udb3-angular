@@ -58,7 +58,7 @@ function EventDetail(
    */
   function grantPermissions(permissionsData) {
     var permissions = permissionsData[0];
-    var hasPermissions = permissionsData[0].length > 0;
+    var hasPermissions = permissions.length > 0;
     var event = permissionsData[1];
 
     var hasMovieLabel = !!_.find(event.labels, function (label) {
@@ -82,19 +82,12 @@ function EventDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          var offerPermissions = {editing: false, moderate: false, delete: false};
-
           if (hasPermissions) {
-            if (_.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser)) {
-              offerPermissions.editing = true;
-            }
-            if (_.includes(permissions, 'Aanbod modereren')) {
-              offerPermissions.moderate = true;
-            }
-            if (_.includes(permissions, 'Aanbod verwijderen'))  {
-              offerPermissions.delete = true;
-            }
-
+            var offerPermissions = {
+              editing: _.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser),
+              moderate: _.includes(permissions, 'Aanbod modereren'),
+              delete: _.includes(permissions, 'Aanbod verwijderen')
+            };
             $scope.permissions = angular.extend({}, offerPermissions, {
               editingMovies: canEditMovies,
               duplication: true,
