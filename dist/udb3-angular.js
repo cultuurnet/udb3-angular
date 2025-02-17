@@ -9614,9 +9614,15 @@ function OrganizerController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
-        .unlabel(cachedOrganizer, label.name)
-        .catch(showUnlabelProblem);
+    return $q(function(resolve, reject) {
+      offerLabeller
+      .unlabel(cachedOrganizer, label.name)
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 }
 OrganizerController.$inject = ["udbApi", "$scope", "jsonLDLangFilter", "EventTranslationState", "offerTranslator", "offerLabeller", "$window", "$q", "$translate"];
@@ -12139,9 +12145,15 @@ function EventDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedEvent, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   function hasContactPoint() {
@@ -23344,9 +23356,15 @@ function PlaceDetail(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedPlace, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   $scope.translateType = function (type) {
@@ -23882,8 +23900,9 @@ function LabelSelectComponent(offerLabeller, $q) {
 
   function onRemove(label) {
     select.currentLabel = '';
-    select.labelRemoved({label: label});
-    select.labels = _.without(select.labels, label);
+    select.labelRemoved({label: label}).then(function() {
+        select.labels = _.without(select.labels, label);
+      });
   }
 
   /**
@@ -27325,9 +27344,15 @@ function OfferController(
   function labelRemoved(label) {
     clearLabelsError();
 
-    offerLabeller
+    return $q(function(resolve, reject) {
+      offerLabeller
       .unlabel(cachedOffer, label.name)
-      .catch(showUnlabelProblem);
+      .then(resolve)
+      .catch(function (err) {
+        showUnlabelProblem(err);
+        reject(err);
+      });
+    });
   }
 
   /**
