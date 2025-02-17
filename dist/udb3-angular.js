@@ -6671,11 +6671,11 @@ function UdbApi(
   /**
    * @param {string} queryString - The query used to find offers.
    * @param {number} [start] - From which offset the result set should start.
-   * @param {boolean} showDrafts - Include offers which are drafts.
+   * @param {boolean} showUnavailable - Include offers which are normally unavailable.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findOffers = function (queryString, start, showDrafts) {
+  this.findOffers = function (queryString, start, showUnavailable) {
     var offset = start || 0,
         searchParams = {
           start: offset,
@@ -6691,8 +6691,9 @@ function UdbApi(
       searchParams.q = queryString;
     }
 
-    if (showDrafts) {
-      searchParams.workflowStatus = 'DRAFT,' + searchParams.workflowStatus;
+    if (showUnavailable) {
+      var uniqueStatuses = ['DRAFT', 'REJECTED', 'DELETED'].concat(searchParams.workflowStatus.split(','));
+      searchParams.workflowStatus = _.uniq(uniqueStatuses).join(',');
     }
 
     return $http
@@ -12171,8 +12172,20 @@ function EventDetail(
     $scope.hasBookingInfoResults = !(bookingInfo.phone === '' && bookingInfo.email === '' && bookingInfo.url === '');
   }
 
+  $scope.isEditable = function() {
+    return $scope.event.workflowStatus !== 'DELETED' && $scope.event.workflowStatus !== 'REJECTED';
+  };
+
+  $scope.isDeletable = function() {
+    return $scope.event.workflowStatus !== 'DELETED';
+  };
+
   $scope.translateAudience = function (type) {
     return $translate.instant('audience.' + type);
+  };
+
+  $scope.translateWorkflowStatus = function (status) {
+    return $translate.instant('workflowStatus.' + status);
   };
 
   $scope.translateType = function (type) {
@@ -23444,10 +23457,10 @@ function OfferLocator($q, udbApi) {
 
     var queryString = 'id:"' + uuid + '"';
     var startOffset = 0;
-    var showDrafts = true;
+    var showUnavailable = true;
 
     udbApi
-      .findOffers(queryString, startOffset, showDrafts)
+      .findOffers(queryString, startOffset, showUnavailable)
       .then(cacheAndResolveLocation)
       .catch(deferredLocation.reject);
 
@@ -29098,29 +29111,43 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
+    "                ng-disabled=\"!isEditable()\"\n" +
+    "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
     "        <button ng-if=\"::(permissions.editing && permissions.editingMovies)\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
+    "                ng-disabled=\"!isEditable()\"\n" +
+    "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"openEditPageMovies()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.editMovie\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
+    "                ng-disabled=\"!isEditable()\"\n" +
+    "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
     "        <button ng-if=\"::permissions.duplication\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
+    "                ng-disabled=\"!isEditable()\"\n" +
+    "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ui-sref='duplication.event(::{id: event.id})'><i class=\"far fa-copy\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate\"></span></button>\n" +
     "        <button ng-if=\"::(permissions.duplication && permissions.editingMovies)\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
+    "                ng-disabled=\"!isEditable()\"\n" +
+    "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"duplicateMovie()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate_as_movie\"></span></button>\n" +
     "        <a ng-if=\"::(permissions.editing && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
+    "           ng-disabled=\"!isEditable()\"\n" +
+    "           ng-class=\"{'disabled': !isEditable()}\"\n" +
     "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
     "        <button ng-if=\"::permissions.editing\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
+    "                ng-disabled=\"!isDeletable()\"\n" +
+    "                ng-class=\"{'disabled': !isDeletable()}\"\n" +
     "                ng-click=\"deleteEvent()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
     "        <udb-moderation-offer ng-if=\"::moderationPermission\" class=\"list-group-item moderation-detail\" offer-id=\"{{::event['@id']}}\" continue=\"true\"></udb-moderation-offer>\n" +
     "      </div>\n" +
@@ -29258,6 +29285,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                <td ng-if=\"::(event.bookingAvailability.type == 'Available')\" translate-once=\"preview.booking_available\"></td>\n" +
     "                <td ng-if=\"::(event.bookingAvailability.type == 'Unavailable')\" translate-once=\"preview.booking_unavailable\"></td>\n" +
     "              </tr>\n" +
+    "              <tr>\n" +
+    "                <td><span class=\"row-label\" translate-once=\"workflowStatus.label\"></span></td>\n" +
+    "                <td>{{::translateWorkflowStatus(event.workflowStatus)}}</td>\n" +
+    "              </tr>\n" +
     "            </tbody>\n" +
     "            <tbody ng-if=\"::(!isEmpty(event.bookingInfo))\" udb-booking-info-detail=\"::event.bookingInfo\"></tbody>\n" +
     "            <tbody udb-contact-point-detail=\"::event.contactPoint\"></tbody>\n" +
@@ -29276,7 +29307,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <tbody>\n" +
     "              <tr ng-class=\"::{muted:isEmpty(event.videos)}\">\n" +
     "                <td><span class=\"row-label\" translate-once=\"preview.videos_label\"></span></td>\n" +
-    "                <td ng-if=\"::event.videos.length\"> \n" +
+    "                <td ng-if=\"::event.videos.length\">\n" +
     "                  <ul>\n" +
     "                    <li ng-repeat=\"video in ::event.videos\">\n" +
     "                      <a target=\"_blank\" rel=\"noopener noreferrer\" ng-href=\"{{video.url}}\" >{{ video.url }}</a>\n" +

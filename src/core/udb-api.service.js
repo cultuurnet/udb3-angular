@@ -143,11 +143,11 @@ function UdbApi(
   /**
    * @param {string} queryString - The query used to find offers.
    * @param {number} [start] - From which offset the result set should start.
-   * @param {boolean} showDrafts - Include offers which are drafts.
+   * @param {boolean} showUnavailable - Include offers which are normally unavailable.
    * @returns {Promise.<PagedCollection>} A promise that signals a successful retrieval of
    *  search results or a failure.
    */
-  this.findOffers = function (queryString, start, showDrafts) {
+  this.findOffers = function (queryString, start, showUnavailable) {
     var offset = start || 0,
         searchParams = {
           start: offset,
@@ -163,8 +163,9 @@ function UdbApi(
       searchParams.q = queryString;
     }
 
-    if (showDrafts) {
-      searchParams.workflowStatus = 'DRAFT,' + searchParams.workflowStatus;
+    if (showUnavailable) {
+      var uniqueStatuses = ['DRAFT', 'REJECTED', 'DELETED'].concat(searchParams.workflowStatus.split(','));
+      searchParams.workflowStatus = _.uniq(uniqueStatuses).join(',');
     }
 
     return $http
