@@ -37,11 +37,11 @@ function PlaceDetail(
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
-    var permission = udbApi.hasPermission(offerLocation);
+    var permissions = udbApi.getUserPermissions(offerLocation);
 
     offer.then(showOffer, failedToLoad);
 
-    $q.all([permission, offer])
+    $q.all([permissions, offer])
       .then(grantPermissions);
   });
   /**
@@ -51,7 +51,8 @@ function PlaceDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var hasPermission = permissionsData[0];
+    var permissions = permissionsData[0];
+    var hasPermissions = permissions.length > 0;
     var place = permissionsData[1];
 
     authorizationService
@@ -62,12 +63,18 @@ function PlaceDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, duplication: true};
-          } else if (hasPermission) {
-            $scope.permissions = {editing: !place.isExpired(), duplication: true};
+          if (hasPermissions) {
+            var offerPermissions = {
+              editing: _.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser),
+              moderate:_.includes(permissions, 'Aanbod modereren'),
+              delete: _.includes(permissions, 'Aanbod verwijderen')
+            };
+
+            $scope.permissions = angular.extend({}, offerPermissions, {
+              duplication: true,
+            });
           } else {
-            $scope.permissions = {editing: false, duplication: false};
+            $scope.permissions = {editing: false, moderate: false, delete: false, duplication: false};
           }
 
           setTabs();

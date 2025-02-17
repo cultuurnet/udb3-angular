@@ -39,24 +39,26 @@ function EventDetail(
     $scope.eventId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
-    var permission = udbApi.hasPermission(offerLocation);
+
+    var permissions = udbApi.getUserPermissions(offerLocation);
 
     offer.then(showOffer, failedToLoad);
 
-    $q.all([permission, offer])
+    $q.all([permissions, offer])
       .then(grantPermissions);
   }, function() {
     $location.path('404');
   });
 
   /**
-   * Grant permissions based on permission-data.
+   * Grant permissions based on permissions-data.
    * @param {Array} permissionsData
    *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var hasPermission = permissionsData[0];
+    var permissions = permissionsData[0];
+    var hasPermissions = permissions.length > 0;
     var event = permissionsData[1];
 
     var hasMovieLabel = !!_.find(event.labels, function (label) {
@@ -66,10 +68,6 @@ function EventDetail(
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-          $scope.isGodUser = !!_.find(userPermissions, function(permission) {
-            return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          });
-
           var hasEditMoviesPermission = !!_.find(userPermissions, function(permission) {
             return permission === RolePermission.FILMS_AANMAKEN;
           });
@@ -80,17 +78,24 @@ function EventDetail(
 
           var canEditMovies = hasEditMoviesPermission && hasMovieLabel;
 
-          if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, editingMovies: canEditMovies, duplication: true, history: true};
-          } else if (hasPermission) {
-            $scope.permissions = {
-              editing: !event.isExpired(),
+          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          }).length > 0;
+
+          if (hasPermissions) {
+            var offerPermissions = {
+              editing: _.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser),
+              moderate: _.includes(permissions, 'Aanbod modereren'),
+              delete: _.includes(permissions, 'Aanbod verwijderen')
+            };
+            $scope.permissions = angular.extend({}, offerPermissions, {
               editingMovies: canEditMovies,
               duplication: true,
-              history: canSeeHistory
-            };
+              history: canSeeHistory,
+            });
           } else {
-            $scope.permissions = {editing: false, duplication: false, history: canSeeHistory};
+            $scope.permissions = {editing: false, moderate: false, delete: false,
+              editingMovies: canEditMovies, duplication: false, history: canSeeHistory};
           }
 
           setTabs();

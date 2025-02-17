@@ -797,6 +797,19 @@ describe('Service: UDB3 Api', function () {
     $httpBackend.flush();
   });
 
+  it('should respond when the user has permissions to the offer location', function (done) {
+    var responseWithPermission = {permissions: []}
+    $httpBackend
+      .expectGET('offerLocation/permissions')
+      .respond(responseWithPermission);
+    service
+      .getUserPermissions('offerLocation')
+      .then(done);
+
+    $httpBackend.flush();
+  });
+  
+
   // labelOffers
   it('should label multiple offers using the api', function(done){
     var label = 'Bio';

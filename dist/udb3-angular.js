@@ -7092,6 +7092,15 @@ function UdbApi(
     });
   };
 
+  this.getUserPermissions = function(offerLocation) {
+    return $http.get(
+      offerLocation + '/permissions',
+      defaultApiConfig
+    ).then(function (response) {
+      return response.data.permissions;
+    });
+  };
+
   /**
    * @param {OfferIdentifier[]} offers
    * @param {string} label
@@ -11802,24 +11811,26 @@ function EventDetail(
     $scope.eventId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
-    var permission = udbApi.hasPermission(offerLocation);
+
+    var permissions = udbApi.getUserPermissions(offerLocation);
 
     offer.then(showOffer, failedToLoad);
 
-    $q.all([permission, offer])
+    $q.all([permissions, offer])
       .then(grantPermissions);
   }, function() {
     $location.path('404');
   });
 
   /**
-   * Grant permissions based on permission-data.
+   * Grant permissions based on permissions-data.
    * @param {Array} permissionsData
    *  The first array-item is assumed to be true, if the user is not owner the permission check rejects.
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var hasPermission = permissionsData[0];
+    var permissions = permissionsData[0];
+    var hasPermissions = permissions.length > 0;
     var event = permissionsData[1];
 
     var hasMovieLabel = !!_.find(event.labels, function (label) {
@@ -11829,10 +11840,6 @@ function EventDetail(
     authorizationService
         .getPermissions()
         .then(function(userPermissions) {
-          $scope.isGodUser = !!_.find(userPermissions, function(permission) {
-            return permission === RolePermission.GEBRUIKERS_BEHEREN;
-          });
-
           var hasEditMoviesPermission = !!_.find(userPermissions, function(permission) {
             return permission === RolePermission.FILMS_AANMAKEN;
           });
@@ -11843,17 +11850,24 @@ function EventDetail(
 
           var canEditMovies = hasEditMoviesPermission && hasMovieLabel;
 
-          if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, editingMovies: canEditMovies, duplication: true, history: true};
-          } else if (hasPermission) {
-            $scope.permissions = {
-              editing: !event.isExpired(),
+          $scope.isGodUser = _.filter(userPermissions, function(permission) {
+            return permission === RolePermission.GEBRUIKERS_BEHEREN;
+          }).length > 0;
+
+          if (hasPermissions) {
+            var offerPermissions = {
+              editing: _.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser),
+              moderate: _.includes(permissions, 'Aanbod modereren'),
+              delete: _.includes(permissions, 'Aanbod verwijderen')
+            };
+            $scope.permissions = angular.extend({}, offerPermissions, {
               editingMovies: canEditMovies,
               duplication: true,
-              history: canSeeHistory
-            };
+              history: canSeeHistory,
+            });
           } else {
-            $scope.permissions = {editing: false, duplication: false, history: canSeeHistory};
+            $scope.permissions = {editing: false, moderate: false, delete: false,
+              editingMovies: canEditMovies, duplication: false, history: canSeeHistory};
           }
 
           setTabs();
@@ -23134,11 +23148,11 @@ function PlaceDetail(
     $scope.placeId = offerLocation;
 
     var offer = udbApi.getOffer(offerLocation);
-    var permission = udbApi.hasPermission(offerLocation);
+    var permissions = udbApi.getUserPermissions(offerLocation);
 
     offer.then(showOffer, failedToLoad);
 
-    $q.all([permission, offer])
+    $q.all([permissions, offer])
       .then(grantPermissions);
   });
   /**
@@ -23148,7 +23162,8 @@ function PlaceDetail(
    *  The second value holds the offer itself.
    */
   function grantPermissions(permissionsData) {
-    var hasPermission = permissionsData[0];
+    var permissions = permissionsData[0];
+    var hasPermissions = permissions.length > 0;
     var place = permissionsData[1];
 
     authorizationService
@@ -23159,12 +23174,18 @@ function PlaceDetail(
             return permission === RolePermission.GEBRUIKERS_BEHEREN;
           }).length > 0;
 
-          if ($scope.isGodUser) {
-            $scope.permissions = {editing: true, duplication: true};
-          } else if (hasPermission) {
-            $scope.permissions = {editing: !place.isExpired(), duplication: true};
+          if (hasPermissions) {
+            var offerPermissions = {
+              editing: _.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser),
+              moderate:_.includes(permissions, 'Aanbod modereren'),
+              delete: _.includes(permissions, 'Aanbod verwijderen')
+            };
+
+            $scope.permissions = angular.extend({}, offerPermissions, {
+              duplication: true,
+            });
           } else {
-            $scope.permissions = {editing: false, duplication: false};
+            $scope.permissions = {editing: false, moderate: false, delete: false, duplication: false};
           }
 
           setTabs();
@@ -29114,13 +29135,13 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                ng-disabled=\"!isEditable()\"\n" +
     "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
-    "        <button ng-if=\"::(permissions.editing && permissions.editingMovies)\"\n" +
+    "        <button ng-if=\"::(permissions.moderate && permissions.editingMovies)\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-disabled=\"!isEditable()\"\n" +
     "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"openEditPageMovies()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.editMovie\"></span> <span class=\"badge\" ng-if=\"event.mainLanguage !== language\" ng-bind=\"::event.mainLanguage\"></span></button>\n" +
-    "        <button ng-if=\"::permissions.editing\"\n" +
+    "        <button ng-if=\"::permissions.moderate\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-disabled=\"!isEditable()\"\n" +
@@ -29138,12 +29159,12 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                ng-disabled=\"!isEditable()\"\n" +
     "                ng-class=\"{'disabled': !isEditable()}\"\n" +
     "                ng-click=\"duplicateMovie()\"><i class=\"fas fa-video\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.duplicate_as_movie\"></span></button>\n" +
-    "        <a ng-if=\"::(permissions.editing && !isOmdApp)\"\n" +
+    "        <a ng-if=\"::(permissions.moderate && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
     "           ng-disabled=\"!isEditable()\"\n" +
     "           ng-class=\"{'disabled': !isEditable()}\"\n" +
     "           ng-href=\"{{ event.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
-    "        <button ng-if=\"::permissions.editing\"\n" +
+    "        <button ng-if=\"::permissions.delete\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-disabled=\"!isDeletable()\"\n" +
@@ -33448,14 +33469,14 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-click=\"openEditPage()\"><i class=\"fas fa-pencil-alt\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.edit\"></span> <span ng-if=\"place.mainLanguage !== language\" ng-bind=\"'(' + place.mainLanguage + ')'\"></span></button>\n" +
-    "        <button ng-if=\"::permissions.editing\"\n" +
+    "        <button ng-if=\"::permissions.moderate\"\n" +
     "                class=\"list-group-item\"\n" +
     "                type=\"button\"\n" +
     "                ng-click=\"openTranslatePage()\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.translate\"></span></button>\n" +
-    "        <a ng-if=\"::(permissions.editing && !isOmdApp)\"\n" +
+    "        <a ng-if=\"::(permissions.moderate && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
     "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
-    "        <button ng-if=\"::permissions.editing\"\n" +
+    "        <button ng-if=\"::permissions.delete\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +

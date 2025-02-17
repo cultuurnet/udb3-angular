@@ -77,7 +77,7 @@ describe('Controller: Place Detail', function() {
     deferredEvent = $q.defer();
     deferredPermission = $q.defer();
 
-    spyOn(udbApi, 'hasPermission').and.returnValue($q.resolve());
+    spyOn(udbApi, 'getUserPermissions').and.returnValue(deferredPermission.promise);
 
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
     deferredEvent.resolve(new UdbPlace(examplePlaceJson));
@@ -103,7 +103,7 @@ describe('Controller: Place Detail', function() {
     $scope.$digest();
 
     expect($scope.placeId).toEqual(placeId);
-    expect(udbApi.hasPermission).toHaveBeenCalledWith(
+    expect(udbApi.getUserPermissions).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/place/03458606-eb3f-462d-97f3-548710286702'
     );
     expect(udbApi.getOffer).toHaveBeenCalledWith(

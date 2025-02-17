@@ -216,7 +216,8 @@ describe('Controller: Event Detail', function() {
     deferredEvent = $q.defer();
     deferredPermission = $q.defer();
 
-    spyOn(udbApi, 'hasPermission').and.returnValue(deferredPermission.promise);
+    
+    spyOn(udbApi, 'getUserPermissions').and.returnValue(deferredPermission.promise)
     spyOn(udbApi, 'getOffer').and.returnValue(deferredEvent.promise);
 
     deferredUpdate = $q.defer();
@@ -248,7 +249,7 @@ describe('Controller: Event Detail', function() {
         'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
 
-    expect(udbApi.hasPermission).toHaveBeenCalledWith(
+    expect(udbApi.getUserPermissions).toHaveBeenCalledWith(
         'http://culudb-silex.dev:8080/event/1111be8c-a412-488d-9ecc-8fdf9e52edbc'
     );
 
@@ -380,7 +381,7 @@ describe('Controller: Event Detail', function() {
     var event = new UdbEvent(exampleEventJson);
 
     authorizationService.getPermissions.and.returnValue($q.resolve([]));
-    deferredPermission.resolve(false);
+    deferredPermission.resolve([]);
     deferredEvent.resolve(event);
 
     $scope.$digest();
@@ -395,11 +396,13 @@ describe('Controller: Event Detail', function() {
     event.endDate = '2021-06-20T19:00:00+02:00';
 
     authorizationService.getPermissions.and.returnValue($q.resolve([]));
-    deferredPermission.resolve(true);
+    deferredPermission.resolve(['Aanbod bewerken', 'Aanbod modereren', 'Aanbod verwijderen']);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
       editing: true,
+      moderate: true,
+      delete: true,
       editingMovies: false,
       duplication: true,
       history: false
@@ -417,11 +420,13 @@ describe('Controller: Event Detail', function() {
     event.endDate = '2016-06-20T19:00:00+02:00';
 
     authorizationService.getPermissions.and.returnValue($q.resolve([]));
-    deferredPermission.resolve(true);
+    deferredPermission.resolve(['Aanbod bewerken', 'Aanbod modereren', 'Aanbod verwijderen']);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
       editing: false,
+      moderate: true,
+      delete: true,
       editingMovies: false,
       duplication: true,
       history: false
@@ -439,11 +444,14 @@ describe('Controller: Event Detail', function() {
     event.endDate = '2016-06-20T19:00:00+02:00';
 
     authorizationService.getPermissions.and.returnValue($q.resolve([]));
-    deferredPermission.resolve(false);
+    deferredPermission.resolve([]);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
       editing: false,
+      moderate: false,
+      delete: false,
+      editingMovies: false,
       duplication: false,
       history: false
     };
@@ -452,7 +460,7 @@ describe('Controller: Event Detail', function() {
     expect($scope.permissions).toEqual(expectedPermissions);
   });
 
-  it('should show an event as editable when the user does not have the required permissions but is a god user', function () {
+  it('should show an event as editable when the user is a god user and the event is expired', function () {
     var baseTime = new Date(2020, 9, 23);
     jasmine.clock().mockDate(baseTime);
 
@@ -460,14 +468,16 @@ describe('Controller: Event Detail', function() {
     event.endDate = '2016-06-20T19:00:00+02:00';
 
     authorizationService.getPermissions.and.returnValue($q.resolve(['GEBRUIKERS_BEHEREN']));
-    deferredPermission.resolve(false);
+    deferredPermission.resolve(['Aanbod bewerken', 'Aanbod modereren', 'Aanbod verwijderen']);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
       editing: true,
+      moderate: true,
+      delete: true,
       editingMovies: false,
       duplication: true,
-      history: true
+      history: false
     };
 
     $scope.$digest();
