@@ -12,7 +12,7 @@
         <div ng-if="::osic.organization.created">
             <i class="fa fa-clock"></i> <span ng-bind="::osic.organization.created | amDateFormat:'DD/MM/YYYY HH:mm'"></span>
         </div>
-        <div ng-if="::osic.organization.creator">
+        <div ng-if="::osic.isGodUser">
             <i class="fa fa-user"></i> <span ng-bind="::osic.organization.creator"></span>
         </div>
     </td>

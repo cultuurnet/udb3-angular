@@ -24,7 +24,7 @@ function OrganizationSearchItemNew() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $translate) {
+function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $translate, $q, udbApi) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
   var defaultLanguage = $translate.use() || 'nl';
@@ -45,6 +45,25 @@ function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $tran
     organizationDeletedListener();
     controller.organizationDeleted = true;
   }
+
+  function hasPermission (permission) {
+    var deferredHasPermission = $q.defer();
+
+    function findPermission(permissionList) {
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
+      deferredHasPermission.resolve(foundPermission ? true : false);
+    }
+
+    udbApi
+      .getMyPermissions()
+      .then(findPermission, deferredHasPermission.reject);
+
+    return deferredHasPermission.promise;
+  }
+
+  hasPermission('GEBRUIKERS_BEHEREN').then(function (isAllowed) {
+    controller.isGodUser = isAllowed;
+  });
 
   /**
    * @param {Object} angularEvent

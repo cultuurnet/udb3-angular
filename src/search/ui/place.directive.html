@@ -37,12 +37,9 @@
         <span class="far fa-clock"></span>&nbsp;
         <span ng-bind="event.modified | date : 'dd/MM/yyyy • HH:mm'"></span>
       </div>
-      <div class="udb-email">
+      <div ng-if="::placeCtrl.isGodUser" class="udb-email">
         <span class="fa fa-user"></span>&nbsp;
-        <span ng-if="::!placeCtrl.isGodUser">
-          <span ng-bind="event.creator"></span>
-        </span>
-        <span ng-if="::placeCtrl.isGodUser">
+        <span>
           <a href="{{ placeCtrl.uitId + event.creator }}"><span ng-bind="event.creator"></span></a>
         </span>
       </div>

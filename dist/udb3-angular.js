@@ -19934,7 +19934,7 @@ function OrganizationSearchItemNew() {
 }
 
 /* @ngInject */
-function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $translate) {
+function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $translate, $q, udbApi) {
   var controller = this;
   var organizationDeletedListener = $rootScope.$on('organizationDeleted', matchAndMarkAsDeleted);
   var defaultLanguage = $translate.use() || 'nl';
@@ -19956,6 +19956,25 @@ function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $tran
     controller.organizationDeleted = true;
   }
 
+  function hasPermission (permission) {
+    var deferredHasPermission = $q.defer();
+
+    function findPermission(permissionList) {
+      var foundPermission = _.find(permissionList, function(p) { return p === permission; });
+      deferredHasPermission.resolve(foundPermission ? true : false);
+    }
+
+    udbApi
+      .getMyPermissions()
+      .then(findPermission, deferredHasPermission.reject);
+
+    return deferredHasPermission.promise;
+  }
+
+  hasPermission('GEBRUIKERS_BEHEREN').then(function (isAllowed) {
+    controller.isGodUser = isAllowed;
+  });
+
   /**
    * @param {Object} angularEvent
    * @param {UdbOrganizer} deletedOrganization
@@ -19970,7 +19989,7 @@ function OrganizationSearchItemControllerNew($rootScope, jsonLDLangFilter, $tran
     }
   }
 }
-OrganizationSearchItemControllerNew.$inject = ["$rootScope", "jsonLDLangFilter", "$translate"];
+OrganizationSearchItemControllerNew.$inject = ["$rootScope", "jsonLDLangFilter", "$translate", "$q", "udbApi"];
 })();
 
 // Source: src/management/organizers/search/organization-search-item.directive.js
@@ -32132,7 +32151,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <div ng-if=\"::osic.organization.created\">\n" +
     "            <i class=\"fa fa-clock\"></i> <span ng-bind=\"::osic.organization.created | amDateFormat:'DD/MM/YYYY HH:mm'\"></span>\n" +
     "        </div>\n" +
-    "        <div ng-if=\"::osic.organization.creator\">\n" +
+    "        <div ng-if=\"::osic.isGodUser\">\n" +
     "            <i class=\"fa fa-user\"></i> <span ng-bind=\"::osic.organization.creator\"></span>\n" +
     "        </div>\n" +
     "    </td>\n" +
@@ -34157,18 +34176,15 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span class=\"far fa-clock\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.modified | date : 'dd/MM/yyyy • HH:mm'\"></span>\n" +
     "      </div>\n" +
-    "      <div class=\"udb-email\">\n" +
+    "      <div ng-if=\"::eventCtrl.isGodUser\" class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-if=\"::!eventCtrl.isGodUser\">\n" +
-    "          <span ng-bind=\"event.creator\"></span>\n" +
-    "        </span>\n" +
-    "        <span ng-if=\"::eventCtrl.isGodUser\">\n" +
+    "        <span>\n" +
     "          <a href=\"{{ eventCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
     "        </span>\n" +
     "      </div>\n" +
-    "      <div class=\"udb-organizer-name\">\n" +
+    "      <div ng-if=\"event.organizer\" class=\"udb-organizer-name\">\n" +
     "        <span class=\"far fa-building\"></span>&nbsp;\n" +
-    "        <span ng-bind=\"event.organizer ? event.organizer.name : '-'\"></span>\n" +
+    "        <span ng-bind=\"event.organizer.name\"></span>\n" +
     "      </div>\n" +
     "    </div>\n" +
     "\n" +
@@ -34317,12 +34333,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <span class=\"far fa-clock\"></span>&nbsp;\n" +
     "        <span ng-bind=\"event.modified | date : 'dd/MM/yyyy • HH:mm'\"></span>\n" +
     "      </div>\n" +
-    "      <div class=\"udb-email\">\n" +
+    "      <div ng-if=\"::placeCtrl.isGodUser\" class=\"udb-email\">\n" +
     "        <span class=\"fa fa-user\"></span>&nbsp;\n" +
-    "        <span ng-if=\"::!placeCtrl.isGodUser\">\n" +
-    "          <span ng-bind=\"event.creator\"></span>\n" +
-    "        </span>\n" +
-    "        <span ng-if=\"::placeCtrl.isGodUser\">\n" +
+    "        <span>\n" +
     "          <a href=\"{{ placeCtrl.uitId + event.creator }}\"><span ng-bind=\"event.creator\"></span></a>\n" +
     "        </span>\n" +
     "      </div>\n" +

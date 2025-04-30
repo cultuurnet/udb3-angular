@@ -49,18 +49,15 @@
         <span class="far fa-clock"></span>&nbsp;
         <span ng-bind="event.modified | date : 'dd/MM/yyyy • HH:mm'"></span>
       </div>
-      <div class="udb-email">
+      <div ng-if="::eventCtrl.isGodUser" class="udb-email">
         <span class="fa fa-user"></span>&nbsp;
-        <span ng-if="::!eventCtrl.isGodUser">
-          <span ng-bind="event.creator"></span>
-        </span>
-        <span ng-if="::eventCtrl.isGodUser">
+        <span>
           <a href="{{ eventCtrl.uitId + event.creator }}"><span ng-bind="event.creator"></span></a>
         </span>
       </div>
-      <div class="udb-organizer-name">
+      <div ng-if="event.organizer" class="udb-organizer-name">
         <span class="far fa-building"></span>&nbsp;
-        <span ng-bind="event.organizer ? event.organizer.name : '-'"></span>
+        <span ng-bind="event.organizer.name"></span>
       </div>
     </div>
 
