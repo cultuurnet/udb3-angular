@@ -11901,7 +11901,7 @@ function EventDetail(
   $scope.calendarSummary = undefined;
 
   function setTabs() {
-    if ($scope.permissions.history) {
+    if ($scope.permissions.history || $scope.isGodUser) {
       $scope.tabs = [
         {
           id: 'data'
