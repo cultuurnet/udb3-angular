@@ -32155,6 +32155,17 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <i class=\"fa fa-user\"></i> <span ng-bind=\"::osic.organization.creator\"></span>\n" +
     "        </div>\n" +
     "    </td>\n" +
+    "    <td ng-if=\"::osic.isGodUser\" class=\"text-right\">\n" +
+    "        <div class=\"btn-group\" style=\"display:flex\" uib-dropdown>\n" +
+    "            <a class=\"btn btn-default\" ui-sref=\"split.organizerEdit({id: osic.organization.id})\">Bewerken</a>\n" +
+    "            <button type=\"button\" class=\"btn btn-default\" uib-dropdown-toggle><span class=\"caret\"></span></button>\n" +
+    "            <ul uib-dropdown-menu role=\"menu\">\n" +
+    "                <li role=\"menuitem\">\n" +
+    "                    <a ui-sref=\"split.footer.search.organizers.delete({id: osic.organization.id})\">Verwijderen</a>\n" +
+    "                </li>\n" +
+    "            </ul>\n" +
+    "        </div>\n" +
+    "    </td>\n" +
     "</tr>\n"
   );
 
