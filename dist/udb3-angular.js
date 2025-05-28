@@ -9230,9 +9230,10 @@ angular
  * @ngInject
  */
 
-function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels) {
+function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels, $cookies) {
   var cm = this;
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
+  cm.isCultuurkuurFeatureFlagActive = $cookies.get('ff_cultuurkuur') === 'true';
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
@@ -9287,7 +9288,7 @@ function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLa
     return fieldLabels;
   }
 }
-EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth", "cultuurkuurLabels"];
+EventCultuurKuurComponentController.$inject = ["appConfig", "uitidAuth", "cultuurkuurLabels", "$cookies"];
 })();
 
 // Source: src/dashboard/components/dashboard-event-item.directive.js
@@ -28552,7 +28553,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <div ng-if=\"::!$ctrl.cultuurkuurMaintenance\">\n" +
+    "    <div ng-if=\"::!$ctrl.cultuurkuurMaintenance && !$ctrl.isCultuurkuurFeatureFlagActive\">\n" +
     "        <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
     "        <div ng-if=\"::$ctrl.permission\">\n" +
     "            <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
@@ -28607,6 +28608,10 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            </div>\n" +
     "        </div>\n" +
     "    </div>\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"::$ctrl.isCultuurkuurFeatureFlagActive && $ctrl.forSchools\">\n" +
+    "                <p>Bekijk je evenement op cultuurkuur.be</p>\n" +
+    "                <a ng-href=\"{{::$ctrl.previewLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
+    "      </div>\n" +
     "    <div ng-if=\"::$ctrl.cultuurkuurMaintenance\">\n" +
     "        <div class=\"alert alert-warning\">\n" +
     "            <p ng-bind=\"::$ctrl.cultuurkuurMessage\"></p>\n" +
