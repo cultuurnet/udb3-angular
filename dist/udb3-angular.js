@@ -12217,6 +12217,26 @@ function EventDetail(
   $scope.finishedLoading = function() {
     return ($scope.event && $scope.permissions);
   };
+
+  $scope.filteredLabels = [];
+
+  $scope.$watch('event.labels', function(newLabels) {
+  if (!Array.isArray(newLabels)) {
+    $scope.filteredLabels = [];
+    return;
+  }
+
+  var cultuurkuurLabels = newLabels.filter(function(label) {
+    return label.indexOf('cultuurkuur_') === 0;
+  });
+
+  var otherLabels = newLabels.filter(function(label) {
+    return label.indexOf('cultuurkuur_') !== 0;
+  });
+
+  $scope.filteredLabels = $scope.isGodUser ? cultuurkuurLabels.concat(otherLabels)
+    : otherLabels;
+});
 }
 EventDetail.$inject = ["$scope", "eventId", "udbApi", "jsonLDLangFilter", "$state", "$uibModal", "$q", "$window", "$location", "offerLabeller", "$translate", "appConfig", "ModerationService", "RolePermission", "authorizationService"];
 })();
@@ -29236,7 +29256,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "                </td>\n" +
     "                <td>\n" +
     "                  <p>\n" +
-    "                    <udb-label-select labels=\"::event.labels\"\n" +
+    "                    <udb-label-select labels=\"filteredLabels\"\n" +
     "                                    label-added=\"labelAdded(label)\"\n" +
     "                                    label-removed=\"labelRemoved(label)\">\n" +
     "                    </udb-label-select>\n" +
