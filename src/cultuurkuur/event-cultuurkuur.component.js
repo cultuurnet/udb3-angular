@@ -18,7 +18,6 @@ angular
 function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels, $cookies) {
   var cm = this;
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
-  cm.isCultuurkuurFeatureFlagActive = $cookies.get('ff_cultuurkuur') === 'true';
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();

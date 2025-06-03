@@ -9233,7 +9233,6 @@ angular
 function EventCultuurKuurComponentController(appConfig, uitidAuth, cultuurkuurLabels, $cookies) {
   var cm = this;
   cm.cultuurkuurMaintenance = _.get(appConfig, 'cultuurkuur.maintenance');
-  cm.isCultuurkuurFeatureFlagActive = $cookies.get('ff_cultuurkuur') === 'true';
   if (!cm.cultuurkuurMaintenance) {
     var cultuurkuurUrl = _.get(appConfig, 'cultuurkuur.cultuurkuurUrl');
     cm.user = uitidAuth.getUser();
@@ -28573,62 +28572,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
 
   $templateCache.put('templates/event-cultuurkuur.html',
     "<div class=\"cultuurkuur-component\">\n" +
-    "    <div ng-if=\"::!$ctrl.cultuurkuurMaintenance && !$ctrl.isCultuurkuurFeatureFlagActive\">\n" +
-    "        <p ng-if=\"::!$ctrl.permission && $ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
-    "        <div ng-if=\"::$ctrl.permission\">\n" +
-    "            <div ng-if=\"::!$ctrl.isIncomplete\" class=\"row\">\n" +
-    "                <p ng-if=\"$ctrl.forSchools\"><i class=\"fa fa-check-circle text-success\" aria-hidden=\"true\"></i> <span translate-once=\"cultuurkuur.info\" translate-values=\"{ previewLink: '{{$ctrl.previewLink}}' }\"></span></p>\n" +
-    "                <div class=\"panel panel-default\">\n" +
-    "                    <div class=\"panel-body\">\n" +
-    "                        <div class=\"row\">\n" +
-    "                            <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12 cultuurkuur-logo\">\n" +
-    "                                <div ng-if=\"::($ctrl.cultuurKuurInfo.fields.length > 0)\" class=\"row\">\n" +
-    "                                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    "                                        <strong>Onderwerp</strong>\n" +
-    "                                    </div>\n" +
-    "                                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    "                                        <p ng-repeat=\"field in ::$ctrl.cultuurKuurInfo.fields\" ng-bind=\"::field\"></p>\n" +
-    "                                    </div>\n" +
-    "                                </div>\n" +
-    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.targetAudience.length > 0\" class=\"row\">\n" +
-    "                                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    "                                        <strong>Doelgroep</strong>\n" +
-    "                                    </div>\n" +
-    "                                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    "                                        <p ng-repeat=\"target in ::$ctrl.cultuurKuurInfo.targetAudience\" ng-bind=\"::target\"></p>\n" +
-    "                                    </div>\n" +
-    "                                </div>\n" +
-    "                                <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 0\" class=\"row\">\n" +
-    "                                    <div class=\"col-xs-6 col-sm-6 col-md-6 col-lg-6\">\n" +
-    "                                        <strong>Geschikt voor</strong>\n" +
-    "                                    </div>\n" +
-    "                                    <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length <= 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                                        <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
-    "                                    </div>\n" +
-    "                                    <div ng-if=\"$ctrl.cultuurKuurInfo.levels.length > 4\" class=\"col-xs-5 col-sm-5 col-md-5 col-lg-5\">\n" +
-    "                                        <a role=\"button\" data-toggle=\"collapse\" href=\"#level\" aria-expanded=\"false\" aria-controls=\"level\"> {{$ctrl.cultuurKuurInfo.levels.length}} onderwijsgraden</a>\n" +
-    "                                        <div class=\"collapse\" id=\"level\">\n" +
-    "                                            <div>\n" +
-    "                                                <p ng-repeat=\"level in ::$ctrl.cultuurKuurInfo.levels\" ng-bind=\"::level\"></p>\n" +
-    "\n" +
-    "                                            </div>\n" +
-    "                                        </div>\n" +
-    "                                    </div>\n" +
-    "                                </div>\n" +
-    "                            </div>\n" +
-    "                        </div>\n" +
-    "                    </div>\n" +
-    "                    <div class=\"panel-footer\"> <a ng-href=\"{{::$ctrl.editLink}}\" target=\"_blank\">Wijzig op cultuurkuur.be</a>\n" +
-    "                    </div>\n" +
-    "                </div>\n" +
-    "            </div>\n" +
-    "            <div class=\"alert alert-info\" ng-if=\"::$ctrl.isIncomplete && $ctrl.forSchools\">\n" +
-    "                <p>Bekijk je evenement op cultuurkuur.be en voeg de juiste onderwijsniveaus toe zodat leerkrachten je vinden.</p>\n" +
-    "                <a ng-href=\"{{::$ctrl.continueLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
-    "            </div>\n" +
-    "        </div>\n" +
-    "    </div>\n" +
-    "      <div class=\"alert alert-info\" ng-if=\"::$ctrl.isCultuurkuurFeatureFlagActive && $ctrl.forSchools\">\n" +
+    "      <div class=\"alert alert-info\" ng-if=\"::$ctrl.forSchools\">\n" +
     "                <p>Bekijk je evenement op cultuurkuur.be</p>\n" +
     "                <a ng-href=\"{{::$ctrl.previewLink}}\" target=\"_blank\" class=\"btn btn-default btn-info\">Doorgaan</a>\n" +
     "      </div>\n" +
