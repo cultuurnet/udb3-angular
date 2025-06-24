@@ -66,8 +66,8 @@ function PlaceDetail(
           if (hasPermissions) {
             var offerPermissions = {
               editing: _.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser),
-              moderate:_.includes(permissions, 'Aanbod modereren'),
-              delete: _.includes(permissions, 'Aanbod verwijderen')
+              moderate:_.includes(permissions, 'Aanbod modereren') && (!place.isExpired() || $scope.isGodUser),
+              delete: _.includes(permissions, 'Aanbod verwijderen') && (!place.isExpired() || $scope.isGodUser)
             };
 
             $scope.permissions = angular.extend({}, offerPermissions, {

@@ -85,8 +85,8 @@ function EventDetail(
           if (hasPermissions) {
             var offerPermissions = {
               editing: _.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser),
-              moderate: _.includes(permissions, 'Aanbod modereren'),
-              delete: _.includes(permissions, 'Aanbod verwijderen')
+              moderate: _.includes(permissions, 'Aanbod modereren') && (!event.isExpired() || $scope.isGodUser),
+              delete: _.includes(permissions, 'Aanbod verwijderen') && (!event.isExpired() || $scope.isGodUser)
             };
             $scope.permissions = angular.extend({}, offerPermissions, {
               editingMovies: canEditMovies,
