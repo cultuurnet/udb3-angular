@@ -425,8 +425,8 @@ describe('Controller: Event Detail', function() {
 
     var expectedPermissions = {
       editing: false,
-      moderate: true,
-      delete: true,
+      moderate: false,
+      delete: false,
       editingMovies: false,
       duplication: true,
       history: false

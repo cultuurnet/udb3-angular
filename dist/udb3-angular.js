@@ -11857,8 +11857,8 @@ function EventDetail(
           if (hasPermissions) {
             var offerPermissions = {
               editing: _.includes(permissions, 'Aanbod bewerken') && (!event.isExpired() || $scope.isGodUser),
-              moderate: _.includes(permissions, 'Aanbod modereren'),
-              delete: _.includes(permissions, 'Aanbod verwijderen')
+              moderate: _.includes(permissions, 'Aanbod modereren') && (!event.isExpired() || $scope.isGodUser),
+              delete: _.includes(permissions, 'Aanbod verwijderen') && (!event.isExpired() || $scope.isGodUser)
             };
             $scope.permissions = angular.extend({}, offerPermissions, {
               editingMovies: canEditMovies,
@@ -23216,8 +23216,8 @@ function PlaceDetail(
           if (hasPermissions) {
             var offerPermissions = {
               editing: _.includes(permissions, 'Aanbod bewerken') && (!place.isExpired() || $scope.isGodUser),
-              moderate:_.includes(permissions, 'Aanbod modereren'),
-              delete: _.includes(permissions, 'Aanbod verwijderen')
+              moderate:_.includes(permissions, 'Aanbod modereren') && (!place.isExpired() || $scope.isGodUser),
+              delete: _.includes(permissions, 'Aanbod verwijderen') && (!place.isExpired() || $scope.isGodUser)
             };
 
             $scope.permissions = angular.extend({}, offerPermissions, {
@@ -28581,7 +28581,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            <p ng-bind=\"::$ctrl.cultuurkuurMessage\"></p>\n" +
     "        </div>\n" +
     "    </div>\n" +
-    "</div>\n"
+    "</div>"
   );
 
 
