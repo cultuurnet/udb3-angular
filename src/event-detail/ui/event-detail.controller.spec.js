@@ -420,7 +420,7 @@ describe('Controller: Event Detail', function() {
     event.endDate = '2016-06-20T19:00:00+02:00';
 
     authorizationService.getPermissions.and.returnValue($q.resolve([]));
-    deferredPermission.resolve([]);
+    deferredPermission.resolve(['Aanbod bewerken', 'Aanbod modereren', 'Aanbod verwijderen']);
     deferredEvent.resolve(event);
 
     var expectedPermissions = {
