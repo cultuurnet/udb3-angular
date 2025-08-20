@@ -184,6 +184,13 @@ function PlaceDetail(
     $state.go('split.placeTranslate', {id: id});
   };
 
+  $scope.openDuplicatePlace = function() {
+    if ($scope.place.duplicateOf) {
+      var id = $scope.place.duplicateOf.toString().split('/').pop();
+      $state.go('split.footer.place-preview', {id: id});
+    }
+  };
+
   controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
   };

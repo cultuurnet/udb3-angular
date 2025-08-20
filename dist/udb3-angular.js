@@ -8868,6 +8868,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.workflowStatus = jsonPlace.workflowStatus;
       }
 
+      if (jsonPlace.duplicateOf) {
+        this.duplicateOf = jsonPlace.duplicateOf;
+      }
+
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }
@@ -23334,6 +23338,13 @@ function PlaceDetail(
     $state.go('split.placeTranslate', {id: id});
   };
 
+  $scope.openDuplicatePlace = function() {
+    if ($scope.place.duplicateOf) {
+      var id = $scope.place.duplicateOf.toString().split('/').pop();
+      $state.go('split.footer.place-preview', {id: id});
+    }
+  };
+
   controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
   };
@@ -33461,6 +33472,18 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
+    "<div class=\"alert alert-info\" ng-if=\"::place.duplicateOf\" style=\"max-width: 75%;\">\n" +
+    "  <p>\n" +
+    "    Dit is een dubbele locatie. Alleen aangemaakt evenementen zijn verplaatst naar \n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-link\"\n" +
+    "            style=\"padding:0 !important; margin:0 !important; vertical-align:baseline\"\n" +
+    "            onfocus=\"this.style.outline='none';\"\n" +
+    "            ng-click=\"openDuplicatePlace()\">\n" +
+    "      hier\n" +
+    "    </button>.\n" +
+    "  </p>\n" +
+    "</div>\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +
