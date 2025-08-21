@@ -18,18 +18,21 @@
 <div ng-if="place && finishedLoading" class="place-detail">
   <h1 class="title" ng-bind="::place.name"></h1>
 
-<div class="alert alert-info" ng-if="::place.duplicateOf" style="max-width: 75%;">
-  <p>
-    Dit is een dubbele locatie. Alleen aangemaakt evenementen zijn verplaatst naar 
+<div class="alert alert-info p-1" 
+     ng-if="::place.duplicateOf" 
+     style="max-width: 75%; display:inline-flex;">
+  <span>
+    <span translate-once="duplicate_place.alert.description"></span>
     <button type="button"
             class="btn btn-link"
-            style="padding:0 !important; margin:0 !important; vertical-align:baseline"
+            style="vertical-align:baseline; padding:0;"
             onfocus="this.style.outline='none';"
-            ng-click="openDuplicatePlace()">
-      hier
-    </button>.
-  </p>
+            ng-click="openDuplicatePlace()"
+            translate-once="duplicate_place.alert.link">
+    </button>
+  </span>
 </div>
+
   <div class="row">
     <div class="col-sm-3 col-sm-push-9">
       <div class="list-group" ng-if="::permissions">

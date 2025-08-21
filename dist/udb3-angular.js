@@ -3220,6 +3220,12 @@ angular.module('udb.core')
       'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
       'continue': 'Doorgaan'
     },
+    'duplicate_place': {
+      'alert' : {
+        'description': 'Dit is een dubbele locatie. Allee aangemaakte evenementen zijn verplaatst naar',
+        'link': 'hier.'
+      }
+    },
     booking: {
       'label': 'Reservatie',
       'no_booking': 'Geen reservatie-informatie'
@@ -4442,6 +4448,12 @@ angular.module('udb.core')
       'incomplete_help': 'Introduisez cet événement sur cultuurkuur.be avec de l\'information extra pour les écoles et les enseignants.',
       'continue': 'Continuer'
     },
+    'duplicate_place': {
+      'alert': {
+        'description': 'Ce lieu est en double. Tous les événements créés ont été déplacés vers',
+        'link': 'ici.'
+      }
+    },
     booking: {
       'label': 'Réservation',
       'no_booking': 'Pas d\'information de réservation'
@@ -5659,6 +5671,12 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'incomplete_help':
       'Fügen Sie ergänzende Informationen für Schulen und Lehrkräfte auf cultuurkuur.be hinzu.',
     'continue': 'Weiter',
+  },
+  'duplicate_place': {
+    'alert': {
+      'description': 'Dieser Ort existiert doppelt. Alle erstellten Veranstaltungen wurden verschoben nach',
+      'link': 'hier.'
+    }
   },
   'booking': {
     'label': 'Buchung',
@@ -33472,18 +33490,21 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
-    "<div class=\"alert alert-info\" ng-if=\"::place.duplicateOf\" style=\"max-width: 75%;\">\n" +
-    "  <p>\n" +
-    "    Dit is een dubbele locatie. Alleen aangemaakt evenementen zijn verplaatst naar \n" +
+    "<div class=\"alert alert-info p-1\" \n" +
+    "     ng-if=\"::place.duplicateOf\" \n" +
+    "     style=\"max-width: 75%; display:inline-flex;\">\n" +
+    "  <span>\n" +
+    "    <span translate-once=\"duplicate_place.alert.description\"></span>\n" +
     "    <button type=\"button\"\n" +
     "            class=\"btn btn-link\"\n" +
-    "            style=\"padding:0 !important; margin:0 !important; vertical-align:baseline\"\n" +
+    "            style=\"vertical-align:baseline; padding:0;\"\n" +
     "            onfocus=\"this.style.outline='none';\"\n" +
-    "            ng-click=\"openDuplicatePlace()\">\n" +
-    "      hier\n" +
-    "    </button>.\n" +
-    "  </p>\n" +
+    "            ng-click=\"openDuplicatePlace()\"\n" +
+    "            translate-once=\"duplicate_place.alert.link\">\n" +
+    "    </button>\n" +
+    "  </span>\n" +
     "</div>\n" +
+    "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +
     "      <div class=\"list-group\" ng-if=\"::permissions\">\n" +

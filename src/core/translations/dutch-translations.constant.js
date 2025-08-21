@@ -444,6 +444,12 @@ angular.module('udb.core')
       'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
       'continue': 'Doorgaan'
     },
+    'duplicate_place': {
+      'alert' : {
+        'description': 'Dit is een dubbele locatie. Allee aangemaakte evenementen zijn verplaatst naar',
+        'link': 'hier.'
+      }
+    },
     booking: {
       'label': 'Reservatie',
       'no_booking': 'Geen reservatie-informatie'
