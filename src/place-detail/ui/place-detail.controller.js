@@ -184,6 +184,22 @@ function PlaceDetail(
     $state.go('split.placeTranslate', {id: id});
   };
 
+  $scope.duplicatePlaceName = '';
+
+  $scope.getDuplicatePlaceName = function() {
+    if ($scope.place.duplicateOf) {
+      udbApi.getOffer($scope.place.duplicateOf).then(function(duplicatePlace) {
+        $scope.duplicatePlaceName = jsonLDLangFilter(duplicatePlace, language, true).name;
+      });
+    }
+  };
+
+  $scope.$watch('place', function(newVal) {
+    if (newVal && newVal.duplicateOf) {
+      $scope.getDuplicatePlaceName();
+    }
+  });
+
   $scope.openDuplicatePlace = function() {
     if ($scope.place.duplicateOf) {
       var id = $scope.place.duplicateOf.toString().split('/').pop();
