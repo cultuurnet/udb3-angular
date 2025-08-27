@@ -446,8 +446,7 @@ angular.module('udb.core')
     },
     'duplicate_place': {
       'alert' : {
-        'description': 'Dit is een dubbele locatie. Allee aangemaakte evenementen zijn verplaatst naar',
-        'link': 'hier.'
+        'description': 'Deze locatie bestaat al in UiTdatabank. Alle bijhorende evenementen vind je bij',
       }
     },
     booking: {

@@ -443,8 +443,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
   },
   'duplicate_place': {
     'alert': {
-      'description': 'Dieser Ort existiert doppelt. Alle erstellten Veranstaltungen wurden verschoben nach',
-      'link': 'hier.'
+      'description': 'Dieser Ort existiert bereits in der UiTdatabank. Alle Veranstaltungen dazu finden Sie bei',
     }
   },
   'booking': {

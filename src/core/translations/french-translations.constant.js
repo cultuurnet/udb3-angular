@@ -443,8 +443,7 @@ angular.module('udb.core')
     },
     'duplicate_place': {
       'alert': {
-        'description': 'Ce lieu est en double. Tous les événements créés ont été déplacés vers',
-        'link': 'ici.'
+        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements liés à',
       }
     },
     booking: {
