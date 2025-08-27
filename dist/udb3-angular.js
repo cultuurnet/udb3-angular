@@ -3222,8 +3222,7 @@ angular.module('udb.core')
     },
     'duplicate_place': {
       'alert' : {
-        'description': 'Dit is een dubbele locatie. Allee aangemaakte evenementen zijn verplaatst naar',
-        'link': 'hier.'
+        'description': 'Deze locatie bestaat al in UiTdatabank. Alle bijhorende evenementen vind je bij',
       }
     },
     booking: {
@@ -4450,8 +4449,7 @@ angular.module('udb.core')
     },
     'duplicate_place': {
       'alert': {
-        'description': 'Ce lieu est en double. Tous les événements créés ont été déplacés vers',
-        'link': 'ici.'
+        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements associés à',
       }
     },
     booking: {
@@ -5674,8 +5672,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
   },
   'duplicate_place': {
     'alert': {
-      'description': 'Dieser Ort existiert doppelt. Alle erstellten Veranstaltungen wurden verschoben nach',
-      'link': 'hier.'
+      'description': 'Dieser Ort existiert bereits in der UiTdatabank. Alle Veranstaltungen dazu finden Sie bei',
     }
   },
   'booking': {
@@ -23356,6 +23353,22 @@ function PlaceDetail(
     $state.go('split.placeTranslate', {id: id});
   };
 
+  $scope.duplicatePlaceName = '';
+
+  $scope.getDuplicatePlaceName = function() {
+    if ($scope.place.duplicateOf) {
+      udbApi.getOffer($scope.place.duplicateOf).then(function(duplicatePlace) {
+        $scope.duplicatePlaceName = jsonLDLangFilter(duplicatePlace, language, true).name;
+      });
+    }
+  };
+
+  $scope.$watch('place', function(newVal) {
+    if (newVal && newVal.duplicateOf) {
+      $scope.getDuplicatePlaceName();
+    }
+  });
+
   $scope.openDuplicatePlace = function() {
     if ($scope.place.duplicateOf) {
       var id = $scope.place.duplicateOf.toString().split('/').pop();
@@ -33500,7 +33513,8 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "            style=\"vertical-align:baseline; padding:0;\"\n" +
     "            onfocus=\"this.style.outline='none';\"\n" +
     "            ng-click=\"openDuplicatePlace()\"\n" +
-    "            translate-once=\"duplicate_place.alert.link\">\n" +
+    "            >\n" +
+    "    <span ng-bind=\"duplicatePlaceName\"></span>    \n" +
     "    </button>\n" +
     "  </span>\n" +
     "</div>\n" +
