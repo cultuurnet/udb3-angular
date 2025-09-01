@@ -196,6 +196,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
         this.workflowStatus = jsonPlace.workflowStatus;
       }
 
+      if (jsonPlace.duplicateOf) {
+        this.duplicateOf = jsonPlace.duplicateOf;
+      }
+
       if (jsonPlace.availableFrom) {
         this.availableFrom = jsonPlace.availableFrom;
       }

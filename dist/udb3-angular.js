@@ -3220,6 +3220,11 @@ angular.module('udb.core')
       'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
       'continue': 'Doorgaan'
     },
+    'duplicate_place': {
+      'alert' : {
+        'description': 'Deze locatie bestaat al in UiTdatabank. Alle bijhorende evenementen vind je bij',
+      }
+    },
     booking: {
       'label': 'Reservatie',
       'no_booking': 'Geen reservatie-informatie'
@@ -4442,6 +4447,11 @@ angular.module('udb.core')
       'incomplete_help': 'Introduisez cet événement sur cultuurkuur.be avec de l\'information extra pour les écoles et les enseignants.',
       'continue': 'Continuer'
     },
+    'duplicate_place': {
+      'alert': {
+        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements associés à',
+      }
+    },
     booking: {
       'label': 'Réservation',
       'no_booking': 'Pas d\'information de réservation'
@@ -5659,6 +5669,11 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'incomplete_help':
       'Fügen Sie ergänzende Informationen für Schulen und Lehrkräfte auf cultuurkuur.be hinzu.',
     'continue': 'Weiter',
+  },
+  'duplicate_place': {
+    'alert': {
+      'description': 'Dieser Ort existiert bereits in der UiTdatabank. Alle Veranstaltungen dazu finden Sie bei',
+    }
   },
   'booking': {
     'label': 'Buchung',
@@ -8866,6 +8881,10 @@ function UdbPlaceFactory(EventTranslationState, placeCategories, UdbOrganizer) {
 
       if (jsonPlace.workflowStatus) {
         this.workflowStatus = jsonPlace.workflowStatus;
+      }
+
+      if (jsonPlace.duplicateOf) {
+        this.duplicateOf = jsonPlace.duplicateOf;
       }
 
       if (jsonPlace.availableFrom) {
@@ -23334,6 +23353,29 @@ function PlaceDetail(
     $state.go('split.placeTranslate', {id: id});
   };
 
+  $scope.duplicatePlaceName = '';
+
+  $scope.getDuplicatePlaceName = function() {
+    if ($scope.place.duplicateOf) {
+      udbApi.getOffer($scope.place.duplicateOf).then(function(duplicatePlace) {
+        $scope.duplicatePlaceName = jsonLDLangFilter(duplicatePlace, language, true).name;
+      });
+    }
+  };
+
+  $scope.$watch('place', function(newVal) {
+    if (newVal && newVal.duplicateOf) {
+      $scope.getDuplicatePlaceName();
+    }
+  });
+
+  $scope.openDuplicatePlace = function() {
+    if ($scope.place.duplicateOf) {
+      var id = $scope.place.duplicateOf.toString().split('/').pop();
+      $state.go('split.footer.place-preview', {id: id});
+    }
+  };
+
   controller.goToDashboard = function() {
     $state.go('split.footer.dashboard');
   };
@@ -33460,6 +33502,22 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "\n" +
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
+    "\n" +
+    "<div class=\"alert alert-info p-1\" \n" +
+    "     ng-if=\"::place.duplicateOf\" \n" +
+    "     style=\"max-width: 75%; display:inline-flex;\">\n" +
+    "  <span>\n" +
+    "    <span translate-once=\"duplicate_place.alert.description\"></span>\n" +
+    "    <button type=\"button\"\n" +
+    "            class=\"btn btn-link\"\n" +
+    "            style=\"vertical-align:baseline; padding:0;\"\n" +
+    "            onfocus=\"this.style.outline='none';\"\n" +
+    "            ng-click=\"openDuplicatePlace()\"\n" +
+    "            >\n" +
+    "    <span ng-bind=\"duplicatePlaceName\"></span>    \n" +
+    "    </button>\n" +
+    "  </span>\n" +
+    "</div>\n" +
     "\n" +
     "  <div class=\"row\">\n" +
     "    <div class=\"col-sm-3 col-sm-push-9\">\n" +

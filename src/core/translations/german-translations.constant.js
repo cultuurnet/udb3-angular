@@ -441,6 +441,11 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'Fügen Sie ergänzende Informationen für Schulen und Lehrkräfte auf cultuurkuur.be hinzu.',
     'continue': 'Weiter',
   },
+  'duplicate_place': {
+    'alert': {
+      'description': 'Dieser Ort existiert bereits in der UiTdatabank. Alle Veranstaltungen dazu finden Sie bei',
+    }
+  },
   'booking': {
     'label': 'Buchung',
     'no_booking': 'Keine Buchungsinformation',

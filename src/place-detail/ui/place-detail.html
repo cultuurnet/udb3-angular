@@ -18,6 +18,22 @@
 <div ng-if="place && finishedLoading" class="place-detail">
   <h1 class="title" ng-bind="::place.name"></h1>
 
+<div class="alert alert-info p-1" 
+     ng-if="::place.duplicateOf" 
+     style="max-width: 75%; display:inline-flex;">
+  <span>
+    <span translate-once="duplicate_place.alert.description"></span>
+    <button type="button"
+            class="btn btn-link"
+            style="vertical-align:baseline; padding:0;"
+            onfocus="this.style.outline='none';"
+            ng-click="openDuplicatePlace()"
+            >
+    <span ng-bind="duplicatePlaceName"></span>    
+    </button>
+  </span>
+</div>
+
   <div class="row">
     <div class="col-sm-3 col-sm-push-9">
       <div class="list-group" ng-if="::permissions">

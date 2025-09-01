@@ -441,6 +441,11 @@ angular.module('udb.core')
       'incomplete_help': 'Introduisez cet événement sur cultuurkuur.be avec de l\'information extra pour les écoles et les enseignants.',
       'continue': 'Continuer'
     },
+    'duplicate_place': {
+      'alert': {
+        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements liés à',
+      }
+    },
     booking: {
       'label': 'Réservation',
       'no_booking': 'Pas d\'information de réservation'

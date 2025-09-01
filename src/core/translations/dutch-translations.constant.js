@@ -444,6 +444,11 @@ angular.module('udb.core')
       'incomplete_help': 'Vervolledig dit evenement op cultuurkuur.be met extra informatie voor scholen en leerkrachten.',
       'continue': 'Doorgaan'
     },
+    'duplicate_place': {
+      'alert' : {
+        'description': 'Deze locatie bestaat al in UiTdatabank. Alle bijhorende evenementen vind je bij',
+      }
+    },
     booking: {
       'label': 'Reservatie',
       'no_booking': 'Geen reservatie-informatie'
