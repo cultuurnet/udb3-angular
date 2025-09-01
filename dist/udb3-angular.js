@@ -4449,7 +4449,7 @@ angular.module('udb.core')
     },
     'duplicate_place': {
       'alert': {
-        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements associés à',
+        'description': 'Ce lieu existe déjà dans UiTdatabank. Vous trouverez tous les événements liés à',
       }
     },
     booking: {
@@ -24832,12 +24832,12 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
       }
 
       /**
-       * Show the first 5 items from a list of saved searches.
+       * Show the first 10 items from a list of saved searches.
        *
        * @param {Object[]} savedSearches
        */
       function showSavedSearches(savedSearches) {
-        searchBar.savedSearches = _.take(savedSearches, 5);
+        searchBar.savedSearches = _.take(savedSearches, 10);
       }
 
       savedSearchesService
