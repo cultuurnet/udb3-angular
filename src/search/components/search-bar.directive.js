@@ -12,8 +12,6 @@ angular
 
 /* @ngInject */
 function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSearchesService) {
-  const LIMIT_SAVED_SEARCHES = 10;
-
   return {
     templateUrl: 'templates/search-bar.directive.html',
     restrict: 'E',
@@ -103,7 +101,7 @@ function udbSearchBar(searchHelper, $rootScope, $uibModal, $translate, savedSear
        * @param {Object[]} savedSearches
        */
       function showSavedSearches(savedSearches) {
-        searchBar.savedSearches = _.take(savedSearches, LIMIT_SAVED_SEARCHES);
+        searchBar.savedSearches = _.take(savedSearches, 10);
       }
 
       savedSearchesService
