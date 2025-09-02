@@ -34139,7 +34139,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          </a>\n" +
     "        </li>\n" +
     "        <li class=\"divider\"></li>\n" +
-    "        <li><a href=\"saved-searches\" translate-once=\"search.manage\">Beheren</a></li>\n" +
+    "        <li><a href=\"saved-searches\" translate-once=\"search.manage\">Alle zoekopdrachten</a></li>\n" +
     "      </ul>\n" +
     "    </span>\n" +
     "    <i ng-show=\"sb.hasErrors\" class=\"fas fa-exclamation-triangle warning-icon\"></i>\n" +
