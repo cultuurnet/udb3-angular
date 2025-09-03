@@ -6495,7 +6495,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
         'cancel': 'Abbrechen'
       }
     },
-    'manage': 'Verwalten',
+    'manage': 'Alle Suchanfragen',
     'oneResult': '1 Ergebnis',
     'multipleResults': '{{count}} Ergebnisse',
     'description': 'Beschreibung',
