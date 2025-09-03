@@ -1183,7 +1183,7 @@ angular.module('udb.core')
           cancel: 'Annuleren'
         }
       },
-      manage: 'Beheren',
+      manage: 'Alle zoekopdrachten',
       oneResult: '1 resultaat',
       multipleResults: '{{count}} resultaten',
       description: 'Beschrijving',

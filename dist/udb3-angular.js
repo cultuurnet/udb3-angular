@@ -3959,7 +3959,7 @@ angular.module('udb.core')
           cancel: 'Annuleren'
         }
       },
-      manage: 'Beheren',
+      manage: 'Alle zoekopdrachten',
       oneResult: '1 resultaat',
       multipleResults: '{{count}} resultaten',
       description: 'Beschrijving',
@@ -5182,7 +5182,7 @@ angular.module('udb.core')
           cancel: 'Annuler'
         }
       },
-      manage: 'Gérer',
+      manage: 'Toutes les recherches',
       oneResult: '1 résultat',
       multipleResults: '{{count}} résultats',
       description: 'Description',
@@ -6495,7 +6495,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
         'cancel': 'Abbrechen'
       }
     },
-    'manage': 'Verwalten',
+    'manage': 'Alle Suchanfragen',
     'oneResult': '1 Ergebnis',
     'multipleResults': '{{count}} Ergebnisse',
     'description': 'Beschreibung',

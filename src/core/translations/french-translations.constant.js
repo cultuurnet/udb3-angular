@@ -1176,7 +1176,7 @@ angular.module('udb.core')
           cancel: 'Annuler'
         }
       },
-      manage: 'Gérer',
+      manage: 'Toutes les recherches',
       oneResult: '1 résultat',
       multipleResults: '{{count}} résultats',
       description: 'Description',
