@@ -153,7 +153,8 @@ function UdbApi(
           start: offset,
           disableDefaultFilters: true,
           workflowStatus: 'READY_FOR_VALIDATION,APPROVED',
-          embed: true
+          embed: true,
+          'sort[created]': 'desc',
         };
 
     var requestOptions = _.cloneDeep(defaultApiConfig);
