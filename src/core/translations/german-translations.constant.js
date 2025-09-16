@@ -802,7 +802,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'READY_FOR_VALIDATION': 'Veröffentlicht',
     'APPROVED': 'Online ab',
     'REJECTED': 'Veröffentlichung abgelehnt',
-    'DELETED': 'Gelöscht',
+    'DELETED': 'Nicht veröffentlicht',
     'rules': 'Sehen Sie sich die Regeln an',
     'rejected_full': 'Die Veröffentlichung dieses Items wurde abgelehnt.',
   },

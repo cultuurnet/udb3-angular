@@ -747,7 +747,7 @@ angular.module('udb.core')
       'READY_FOR_VALIDATION': 'Prêt à être publié',
       'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
-      'DELETED': 'Supprimé',
+      'DELETED': 'Pas publié',
       'rules': 'Regardez les règles',
       'rejected_full': 'Cet item a été rejeté.'
     },
