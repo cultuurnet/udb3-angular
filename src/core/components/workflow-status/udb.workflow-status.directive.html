@@ -1,6 +1,6 @@
 <tr>
     <td><span class="row-label" translate-once="workflowStatus.label"></span></td>
-    <td ng-if="cm.event.workflowStatus !== 'REJECTED'">
+    <td ng-if="cm.event.workflowStatus !== 'REJECTED' && cm.event.workflowStatus !== 'DELETED'">
         <span ng-if="cm.event.available" ng-bind="cm.event.available | date: 'dd/MM/yyyy'">
                     </span>
         <span ng-if="!cm.event.available && !cm.event.availableFrom">{{::cm.status | translate }}</span>
@@ -9,8 +9,11 @@
     <td ng-if="cm.event.workflowStatus === 'REJECTED'">
       <p><span translate-once="workflowStatus.rejected_full"></span>&nbsp;<a ng-href="{{::cm.publicationRulesLink}}" target="_blank"><span translate-once="workflowStatus.rules"></span></a></p>
     </td>
+    <td ng-if="cm.event.workflowStatus === 'DELETED'">
+      <p><span translate-once="workflowStatus.DELETED"></span></p>
+    </td>
 </tr>
-<tr ng-if="cm.event.workflowStatus !== 'REJECTED'">
+<tr ng-if="cm.event.workflowStatus !== 'REJECTED' && cm.event.workflowStatus !== 'DELETED'">
     <td><span class="row-label" translate-once="workflowStatus.id"></span></td>
     <td>
         <ul>

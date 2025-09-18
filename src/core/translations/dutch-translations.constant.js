@@ -752,7 +752,7 @@ angular.module('udb.core')
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
-      'DELETED': 'Niet gepubliceerd',
+      'DELETED': 'Verwijderd',
       'rules': 'Bekijk de regels',
       'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
