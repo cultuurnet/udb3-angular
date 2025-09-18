@@ -3528,7 +3528,7 @@ angular.module('udb.core')
       'READY_FOR_VALIDATION': 'Gepubliceerd',
       'APPROVED': 'Online vanaf',
       'REJECTED': 'Publicatie afgewezen',
-      'DELETED': 'Niet gepubliceerd',
+      'DELETED': 'Verwijderd',
       'rules': 'Bekijk de regels',
       'rejected_full': 'Dit item werd afgewezen voor publicatie.'
     },
@@ -4753,7 +4753,7 @@ angular.module('udb.core')
       'READY_FOR_VALIDATION': 'Prêt à être publié',
       'APPROVED': 'Publié le',
       'REJECTED': 'Publication rejetée',
-      'DELETED': 'Pas publié',
+      'DELETED': 'Supprimé',
       'rules': 'Regardez les règles',
       'rejected_full': 'Cet item a été rejeté.'
     },
@@ -6031,7 +6031,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'READY_FOR_VALIDATION': 'Veröffentlicht',
     'APPROVED': 'Online ab',
     'REJECTED': 'Veröffentlichung abgelehnt',
-    'DELETED': 'Nicht veröffentlicht',
+    'DELETED': 'Gelöscht',
     'rules': 'Sehen Sie sich die Regeln an',
     'rejected_full': 'Die Veröffentlichung dieses Items wurde abgelehnt.',
   },
@@ -28572,7 +28572,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
   $templateCache.put('templates/udb.workflow-status.directive.html',
     "<tr>\n" +
     "    <td><span class=\"row-label\" translate-once=\"workflowStatus.label\"></span></td>\n" +
-    "    <td ng-if=\"cm.event.workflowStatus !== 'REJECTED'\">\n" +
+    "    <td ng-if=\"cm.event.workflowStatus !== 'REJECTED' && cm.event.workflowStatus !== 'DELETED'\">\n" +
     "        <span ng-if=\"cm.event.available\" ng-bind=\"cm.event.available | date: 'dd/MM/yyyy'\">\n" +
     "                    </span>\n" +
     "        <span ng-if=\"!cm.event.available && !cm.event.availableFrom\">{{::cm.status | translate }}</span>\n" +
@@ -28581,8 +28581,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "    <td ng-if=\"cm.event.workflowStatus === 'REJECTED'\">\n" +
     "      <p><span translate-once=\"workflowStatus.rejected_full\"></span>&nbsp;<a ng-href=\"{{::cm.publicationRulesLink}}\" target=\"_blank\"><span translate-once=\"workflowStatus.rules\"></span></a></p>\n" +
     "    </td>\n" +
+    "    <td ng-if=\"cm.event.workflowStatus === 'DELETED'\">\n" +
+    "      <p><span translate-once=\"workflowStatus.DELETED\"></span></p>\n" +
+    "    </td>\n" +
     "</tr>\n" +
-    "<tr ng-if=\"cm.event.workflowStatus !== 'REJECTED'\">\n" +
+    "<tr ng-if=\"cm.event.workflowStatus !== 'REJECTED' && cm.event.workflowStatus !== 'DELETED'\">\n" +
     "    <td><span class=\"row-label\" translate-once=\"workflowStatus.id\"></span></td>\n" +
     "    <td>\n" +
     "        <ul>\n" +
