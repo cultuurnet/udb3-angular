@@ -48,7 +48,7 @@
         <a ng-if="::(permissions.moderate && !isOmdApp)"
            class="list-group-item"
            ng-href="{{ place.url + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_availability"></span></a>
-        <button ng-if="::permissions.delete"
+        <button ng-if="::permissions.delete && place.workflowStatus !== 'DELETED'"
                 class="list-group-item"
                 href="#"
                 ng-click="deletePlace()"><i class="fa fa-trash" aria-hidden="true"></i>  <span translate-once="preview.delete"></span></button>
