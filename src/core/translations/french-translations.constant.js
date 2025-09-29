@@ -395,7 +395,8 @@ angular.module('udb.core')
       'publiq_url': 'Voir sur {{publicationBrand}}',
       'translate': 'Traduire',
       'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.',
-      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.'
+      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.',
+      'deleted_place': 'Ce lieu a été supprimé.',
     },
     translate: {
       'ready': 'Prêt à traduire',

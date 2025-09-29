@@ -393,7 +393,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
     'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.',
-    'info_holiday_camp': 'Ihr Camp oder Urlaub wird bis zum Starttag in online Agendas angezeigt.'
+    'info_holiday_camp': 'Ihr Camp oder Urlaub wird bis zum Starttag in online Agendas angezeigt.',
+    'deleted_place': 'Dieser Ort wurde gelöscht.',
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
