@@ -18,6 +18,11 @@
 <div ng-if="place && finishedLoading" class="place-detail">
   <h1 class="title" ng-bind="::place.name"></h1>
 
+   <div ng-if="::place.workflowStatus === 'DELETED'">
+        <div class="alert alert-danger" style="max-width: fit-content;">
+            <span translate-once="preview.deleted_place"></span>
+        </div>
+    </div>  
 <div class="alert alert-info p-1" 
      ng-if="::place.duplicateOf" 
      style="max-width: 75%; display:inline-flex;">
