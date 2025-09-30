@@ -18,6 +18,11 @@
 <div ng-if="place && finishedLoading" class="place-detail">
   <h1 class="title" ng-bind="::place.name"></h1>
 
+   <div ng-if="::place.workflowStatus === 'DELETED'">
+        <div class="alert alert-danger" style="max-width: fit-content;">
+            <span translate-once="preview.deleted_place"></span>
+        </div>
+    </div>  
 <div class="alert alert-info p-1" 
      ng-if="::place.duplicateOf" 
      style="max-width: 75%; display:inline-flex;">
@@ -48,7 +53,7 @@
         <a ng-if="::(permissions.moderate && !isOmdApp)"
            class="list-group-item"
            ng-href="{{ place.url + '/status' }}"><i class="far fa-calendar-check" aria-hidden="true"></i>  <span translate-once="preview.change_availability"></span></a>
-        <button ng-if="::permissions.delete"
+        <button ng-if="::permissions.delete && place.workflowStatus !== 'DELETED'"
                 class="list-group-item"
                 href="#"
                 ng-click="deletePlace()"><i class="fa fa-trash" aria-hidden="true"></i>  <span translate-once="preview.delete"></span></button>

@@ -3174,7 +3174,8 @@ angular.module('udb.core')
       'publiq_url': 'Bekijk op {{publicationBrand}}',
       'translate': 'Vertalen',
       'info_lesson_series': 'Je lessenreeks verschijnt in UiTagenda\'s tot aan het eerste lesmoment.',
-      'info_holiday_camp': 'Je kamp of vakantie verschijnt in UiTagenda\'s tot aan de startdag.'
+      'info_holiday_camp': 'Je kamp of vakantie verschijnt in UiTagenda\'s tot aan de startdag.',
+      'deleted_place': 'Deze locatie is verwijderd.',
     },
     translate: {
       'ready': 'Klaar met vertalen',
@@ -4401,7 +4402,8 @@ angular.module('udb.core')
       'publiq_url': 'Voir sur {{publicationBrand}}',
       'translate': 'Traduire',
       'info_lesson_series': 'Votre série de cours apparaît dans les agendas UiT jusqu\'au premier moment de la cours.',
-      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.'
+      'info_holiday_camp': 'Votre camp de vacances apparaîtront dans des calendriers en ligne jusqu\'au jour du début.',
+      'deleted_place': 'Ce lieu a été supprimé.',
     },
     translate: {
       'ready': 'Prêt à traduire',
@@ -5622,7 +5624,8 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'publiq_url': 'Auf {{publicationBrand}}ansehen',
     'translate': 'Übersetzen',
     'info_lesson_series': 'Ihre Unterrichtsreihe erscheint bis zum ersten Unterrichtszeitpunkt in UiT-Agenden.',
-    'info_holiday_camp': 'Ihr Camp oder Urlaub wird bis zum Starttag in online Agendas angezeigt.'
+    'info_holiday_camp': 'Ihr Camp oder Urlaub wird bis zum Starttag in online Agendas angezeigt.',
+    'deleted_place': 'Dieser Ort wurde gelöscht.',
   },
   'translate': {
     'ready': 'Fertig mit übersetzen',
@@ -33507,6 +33510,11 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "<div ng-if=\"place && finishedLoading\" class=\"place-detail\">\n" +
     "  <h1 class=\"title\" ng-bind=\"::place.name\"></h1>\n" +
     "\n" +
+    "   <div ng-if=\"::place.workflowStatus === 'DELETED'\">\n" +
+    "        <div class=\"alert alert-danger\" style=\"max-width: fit-content;\">\n" +
+    "            <span translate-once=\"preview.deleted_place\"></span>\n" +
+    "        </div>\n" +
+    "    </div>  \n" +
     "<div class=\"alert alert-info p-1\" \n" +
     "     ng-if=\"::place.duplicateOf\" \n" +
     "     style=\"max-width: 75%; display:inline-flex;\">\n" +
@@ -33537,7 +33545,7 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "        <a ng-if=\"::(permissions.moderate && !isOmdApp)\"\n" +
     "           class=\"list-group-item\"\n" +
     "           ng-href=\"{{ place.url + '/status' }}\"><i class=\"far fa-calendar-check\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.change_availability\"></span></a>\n" +
-    "        <button ng-if=\"::permissions.delete\"\n" +
+    "        <button ng-if=\"::permissions.delete && place.workflowStatus !== 'DELETED'\"\n" +
     "                class=\"list-group-item\"\n" +
     "                href=\"#\"\n" +
     "                ng-click=\"deletePlace()\"><i class=\"fa fa-trash\" aria-hidden=\"true\"></i>  <span translate-once=\"preview.delete\"></span></button>\n" +
