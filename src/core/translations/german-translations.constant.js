@@ -355,6 +355,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'history': 'Verlauf',
       'publication': 'Veröffentlichung',
     },
+    'editAlert': 'Ihre Änderungen wurden gespeichert und sind innerhalb einer Stunde auf UiTinVlaanderen sichtbar.',
     'not_found': 'Seite nicht gefunden',
     'not_found_help': 'Diese Seite konnte nicht gefunden werden.',
     'loading': 'Laden...',
