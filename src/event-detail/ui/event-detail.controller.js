@@ -35,6 +35,8 @@ function EventDetail(
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
   $scope.isOmdApp = !!_.get(appConfig, 'omdSpecific', false);
 
+  $scope.isEdited = $location.search().edited === 'true';
+
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
 
