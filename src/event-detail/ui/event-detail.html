@@ -71,6 +71,9 @@
         </li>
       </ul>
 
+      <div ng-if="isEdited" class="alert alert-info" style="margin-top: 1rem;margin-bottom: 0;" translate-once="preview.editAlert">
+      </div>
+
       <div class="tab-pane" role="tabpanel" ng-show="isTabActive('data')">
           <table class="table udb3-data-table">
             <colgroup>

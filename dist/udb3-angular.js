@@ -3134,6 +3134,7 @@ angular.module('udb.core')
         'history': 'Historiek',
         'publication': 'Publicatie'
       },
+      'editAlert': 'Je aanpassingen zijn opgeslagen en zijn binnen een uur zichtbaar op UiTinVlaanderen.',
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
@@ -4365,6 +4366,7 @@ angular.module('udb.core')
         'history': 'Historique',
         'publication': 'Publication'
       },
+      'editAlert': 'Vos modifications ont été enregistrées et seront visibles sur UiTinVlaanderen dans l\'heure.',
       'not_found': 'Page introuvable',
       'not_found_help': 'Cette page n\'a pas pu être trouvée.',
       'loading': 'Chargement...',
@@ -5586,6 +5588,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'history': 'Verlauf',
       'publication': 'Veröffentlichung',
     },
+    'editAlert': 'Ihre Änderungen wurden gespeichert und sind innerhalb einer Stunde auf UiTinVlaanderen sichtbar.',
     'not_found': 'Seite nicht gefunden',
     'not_found_help': 'Diese Seite konnte nicht gefunden werden.',
     'loading': 'Laden...',
@@ -11829,6 +11832,8 @@ function EventDetail(
   var FILMINVOER_LABEL = 'udb-filminvoer';
   $scope.cultuurkuurEnabled = _.get(appConfig, 'cultuurkuur.enabled');
   $scope.isOmdApp = !!_.get(appConfig, 'omdSpecific', false);
+
+  $scope.isEdited = $location.search().edited === 'true';
 
   $q.when(eventId, function(offerLocation) {
     $scope.eventId = offerLocation;
@@ -29216,6 +29221,9 @@ angular.module('udb.core').run(['$templateCache', function($templateCache) {
     "          <a ng-click=\"makeTabActive(tab.id)\" role=\"tab\" translate-once=\"preview.tabs.{{tab.id}}\" href=\"#\"></a>\n" +
     "        </li>\n" +
     "      </ul>\n" +
+    "\n" +
+    "      <div ng-if=\"isEdited\" class=\"alert alert-info\" style=\"margin-top: 1rem;margin-bottom: 0;\" translate-once=\"preview.editAlert\">\n" +
+    "      </div>\n" +
     "\n" +
     "      <div class=\"tab-pane\" role=\"tabpanel\" ng-show=\"isTabActive('data')\">\n" +
     "          <table class=\"table udb3-data-table\">\n" +

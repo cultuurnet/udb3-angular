@@ -358,6 +358,7 @@ angular.module('udb.core')
         'history': 'Historiek',
         'publication': 'Publicatie'
       },
+      'editAlert': 'Je aanpassingen zijn opgeslagen en zijn binnen een uur zichtbaar op UiTinVlaanderen.',
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
