@@ -201,7 +201,38 @@ function SearchController(
     }
   };
 
-  var addLanguageIcons = function () {
+  function addLanguageIconsToActiveQuery() {
+    var query = $scope.activeQuery,
+      eventCount = $scope.resultViewer.totalItems;
+
+    if (LuceneQueryBuilder.isValid(query)) {
+      var modal = $uibModal.open({
+        templateUrl: 'templates/offer-languages-modal.html',
+        controller: 'OfferLanguagesModalCtrl',
+        controllerAs: 'lmc'
+      });
+
+      modal.result.then(function (labels) {
+        // eagerly label all cached events on the first page
+        var selectedIds = $scope.resultViewer.selectedIds;
+        _.each(selectedIds, function (eventId) {
+          var eventPromise = udbApi.getEventById(eventId);
+
+          eventPromise.then(function (event) {
+            event.label(labels);
+          });
+        });
+
+        _.each(labels, function (label) {
+          offerLabeller.labelQuery(query.queryString, label, eventCount);
+        });
+      });
+    } else {
+      $window.alert('provide a valid query to label');
+    }
+  }
+
+  function addLanguageIconsToSelection() {
     var selectedOffers = $scope.resultViewer.selectedOffers;
     if (!selectedOffers.length) {
       $window.alert('First select the events you want to label.');
@@ -215,6 +246,16 @@ function SearchController(
     });
 
     modal.result.then(saveLabels);
+  }
+
+  var addLanguageIcons = function () {
+    var labellingQuery = $scope.resultViewer.querySelected;
+
+    if (labellingQuery) {
+      addLanguageIconsToActiveQuery();
+    } else {
+      addLanguageIconsToSelection();
+    }
   };
 
   function exportEvents() {
