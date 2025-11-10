@@ -27837,10 +27837,8 @@ function SearchController(
     var labellingQuery = $scope.resultViewer.querySelected;
 
     if (labellingQuery) {
-      console.log('labelling query');
       addLanguageIconsToActiveQuery();
     } else {
-      console.log('add language icons to selection');
       addLanguageIconsToSelection();
     }
   };
