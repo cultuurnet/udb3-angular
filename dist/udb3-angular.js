@@ -3134,7 +3134,7 @@ angular.module('udb.core')
         'history': 'Historiek',
         'publication': 'Publicatie'
       },
-      'editAlert': 'Je aanpassingen zijn opgeslagen en zijn binnen een uur zichtbaar op UiTinVlaanderen.',
+      'editAlert': 'Je aanpassingen zijn opgeslagen en zijn <strong>binnen 1 uur</strong> zichtbaar op UiTinVlaanderen.',
       'not_found': 'Pagina niet gevonden',
       'not_found_help': 'Deze pagina kon niet gevonden worden.',
       'loading': 'Aan het laden...',
@@ -4366,7 +4366,7 @@ angular.module('udb.core')
         'history': 'Historique',
         'publication': 'Publication'
       },
-      'editAlert': 'Vos modifications ont été enregistrées et seront visibles sur UiTinVlaanderen dans l\'heure.',
+      'editAlert': 'Vos modifications ont été enregistrées et seront visibles sur UiTinVlaanderen <strong>dans 1 heure.</strong>',
       'not_found': 'Page introuvable',
       'not_found_help': 'Cette page n\'a pas pu être trouvée.',
       'loading': 'Chargement...',
@@ -5588,7 +5588,7 @@ angular.module('udb.core').constant('udbGermanTranslations', {
       'history': 'Verlauf',
       'publication': 'Veröffentlichung',
     },
-    'editAlert': 'Ihre Änderungen wurden gespeichert und sind innerhalb einer Stunde auf UiTinVlaanderen sichtbar.',
+    'editAlert': 'Ihre Änderungen wurden gespeichert und sind <strong>innerhalb 1 Stunde</strong> auf UiTinVlaanderen sichtbar.',
     'not_found': 'Seite nicht gefunden',
     'not_found_help': 'Diese Seite konnte nicht gefunden werden.',
     'loading': 'Laden...',
