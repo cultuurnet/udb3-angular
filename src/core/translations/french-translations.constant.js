@@ -358,7 +358,7 @@ angular.module('udb.core')
         'history': 'Historique',
         'publication': 'Publication'
       },
-      'editAlert': 'Vos modifications ont été enregistrées et seront visibles sur UiTinVlaanderen dans l\'heure.',
+      'editAlert': 'Vos modifications ont été enregistrées et seront visibles sur UiTinVlaanderen <strong>dans 1 heure</strong>.',
       'not_found': 'Page introuvable',
       'not_found_help': 'Cette page n\'a pas pu être trouvée.',
       'loading': 'Chargement...',
