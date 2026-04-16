@@ -6834,9 +6834,11 @@ function UdbApi(
     var offer = {};
     switch (type) {
       case 'event':
+      case 'events':
         offer = new UdbEvent();
         break;
       case 'place':
+      case 'places':
         offer = new UdbPlace();
         break;
       case 'organizers':
