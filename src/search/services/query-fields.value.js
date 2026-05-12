@@ -86,6 +86,7 @@ angular
     {field: 'organizer.name.en', type: 'tokenized-string'},
     {field: 'allAges', type: 'string'},
     {field: 'contributors', type: 'string'},
+    {field: 'departurePlaces', type: 'string'},
 
     // Start- and end-date have been dropped in favor of a single date field. Keep these around to map SAPI2 translations.
     {name: 'startdate', field:'dateRange', type: 'date-range'},
