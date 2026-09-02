@@ -35,6 +35,14 @@ angular.module('udb.core')
     '=_DATE': 'is gelijk aan',
     '><_DATE': 'tussen',
     'choice': {
+      'childrenOnly': {
+        'true': 'voor kinderen alleen (BOA)',
+        'false': 'voor kinderen samen met hun familie'
+      },
+      'hasOvernightStay': {
+        'true': 'met overnachting',
+        'false': 'zonder overnachting'
+      },
       'everyone': 'iedereen',
       'members': 'leden',
       'education': 'onderwijs',
@@ -801,6 +809,10 @@ angular.module('udb.core')
       'completeness': 'volledigheid',
       'category_facility_name': 'voorzieningen',
       'category_targetaudience_name': 'doelgroep',
+      'children_only': 'voor wie (BOA)',
+      'birth_date': 'geboortedatum',
+      'overnight_stay': 'overnachting',
+      'departure_places': 'vertreklocatie begeleid vervoer (UUID)',
       'startdate': 'startdatum',
       'enddate': 'einddatum',
       'lastupdatedby': 'laatst aangepast door',

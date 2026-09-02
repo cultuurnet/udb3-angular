@@ -56,6 +56,10 @@ angular
     {name: 'completeness', field: 'completeness', type: 'number' , group: 'other', editable: true},
     {name: 'category_facility_name', field:'terms.id', type: 'term', group: 'other', editable: true},
     {name: 'category_targetaudience_name', field: 'audienceType', type: 'choice', group: 'other', editable: true, options: ['everyone', 'members', 'education']},
+    {name: 'children_only', field: 'childrenOnly', type: 'choice', group: 'other', editable: true, options: ['true', 'false'], optionLabels: 'childrenOnly'},
+    {name: 'birth_date', field: 'birthdateRange', type: 'date-range', group: 'other', editable: true, dateFormat: 'YYYY-MM-DD'},
+    {name: 'overnight_stay', field: 'hasOvernightStay', type: 'choice', group: 'other', editable: true, options: ['true', 'false'], optionLabels: 'hasOvernightStay'},
+    {name: 'departure_places', field: 'departurePlaces', type: 'string', group: 'other', editable: true},
 
     // The following fields are supported but not named and do not show up in the builder
     // https://github.com/cultuurnet/udb3-search-docs/blob/master/advanced-queries.md#supported-fields

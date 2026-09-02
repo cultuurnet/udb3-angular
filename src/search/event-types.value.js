@@ -10,6 +10,7 @@
 angular
   .module('udb.search')
   .value('eventTypes', [
+    {label: 'Activiteit met de jeugdbeweging', id: '8aRjN4dGsXuE6tBkM1pVwQ'},
     {label: 'Begeleide uitstap of rondleiding', id: '0.7.0.0.0'},
     {label: 'Beurs', id: '0.6.0.0.0'},
     {label: 'Concert', id: '0.50.4.0.0'},
@@ -20,12 +21,14 @@ angular
     {label: 'Festival', id: '0.5.0.0.0'},
     {label: 'Film', id: '0.50.6.0.0'},
     {label: 'Kamp of vakantie', id: '0.57.0.0.0'},
+    {label: 'Kinderopvang', id: 'K7mPx3nQrT9bWfH2zL5cYv'},
     {label: 'Festiviteit', id: '0.28.0.0.0'},
     {label: 'Lezing of congres', id: '0.3.2.0.0'},
     {label: 'Markt, braderie of kermis', id: '0.37.0.0.0'},
     {label: 'Opendeurdag', id: '0.12.0.0.0'},
     {label: 'Party of fuif', id: '0.49.0.0.0'},
     {label: 'Fiets- of wandelroute', id: '0.17.0.0.0'},
+    {label: 'Speelpleinwerking', id: 'hZ5fCyL9nKqW3xDvTrJ2gP'},
     {label: 'Spel of quiz', id: '0.50.21.0.0'},
     {label: 'Sportactiviteit', id: '0.59.0.0.0'},
     {label: 'Sportwedstrijd bekijken', id: '0.19.0.0.0'},

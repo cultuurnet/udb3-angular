@@ -33,6 +33,14 @@ angular.module('udb.core').constant('udbGermanTranslations', {
   '=_DATE': 'ist gleich',
   '><_DATE': 'zwischen',
   'choice': {
+    'childrenOnly': {
+      'true': 'nur für Kinder (BOA)',
+      'false': 'für Kinder zusammen mit ihrer Familie'
+    },
+    'hasOvernightStay': {
+      'true': 'mit Übernachtung',
+      'false': 'ohne Übernachtung'
+    },
     'everyone': 'alle',
     'members': 'Mitglieder',
     'education': 'Bildung',
@@ -851,6 +859,10 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'completeness': 'integrität',
     'add_facility': 'Ausstattung',
     'category_targetaudience_name': 'Zielgruppe',
+    'children_only': 'für wen (BOA)',
+    'birth_date': 'Geburtsdatum',
+    'overnight_stay': 'Übernachtung',
+    'departure_places': 'Abfahrtsort begleiteter Transport (UUID)',
     'startdate': 'Startdatum',
     'enddate': 'Enddatum',
     'lastupdatedby': 'Letzte Änderung durch',
