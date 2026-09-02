@@ -289,10 +289,36 @@ function LuceneQueryBuilder(LuceneQueryParser, QueryTreeValidator, QueryTreeTran
     }
   }
 
+  /**
+   * Bounds default to a full ISO timestamp. A field holding a calendar date rather than a moment in time declares
+   * its own dateFormat, and is rendered here so printTerm leaves it alone.
+   */
+  function applyCustomDateFormat(field) {
+    var queryField = _.find(queryFields, function (queryField) {
+      return queryField.field === field.field && queryField.dateFormat;
+    });
+
+    if (!queryField) {
+      return;
+    }
+
+    if (field.lowerBound instanceof Date) {
+      field.lowerBound = moment(field.lowerBound).format(queryField.dateFormat);
+    }
+
+    if (field.upperBound instanceof Date) {
+      field.upperBound = moment(field.upperBound).format(queryField.dateFormat);
+    }
+  }
+
   function transformField(originalField) {
     var field = _.clone(originalField);
     var isFieldImplicit = field.field === implicitToken;
     var fieldOperator = '';
+
+    if (field.fieldType === 'date-range') {
+      applyCustomDateFormat(field);
+    }
 
     switch (field.transformer) {
       case '!':
