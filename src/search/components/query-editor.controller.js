@@ -205,6 +205,18 @@ function QueryEditorController(
     qe.groupedQueryTree = modalValues;
   }
 
+  /**
+   * An option doubles as its own translation key, under 'choice.'. Boolean fields would all collide on true/false,
+   * so they keep their labels apart with an 'optionLabels' namespace.
+   */
+  function getOptionsWithLabelKeys(field) {
+    var namespace = field.optionLabels ? 'choice.' + field.optionLabels : 'choice';
+
+    return _.map(field.options, function (option) {
+      return {term: option, label: namespace + '.' + option};
+    });
+  }
+
   // Holds options for both term and choice query-field types
   qe.transformers = {};
   qe.termOptions = _.groupBy(taxonomyTerms, function (term) {
@@ -215,7 +227,7 @@ function QueryEditorController(
   qe.termOptions['category_eventtype_name'] = eventTypes; // jshint ignore:line
   _.forEach(queryFields, function (field) {
     if (field.type === 'choice') {
-      qe.termOptions[field.name] = field.options;
+      qe.termOptions[field.name] = getOptionsWithLabelKeys(field);
     }
     qe.transformers[field.name] = fieldTypeTransformers[field.type];
   });
