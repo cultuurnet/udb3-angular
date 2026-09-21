@@ -50,7 +50,11 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
     {name: 'language', include: false, sortable: false, excludable: true},
     {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'completeness', include: false, sortable: false, excludable: true}
+    {name: 'completeness', include: false, sortable: false, excludable: true},
+    {name: 'childrenOnly', include: false, sortable: false, excludable: true},
+    {name: 'faqs', include: false, sortable: false, excludable: true},
+    {name: 'hasOvernightStay', include: false, sortable: false, excludable: true},
+    {name: 'departurePlaces', include: false, sortable: false, excludable: true}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);

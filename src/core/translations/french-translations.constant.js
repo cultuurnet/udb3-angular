@@ -347,7 +347,11 @@ angular.module('udb.core')
       'typicalAgeRange': ' ge',
       'language': 'Langue',
       'audience': 'Accès',
-      'completeness': 'Intégralité'
+      'completeness': 'Intégralité',
+      'childrenOnly': 'Pour qui (BOA)',
+      'faqs': 'FAQ',
+      'hasOvernightStay': 'Nuitée',
+      'departurePlaces': 'Lieux de départ'
     },
     errors: {
       labelNotAllowed: 'Ce label a été ajouté par un autre utilisateur ou une autre organisation et ne peut pas être supprimé.'

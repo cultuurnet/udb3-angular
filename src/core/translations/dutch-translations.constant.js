@@ -355,7 +355,11 @@ angular.module('udb.core')
       'typicalAgeRange': 'Leeftijd',
       'language': 'Taal',
       'audience': 'Toegang',
-      'completeness': 'Volledigheid'
+      'completeness': 'Volledigheid',
+      'childrenOnly': 'Voor wie (BOA)',
+      'faqs': 'FAQ',
+      'hasOvernightStay': 'Overnachting',
+      'departurePlaces': 'Vertreklocaties'
     },
     errors: {
       labelNotAllowed: 'Dit label is toegevoegd door een andere gebruiker of organisatie en kan je niet verwijderen.'
