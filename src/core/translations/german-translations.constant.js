@@ -352,7 +352,11 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'typicalAgeRange': 'Alter',
     'language': 'Sprache',
     'audience': 'Zutritt',
-    'completeness': 'Integrität'
+    'completeness': 'Integrität',
+    'childrenOnly': 'Für wen (BOA)',
+    'faqs': 'FAQ',
+    'hasOvernightStay': 'Übernachtung',
+    'departurePlaces': 'Abfahrtsorte'
   },
   'errors': {
     'labelNotAllowed': 'Dieses Label wurde von einem anderen Benutzer oder einer anderen Organisation hinzugefügt und kann nicht entfernt werden.'
