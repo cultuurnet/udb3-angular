@@ -3131,7 +3131,11 @@ angular.module('udb.core')
       'typicalAgeRange': 'Leeftijd',
       'language': 'Taal',
       'audience': 'Toegang',
-      'completeness': 'Volledigheid'
+      'completeness': 'Volledigheid',
+      'childrenOnly': 'Voor wie (BOA)',
+      'faqs': 'FAQ',
+      'hasOvernightStay': 'Overnachting',
+      'departurePlaces': 'Vertreklocaties'
     },
     errors: {
       labelNotAllowed: 'Dit label is toegevoegd door een andere gebruiker of organisatie en kan je niet verwijderen.'
@@ -4367,7 +4371,11 @@ angular.module('udb.core')
       'typicalAgeRange': ' ge',
       'language': 'Langue',
       'audience': 'Accès',
-      'completeness': 'Intégralité'
+      'completeness': 'Intégralité',
+      'childrenOnly': 'Pour qui (BOA)',
+      'faqs': 'FAQ',
+      'hasOvernightStay': 'Nuitée',
+      'departurePlaces': 'Lieux de départ'
     },
     errors: {
       labelNotAllowed: 'Ce label a été ajouté par un autre utilisateur ou une autre organisation et ne peut pas être supprimé.'
@@ -5601,7 +5609,11 @@ angular.module('udb.core').constant('udbGermanTranslations', {
     'typicalAgeRange': 'Alter',
     'language': 'Sprache',
     'audience': 'Zutritt',
-    'completeness': 'Integrität'
+    'completeness': 'Integrität',
+    'childrenOnly': 'Für wen (BOA)',
+    'faqs': 'FAQ',
+    'hasOvernightStay': 'Übernachtung',
+    'departurePlaces': 'Abfahrtsorte'
   },
   'errors': {
     'labelNotAllowed': 'Dieses Label wurde von einem anderen Benutzer oder einer anderen Organisation hinzugefügt und kann nicht entfernt werden.'
@@ -18218,7 +18230,11 @@ function EventExportController($uibModalInstance, eventExporter, ExportFormats, 
     {name: 'typicalAgeRange', include: false, sortable: false, excludable: true},
     {name: 'language', include: false, sortable: false, excludable: true},
     {name: 'audience', include: false, sortable: false, excludable: true, format: ExportFormats.OOXML},
-    {name: 'completeness', include: false, sortable: false, excludable: true}
+    {name: 'completeness', include: false, sortable: false, excludable: true},
+    {name: 'childrenOnly', include: false, sortable: false, excludable: true},
+    {name: 'faqs', include: false, sortable: false, excludable: true},
+    {name: 'hasOvernightStay', include: false, sortable: false, excludable: true},
+    {name: 'departurePlaces', include: false, sortable: false, excludable: true}
   ];
 
   exporter.exportFormats = _.map(ExportFormats);
